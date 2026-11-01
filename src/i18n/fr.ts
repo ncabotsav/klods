@@ -50,6 +50,8 @@ export const fr = {
       "LEGO® est une marque du Groupe LEGO, qui ne parraine, n'autorise ni ne soutient ce site. Klods est un projet indépendant et non officiel.",
     inspired: "Inspiré de",
     source: "Code source",
+    models: "Modèles 3D",
+    setData: "Données des sets",
   },
 } as const;
 

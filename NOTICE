@@ -23,6 +23,13 @@ Third-party data
   licensed under CC BY 2.0 or CC BY 4.0, as stated in each part's header.
 - Set names, themes and years: Rebrickable, https://rebrickable.com/.
 
+Third-party code
+----------------
+- three.js (https://threejs.org/, MIT License): LDrawLoader and related
+  materials, used as a dependency. The model packer in scripts/data/lib/ldraw-pack.ts
+  follows the approach of three.js utils/packLDrawModel.mjs; it is a rewrite,
+  not a copy.
+
 Inspiration
 -----------
 Klods is inspired by Bygga (https://www.usebygga.com/,

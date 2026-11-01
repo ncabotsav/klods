@@ -13,6 +13,20 @@ export default function SiteFooter() {
           </a>
           <span aria-hidden="true">·</span>
           <span>
+            {fr.footer.models}{" "}
+            <a href="https://library.ldraw.org/omr" target="_blank" rel="noopener">
+              LDraw OMR
+            </a>
+          </span>
+          <span aria-hidden="true">·</span>
+          <span>
+            {fr.footer.setData}{" "}
+            <a href="https://rebrickable.com/" target="_blank" rel="noopener">
+              Rebrickable
+            </a>
+          </span>
+          <span aria-hidden="true">·</span>
+          <span>
             {fr.footer.inspired}{" "}
             <a href="https://www.usebygga.com/" target="_blank" rel="noopener">
               Bygga

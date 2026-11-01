@@ -1,0 +1,118 @@
+# Construit les données du site : modèles OMR packés et compressés, index des sets, rapport de contrôle.
+#
+# - Lancement manuel (onglet Actions, « Run workflow ») : tout le catalogue, ou un échantillon.
+# - Chaque lundi : mise à jour (nouveaux sets OMR, nouvelle bibliothèque LDraw si DATA_REFRESH).
+# - Sur les pull requests qui touchent au pipeline : un échantillon de 25 sets, pour vérifier.
+#
+# Les téléchargements bruts restent en cache entre deux passages : on ne redemande jamais un fichier
+# déjà récupéré. Les données construites sur main sont mises en cache pour le déploiement.
+name: Données
+
+on:
+  workflow_dispatch:
+    inputs:
+      sample:
+        description: "Nombre de sets à traiter (0 = tout le catalogue)"
+        default: "0"
+      refresh:
+        description: "Retélécharger la bibliothèque LDraw, les CSV et les fiches OMR"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "17 4 * * 1"
+  pull_request:
+    paths:
+      - "scripts/data/**"
+      - "data/omr-ids.txt"
+      - "src/lib/catalog.ts"
+      - ".github/workflows/data.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: data-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      DATA_SAMPLE: ${{ github.event_name == 'pull_request' && '25' || inputs.sample || '0' }}
+      DATA_REFRESH: ${{ inputs.refresh && '1' || '0' }}
+      # un échantillon peut tomber sur plus de fichiers difficiles ; le catalogue complet doit passer à 95 %
+      CHECK_MIN_PASS: ${{ github.event_name == 'pull_request' && '80' || '95' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+      - name: Restaurer les téléchargements
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            data/raw
+            !data/raw/ldraw/ldraw
+          key: raw-${{ github.run_id }}
+          restore-keys: raw-
+
+      - run: npm run data:omr
+      - run: npm run data:ldraw
+      - run: npm run data:rebrickable
+
+      - name: Garder les téléchargements pour la prochaine fois
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            data/raw
+            !data/raw/ldraw/ldraw
+          key: raw-${{ github.run_id }}
+
+      - id: pack
+        run: npm run data:pack
+      # un contrôle sous le seuil fait échouer le workflow, mais l'index et les données sont quand même produits :
+      # le site n'affiche que les modèles en bon état, et le rapport dit lesquels corriger
+      - run: npm run check
+      - id: index
+        if: ${{ !cancelled() && steps.pack.outcome == 'success' }}
+        run: npm run data:index
+
+      - name: Résumé
+        if: always()
+        run: |
+          {
+            cat data/build/check-summary.md 2>/dev/null || echo "Pas de rapport de contrôle."
+            echo
+            echo "## Fichiers publiés"
+            du -sh public/data 2>/dev/null | awk '{print "- public/data : " $1}'
+            find public/data -type f 2>/dev/null | wc -l | awk '{print "- Fichiers : " $1}'
+            echo
+            echo "## Identifiants OMR"
+            git diff --stat -- data/omr-ids.txt | tail -1 | sed 's/^/- /'
+            git diff -U0 -- data/omr-ids.txt | grep '^+[0-9]' | sed 's/^+/- Nouvelle liste : /' || echo "- Aucun nouveau set"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Rapports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rapports-donnees
+          path: |
+            data/build/*.json
+            data/build/*.md
+            public/data/sets.json
+            data/omr-ids.txt
+          retention-days: 30
+
+      - name: Données pour le déploiement
+        if: ${{ !cancelled() && steps.index.outcome == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+        uses: actions/cache/save@v6
+        with:
+          path: public/data
+          key: site-data-${{ github.run_id }}

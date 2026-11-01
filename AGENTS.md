@@ -24,6 +24,13 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - **Style** : CSS Modules et variables CSS, pas de kit UI. Mise en page en flex ou grid avec `gap`.
 - **Accessibilité** : focus visible, `prefers-reduced-motion` respecté, chaque contrôle a un nom accessible.
 
+## Pipeline de données
+
+- Les scripts sont dans `scripts/data/`, en TypeScript exécuté directement par Node (pas de compilation) : imports avec l'extension `.ts`, seulement de la syntaxe effaçable (pas d'`enum`, pas de `namespace`).
+- Tout téléchargement passe par `fetchCached()` de `scripts/data/lib/http.ts` : cache disque, une requête par seconde par site, User-Agent du projet.
+- Le format de `public/data/sets.json` est défini une seule fois, dans `src/lib/catalog.ts`, et validé à l'écriture.
+- Tests : `npm test` (`node --test`), à côté du code (`*.test.ts`).
+
 ## Avant de lancer un nouveau sprint
 
 On ne commence jamais un sprint sans avoir repassé le précédent. La repasse se fait sur `main` à jour et suit ces étapes :
@@ -39,7 +46,7 @@ On ne commence jamais un sprint sans avoir repassé le précédent. La repasse s
 ## Avant de pousser
 
 ```bash
-npm run lint && npm run typecheck && npm run build
+npm test && npm run lint && npm run typecheck && npm run build
 ```
 
 Une pull request par lot de travail ; `main` se déploie automatiquement sur GitHub Pages.

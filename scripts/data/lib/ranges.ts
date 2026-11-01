@@ -1,8 +1,9 @@
 /** Lit une liste de plages « 1-324,326-357,359 » en tableau d'entiers triés. */
 export function parseRanges(text: string): number[] {
   const out = new Set<number>();
-  for (const part of text.split(/[\s,]+/)) {
-    if (!part || part.startsWith("#")) continue;
+  const body = text.replace(/#.*$/gm, ""); // commentaires : de « # » à la fin de la ligne
+  for (const part of body.split(/[\s,]+/)) {
+    if (!part) continue;
     const [a, b] = part.split("-").map(Number);
     if (!Number.isInteger(a)) throw new Error(`Plage invalide : ${part}`);
     const end = Number.isInteger(b) ? b : a;

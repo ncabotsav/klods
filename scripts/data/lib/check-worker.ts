@@ -6,6 +6,8 @@ import { analyzeModel } from "./ldraw-analyze.ts";
 
 // LDrawLoader prévient pour chaque fichier introuvable : déjà compté par le packer, inutile ici
 console.warn = () => {};
+// une promesse rejetée après coup par le chargeur ne doit pas tuer le fil (le résultat est déjà envoyé)
+process.on("unhandledRejection", () => {});
 
 parentPort?.on("message", async ({ id, file }: { id: number; file: string }) => {
   try {

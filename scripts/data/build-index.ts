@@ -37,7 +37,7 @@ async function main() {
   };
 
   const packByFile = new Map(pack.map((p) => [`${p.omrId}:${p.fileId}`, p]));
-  const checkByFile = new Map(check.map((c) => [c.file, c]));
+  const checkByFile = new Map(check.filter(Boolean).map((c) => [c.file, c]));
 
   const sets: SetEntry[] = omr.map((s) => {
     const rb = rbSets.get(s.number);

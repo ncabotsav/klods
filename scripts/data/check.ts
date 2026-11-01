@@ -22,54 +22,68 @@ const WORKER_FILE = new URL("./lib/check-worker.ts", import.meta.url);
 
 export type CheckEntry = { file: string; stats?: ModelStats; error?: string; ms: number };
 
+/**
+ * Répartit les modèles entre plusieurs fils. Chaque modèle reçoit exactement un résultat : un fil qui
+ * plante ou dépasse le délai est arrêté et remplacé, et un résultat déjà noté n'est jamais réécrit.
+ */
 function runAll(files: string[]): Promise<CheckEntry[]> {
   const results: CheckEntry[] = new Array(files.length);
+  const recorded = new Set<number>();
   let next = 0;
-  let finished = 0;
   return new Promise((resolve) => {
+    const record = (id: number, entry: CheckEntry) => {
+      if (recorded.has(id)) return;
+      recorded.add(id);
+      results[id] = entry;
+      if (recorded.size % 200 === 0) console.log(`  ${recorded.size}/${files.length} modèles contrôlés`);
+      if (recorded.size === files.length) resolve(results);
+    };
+
     const start = () => {
+      if (next >= files.length) return;
       const worker = new Worker(WORKER_FILE);
       let current = -1;
-      let timer: NodeJS.Timeout | undefined;
       let t0 = 0;
+      let timer: NodeJS.Timeout | undefined;
+      let retired = false;
+
+      // ce fil ne sert plus : on l'arrête, on note l'échec du modèle en cours et un fil neuf prend la suite
+      const retire = (error: string) => {
+        if (retired) return;
+        retired = true;
+        clearTimeout(timer);
+        worker.removeAllListeners();
+        worker.on("error", () => {});
+        void worker.terminate();
+        if (current >= 0) record(current, { file: files[current], error, ms: Date.now() - t0 });
+        start();
+      };
+
       const feed = () => {
         if (next >= files.length) {
-          worker.terminate();
+          retired = true;
+          void worker.terminate();
           return;
         }
         current = next++;
         t0 = Date.now();
-        timer = setTimeout(() => {
-          // trop long : on arrête ce fil, on note l'échec et on repart avec un fil neuf
-          results[current] = { file: files[current], error: `délai dépassé (${TIMEOUT_MS / 1000} s)`, ms: TIMEOUT_MS };
-          worker.removeAllListeners();
-          worker.terminate();
-          done();
-          start();
-        }, TIMEOUT_MS);
+        timer = setTimeout(() => retire(`délai dépassé (${TIMEOUT_MS / 1000} s)`), TIMEOUT_MS);
         worker.postMessage({ id: current, file: path.join(ROOT, "public", files[current]) });
       };
-      const done = () => {
-        finished++;
-        if (finished % 200 === 0) console.log(`  ${finished}/${files.length} modèles contrôlés`);
-        if (finished === files.length) resolve(results);
-      };
+
       worker.on("message", (msg: { id: number; stats?: ModelStats; error?: string }) => {
+        if (retired || msg.id !== current) return;
         clearTimeout(timer);
-        results[msg.id] = { file: files[msg.id], stats: msg.stats, error: msg.error, ms: Date.now() - t0 };
-        done();
+        record(msg.id, { file: files[msg.id], stats: msg.stats, error: msg.error, ms: Date.now() - t0 });
         feed();
       });
-      worker.on("error", (err) => {
-        clearTimeout(timer);
-        if (current >= 0 && !results[current]) {
-          results[current] = { file: files[current], error: err.message, ms: Date.now() - t0 };
-          done();
-        }
-        start();
+      worker.on("error", (err) => retire(err.message || String(err)));
+      worker.on("exit", (code) => {
+        if (!retired) retire(`arrêt inattendu (code ${code})`);
       });
       feed();
     };
+
     if (!files.length) resolve(results);
     for (let i = 0; i < Math.min(WORKERS, files.length); i++) start();
   });

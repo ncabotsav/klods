@@ -63,6 +63,24 @@ test("une pièce introuvable n'empêche pas le modèle de se charger", async () 
   assert.equal(stats.parts, 5); // la pièce vide compte, le packer la signale à part
 });
 
+test("une pièce non officielle intégrée avec une barre oblique inversée se charge", async () => {
+  // cas réel : le fichier OMR de 42044-1 intègre « 0 FILE s\42044 - 33299s01.dat »
+  const omr = [
+    "0 FILE main.ldr",
+    "1 4 0 0 0 1 0 0 0 1 0 0 0 1 42044 - 33299b.dat",
+    "0 FILE 42044 - 33299b.dat",
+    "0 !LDRAW_ORG Unofficial_Part",
+    "1 16 0 0 0 1 0 0 0 1 0 0 0 1 s\\42044 - 33299s01.dat",
+    "0 FILE s\\42044 - 33299s01.dat",
+    "0 !LDRAW_ORG Unofficial_Subpart",
+    "1 16 0 0 0 1 0 0 0 1 0 0 0 1 box5.dat",
+  ].join("\n");
+  const packed = packModel(omr, LDCONFIG, read);
+  assert.deepEqual(packed.missing, []);
+  assert.match(packed.text, /^0 FILE parts\/s\/42044 - 33299s01\.dat$/m);
+  assert.equal((await analyzeModel(packed.text)).parts, 1);
+});
+
 test("le fichier packé se charge avec LDrawLoader, avec ses étapes", async () => {
   const packed = packModel(OMR.replace(/^.*9999\.dat\r$/m, ""), LDCONFIG, read);
   assert.deepEqual(packed.missing, []);

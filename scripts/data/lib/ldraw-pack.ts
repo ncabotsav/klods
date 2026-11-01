@@ -20,7 +20,18 @@ export type PackResult = {
   embeddedFiles: number;
 };
 
-const norm = (name: string) => name.trim().replace(/\\/g, "/").toLowerCase();
+const slashes = (name: string) => name.trim().replace(/\\/g, "/");
+/**
+ * Nom d'un fichier intégré tel que LDrawLoader le cherchera : il ajoute « parts/ » devant les références
+ * « s/… » et « p/ » devant « 48/… », mais pas devant les noms des « 0 FILE ». On écrit donc le nom complet.
+ */
+const embeddedName = (name: string) => {
+  const n = slashes(name);
+  if (/^s\//i.test(n)) return `parts/${n}`;
+  if (/^48\//i.test(n)) return `p/${n}`;
+  return n;
+};
+const norm = (name: string) => slashes(name).toLowerCase();
 
 /** Les chemins où LDraw cherche une référence, dans l'ordre. */
 function candidates(name: string): string[] {
@@ -73,7 +84,9 @@ export function packModel(modelText: string, ldconfig: string, read: LibraryRead
       const m = line.match(TYPE1);
       if (!m) return line;
       const ref = m[2];
-      if (embedded.has(norm(ref))) return line; // sous-modèle du fichier OMR
+      // sous-modèle ou pièce non officielle du fichier OMR : même nom que son « 0 FILE », barres obliques normales
+      // (LDrawLoader ne retrouve pas « s\pièce.dat » écrit avec une barre inversée)
+      if (embedded.has(norm(ref))) return m[1] + embeddedName(embedded.get(norm(ref))!.name!);
       const real = resolve(ref);
       return real ? m[1] + real : line;
     });
@@ -96,7 +109,7 @@ export function packModel(modelText: string, ldconfig: string, read: LibraryRead
   const out: string[] = [ldconfig.replace(/\r\n?/g, "\n").trimEnd(), ""];
   for (const [i, b] of blocks.entries()) {
     // Le modèle principal s'écrit sans « 0 FILE » : LDrawLoader prend le texte avant le premier « 0 FILE ».
-    if (i > 0 && b.name) out.push(`0 FILE ${b.name}`);
+    if (i > 0 && b.name) out.push(`0 FILE ${embeddedName(b.name)}`);
     out.push(...rewrite(b.lines));
   }
   for (const [p, lines] of library) {

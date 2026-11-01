@@ -1,5 +1,6 @@
 # Vérifie et publie le site sur GitHub Pages à chaque push sur main.
-# Sur les pull requests, vérifie seulement (lint, types, build).
+# Sur les pull requests, vérifie seulement (tests, lint, types, build).
+# Les modèles 3D et l'index viennent du workflow « Données », par le cache.
 name: Déploiement
 
 on:
@@ -7,6 +8,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # republie le site quand le workflow « Données » a reconstruit les modèles sur main
+  workflow_run:
+    workflows: [Données]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -17,6 +23,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_BASE_PATH: /klods
@@ -29,6 +36,14 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      # les modèles et l'index construits par le workflow « Données » (absent tant qu'il n'a pas tourné)
+      - name: Données du site
+        uses: actions/cache/restore@v6
+        with:
+          path: public/data
+          key: site-data-latest
+          restore-keys: site-data-
+      - run: npm test
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build

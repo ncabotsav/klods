@@ -19,3 +19,7 @@ next-env.d.ts
 npm-debug.log*
 /coverage
 .claude/
+
+# résultats intermédiaires et fichiers construits par le pipeline de données (npm run data)
+/data/build/
+/public/data/

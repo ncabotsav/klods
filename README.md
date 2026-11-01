@@ -24,7 +24,25 @@ Construire le site statique comme sur GitHub Pages :
 NEXT_PUBLIC_BASE_PATH=/klods npm run build   # le site est dans out/
 ```
 
-Avant de pousser : `npm run lint && npm run typecheck && npm run build`.
+Avant de pousser : `npm test && npm run lint && npm run typecheck && npm run build`.
+
+## Pipeline de données
+
+Les modèles 3D ne sont pas dans Git : le workflow GitHub Actions **Données** les construit (onglet Actions, « Run workflow »), chaque lundi et sur les pull requests qui touchent au pipeline (échantillon de 25 sets). Ses résultats partent dans le cache, où le déploiement les reprend.
+
+| Commande | Ce qu'elle fait |
+| --- | --- |
+| `npm run data:omr` | Lit les fiches des sets OMR (liste dans `data/omr-ids.txt`) et télécharge leurs fichiers LDraw |
+| `npm run data:ldraw` | Télécharge et décompresse la bibliothèque de pièces LDraw complète |
+| `npm run data:rebrickable` | Télécharge les CSV Rebrickable (sets, thèmes) |
+| `npm run data:pack` | Intègre les pièces dans chaque modèle et compresse le résultat dans `public/data/models/` |
+| `npm run check` | Charge chaque modèle avec LDrawLoader, compte étapes et pièces, écrit `data/build/check-summary.md` |
+| `npm run data:index` | Construit `public/data/sets.json`, validé par le schéma de `src/lib/catalog.ts` |
+| `npm run data` | Tout, dans l'ordre |
+
+Variables utiles : `DATA_SAMPLE=25` (échantillon), `DATA_REFRESH=1` (retélécharger), `CHECK_MIN_PASS=95` (seuil du contrôle).
+
+Les téléchargements sont polis : une requête par seconde au plus, un User-Agent qui renvoie vers ce dépôt, et un cache dans `data/raw/` (ignoré par Git) pour ne jamais redemander un fichier.
 
 ## D'où viennent les données
 

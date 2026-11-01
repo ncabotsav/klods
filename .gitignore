@@ -1,0 +1,21 @@
+# dépendances
+/node_modules
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# données brutes téléchargées (OMR, bibliothèque LDraw, CSV Rebrickable) : reconstruites par les scripts, jamais commitées
+/data/raw/
+
+# environnement
+.env*
+!.env.example
+
+# divers
+.DS_Store
+npm-debug.log*
+/coverage
+.claude/

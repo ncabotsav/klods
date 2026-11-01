@@ -1,0 +1,174 @@
+/*
+ * Jetons de design de Klods.
+ * L'esprit : la page d'une notice de montage. Fond bleu-gris des livrets, encre sombre,
+ * un bleu franc pour les actions, un jaune « brique » pour ce qui est nouveau.
+ * Toute couleur passe par un jeton ; le thème sombre redéfinit les jetons, jamais les composants.
+ */
+:root {
+  --bg: #eef2f6;
+  --stage: #d4e0eb;
+  --card: #ffffff;
+  --ink: #14202b;
+  --muted: #566573;
+  --line: #c2cfdb;
+  --accent: #0055bf;
+  --accent-ink: #ffffff;
+  --hi: #f2b705;
+
+  --font-display: "Archivo Variable", "Arial Black", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius: 10px;
+  --radius-lg: 14px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+  --measure: 65ch;
+  --page: 1180px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e151c;
+    --stage: #18242f;
+    --card: #1e2a36;
+    --ink: #e6edf3;
+    --muted: #94a3b1;
+    --line: #2c3a48;
+    --accent: #5aa2ff;
+    --accent-ink: #08121c;
+    --hi: #ffcd03;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0e151c;
+  --stage: #18242f;
+  --card: #1e2a36;
+  --ink: #e6edf3;
+  --muted: #94a3b1;
+  --line: #2c3a48;
+  --accent: #5aa2ff;
+  --accent-ink: #08121c;
+  --hi: #ffcd03;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+a {
+  color: var(--accent);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-stretch: 112%;
+  line-height: 1.1;
+  text-wrap: balance;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding-left: max(var(--space-4), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-4), env(safe-area-inset-right, 0px));
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.skip {
+  position: absolute;
+  left: var(--space-4);
+  top: -48px;
+  background: var(--card);
+  color: var(--ink);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  z-index: 20;
+}
+.skip:focus {
+  top: var(--space-2);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 10px 16px;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

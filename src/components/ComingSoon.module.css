@@ -1,0 +1,17 @@
+.box {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  padding-block: var(--space-8);
+}
+
+.title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+}
+
+.body {
+  max-width: var(--measure);
+  color: var(--muted);
+  font-size: 18px;
+}

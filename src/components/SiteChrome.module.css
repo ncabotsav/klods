@@ -1,0 +1,103 @@
+.header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+}
+
+.home {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.mark {
+  width: 28px;
+  height: 20px;
+  fill: var(--hi);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  font-weight: 700;
+}
+
+.nav a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--accent);
+}
+
+.github {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.github svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+@media (max-width: 480px) {
+  .nav {
+    gap: var(--space-4);
+    font-size: 15px;
+  }
+  .logo {
+    font-size: 22px;
+  }
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  margin-top: var(--space-8);
+}
+
+.footerInner {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5) var(--space-6);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.disclaimer {
+  max-width: var(--measure);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}

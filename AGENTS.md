@@ -24,6 +24,18 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - **Style** : CSS Modules et variables CSS, pas de kit UI. Mise en page en flex ou grid avec `gap`.
 - **Accessibilité** : focus visible, `prefers-reduced-motion` respecté, chaque contrôle a un nom accessible.
 
+## Avant de lancer un nouveau sprint
+
+On ne commence jamais un sprint sans avoir repassé le précédent. La repasse se fait sur `main` à jour et suit ces étapes :
+
+1. Relire la liste de tâches du sprint précédent dans le plan : chaque tâche est faite, ou reportée explicitement avec la raison et le sprint où elle part.
+2. Vérifier chaque critère « Fini quand » du sprint, avec une preuve (commande lancée, page ouverte, mesure).
+3. Lancer `npm run lint && npm run typecheck && npm run build` sur `main`, et `npm run check` dès qu'il existe.
+4. Vérifier que le dernier déploiement GitHub Pages a réussi et que le site en ligne s'affiche correctement (accueil, pages ajoutées par le sprint, 404).
+5. Relire les changements du sprint pour les règles de ce fichier : aucun contenu LEGO copié, textes dans `src/i18n/fr.ts`, couleurs par les jetons, accessibilité.
+6. Corriger ce qui ne va pas dans une pull request à part, avant le nouveau sprint.
+7. Résumer la repasse à l'utilisateur (ce qui est OK, ce qui a été corrigé, ce qui est reporté) et attendre son accord avant de lancer le sprint suivant.
+
 ## Avant de pousser
 
 ```bash

@@ -29,6 +29,7 @@ export const fr = {
     ],
   },
   soon: {
+    eyebrow: "Bientôt",
     catalogue: {
       title: "Catalogue",
       body: "Le catalogue des sets arrive avec la préversion. Il listera tous les sets disponibles en 3D, par thème et par année.",

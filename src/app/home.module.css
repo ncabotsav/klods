@@ -51,8 +51,15 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
+}
+
+/* Trois cartes : une colonne sur téléphone, trois dès qu'il y a la place (jamais une carte seule sur sa ligne) */
+@media (min-width: 760px) {
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .step {

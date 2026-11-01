@@ -26,6 +26,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  // la barre du navigateur ne lit pas les variables CSS : mêmes valeurs que --bg dans globals.css
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#eef2f6" },
     { media: "(prefers-color-scheme: dark)", color: "#0e151c" },

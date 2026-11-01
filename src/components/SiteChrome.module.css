@@ -47,6 +47,7 @@
 .nav a {
   color: var(--ink);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav a:hover {
@@ -71,8 +72,8 @@
 
 @media (max-width: 480px) {
   .nav {
-    gap: var(--space-4);
-    font-size: 15px;
+    gap: var(--space-3);
+    font-size: 14px;
   }
   .logo {
     font-size: 22px;

@@ -6,7 +6,7 @@ import { fr } from "@/i18n/fr";
 export default function ComingSoon({ title, body }: { title: string; body: string }) {
   return (
     <div className={`wrap ${styles.box}`}>
-      <p className="eyebrow">Bientôt</p>
+      <p className="eyebrow">{fr.soon.eyebrow}</p>
       <h1 className={styles.title}>{title}</h1>
       <p className={styles.body}>{body}</p>
       <Link href="/" className="btn">

@@ -1,0 +1,30 @@
+Klods
+Copyright (c) 2026 ncabotsav
+
+The Klods source code is licensed under the MIT License (see LICENSE).
+That license covers the code only. It grants no rights in the trademarks
+or third-party data listed below.
+
+Trademarks
+----------
+LEGO® is a trademark of the LEGO Group, which does not sponsor, authorize
+or endorse this project. Klods is an independent, unofficial project. It does
+not use LEGO building instructions, box photos, logos or text.
+
+LDraw™ is a trademark owned and licensed by the Estate of James Jessiman.
+
+Third-party data
+----------------
+- 3D models and building steps: LDraw.org Official Model Repository (OMR),
+  https://library.ldraw.org/omr. Each model is licensed under Creative Commons
+  Attribution (CC BY 2.0 or CC BY 4.0, as stated in its header). The author of
+  each model is credited on its set page.
+- Part geometry and colours: LDraw.org Parts Library, https://library.ldraw.org/,
+  licensed under CC BY 2.0 or CC BY 4.0, as stated in each part's header.
+- Set names, themes and years: Rebrickable, https://rebrickable.com/.
+
+Inspiration
+-----------
+Klods is inspired by Bygga (https://www.usebygga.com/,
+https://github.com/Nutlope/bygga, MIT License). Klods is written from scratch;
+if any file is ever adapted from Bygga, it keeps Bygga's copyright notice.

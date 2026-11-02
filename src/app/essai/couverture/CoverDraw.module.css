@@ -1,0 +1,5 @@
+/* Taille fixe : le rendu sert d'image (4:3), pas d'interface */
+.scene {
+  width: 960px;
+  height: 720px;
+}

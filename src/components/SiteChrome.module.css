@@ -55,11 +55,16 @@
 }
 
 .github {
-  display: inline-grid;
-  place-items: center;
-  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 36px;
   height: 36px;
-  border-radius: 50%;
+  padding: 0 10px;
+  border-radius: 99px;
+  font-family: var(--font-mono);
+  font-size: 13px;
   border: 1px solid var(--line);
   background: var(--card);
 }
@@ -101,4 +106,29 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+.preview {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.previewInner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  padding-block: var(--space-2);
+}
+
+.previewLabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--hi);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 0 6px;
 }

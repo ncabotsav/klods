@@ -6,6 +6,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import PreviewBanner from "@/components/PreviewBanner";
 import { fr } from "@/i18n/fr";
 import { SITE_URL } from "@/lib/site";
 
@@ -16,10 +17,15 @@ export const metadata: Metadata = {
   title: { default: title, template: `%s · ${fr.site.name}` },
   description: fr.site.description,
   applicationName: fr.site.name,
-  // site encore vide : pas d'indexation avant la préversion (sprint 4)
-  robots: { index: false, follow: false },
-  openGraph: { type: "website", siteName: fr.site.name, title, description: fr.site.description, locale: "fr_FR" },
-  twitter: { card: "summary_large_image", title, description: fr.site.description },
+  openGraph: {
+    type: "website",
+    siteName: fr.site.name,
+    title,
+    description: fr.site.description,
+    locale: "fr_FR",
+    images: [{ url: "/partage.png", width: 1200, height: 630, alt: fr.site.name }],
+  },
+  twitter: { card: "summary_large_image", title, description: fr.site.description, images: ["/partage.png"] },
 };
 
 export const viewport: Viewport = {
@@ -41,6 +47,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {fr.nav.skip}
         </a>
         <SiteHeader />
+        <PreviewBanner />
         <main id="contenu">{children}</main>
         <SiteFooter />
       </body>

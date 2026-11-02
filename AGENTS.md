@@ -45,6 +45,13 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - Pages construites au build pour chaque set de `public/data/sets.json` (`src/lib/catalog-server.ts`) ; sans données, une page « exemple » vide fait passer le build.
 - Progression dans le navigateur uniquement (`src/lib/progress.ts`, localStorage) : rien ne part sur un serveur.
 
+## Catalogue et référencement
+
+- Fiche statique par set : `/set/<numéro>/` (indexée) ; `/monter/` et `/imprimer/` sont en `noindex` avec la fiche en canonique. Un set absent tombe sur la 404, qui reconnaît l'adresse et renvoie vers la notice officielle.
+- `/catalogue/` (filtres dans l'adresse : `?theme=`, `?annees=`, `?pieces=`, `?etapes=1`, `?tri=`) et `/catalogue/<thème>/`. La logique des filtres est dans `src/lib/catalogue-filters.ts`, la recherche floue dans `src/lib/search.ts` (testées).
+- `/recherche.json`, `/sitemap.xml` et `/robots.txt` sont des routes statiques (`dynamic = "force-static"`). Sur GitHub Pages, le robots.txt n'est pas à la racine du domaine : le sitemap se déclare dans la Search Console.
+- Couvertures et cartes de partage : `npm run data:covers` (après un build), dans le workflow « Données ». Fichiers dans `public/data/covers/`, cache dans `data/raw/covers/`. Changer le dessin : incrémenter `COVER_VERSION`. Sans couverture, la carte affiche une brique dessinée.
+
 ## Avant de lancer un nouveau sprint
 
 On ne commence jamais un sprint sans avoir repassé le précédent. La repasse se fait sur `main` à jour et suit ces étapes :

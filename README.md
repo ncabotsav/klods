@@ -1,6 +1,6 @@
 # Klods
 
-Notices de montage LEGO® en 3D, étape par étape. Tape le numéro de ton set : chaque étape s'affiche en 3D, avec les pièces à prendre, et peut être lue à voix haute.
+Notices de montage LEGO® en 3D, étape par étape. Tape le numéro de ton set : chaque étape s'affiche en 3D, avec les pièces à prendre.
 
 Projet en cours de construction. Préversion : [ncabotsav.github.io/klods](https://ncabotsav.github.io/klods/)
 
@@ -48,6 +48,7 @@ Les modèles 3D ne sont pas dans Git : le workflow GitHub Actions **Données** l
 | `npm run data:pack` | Intègre les pièces dans chaque modèle et compresse le résultat dans `public/data/models/` |
 | `npm run check` | Charge chaque modèle avec LDrawLoader, compte étapes et pièces, écrit `data/build/check-summary.md` |
 | `npm run data:index` | Construit `public/data/sets.json`, validé par le schéma de `src/lib/catalog.ts` |
+| `npm run data:covers` | Dessine la couverture et la carte de partage de chaque set dans Chromium sans écran (il faut d'abord construire le site) |
 | `npm run data` | Tout, dans l'ordre |
 | `npm run data:fixtures` | Sans rien télécharger : `public/data` construit à partir des six modèles de `fixtures/ldraw`, pour développer en local |
 

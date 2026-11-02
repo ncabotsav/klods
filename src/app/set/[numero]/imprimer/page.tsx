@@ -12,7 +12,7 @@ type Props = { params: Promise<{ numero: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const set = findSet((await params).numero);
-  return set ? { title: `${fr.build.print.title} : ${set.name} (${set.number})` } : {};
+  return set ? { title: `${fr.build.print.title} : ${set.name} (${set.number})`, robots: { index: false, follow: true } } : {};
 }
 
 export default async function ImprimerPage({ params }: Props) {

@@ -1,0 +1,146 @@
+.page {
+  display: grid;
+  gap: var(--space-7);
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-8);
+}
+
+/* couverture et texte côte à côte dès qu'il y a la place, l'un sous l'autre sur téléphone */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  margin-top: calc(-1 * var(--space-5));
+}
+
+@media (min-width: 820px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+.text {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  min-width: 0;
+}
+
+.title {
+  font-size: clamp(30px, 4.5vw, 48px);
+  font-weight: 800;
+}
+
+.meta {
+  font-family: var(--font-mono);
+  color: var(--muted);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+}
+
+.facts div {
+  display: grid;
+}
+
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.notice {
+  display: grid;
+  gap: var(--space-3);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--hi);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+
+.noticeTitle {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.warning {
+  background: var(--card);
+  border: 1px solid var(--hi);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+
+.note {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.models {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.models li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.modelName {
+  font-weight: 700;
+}
+
+.modelMeta {
+  color: var(--muted);
+  font-size: 14px;
+  flex: 1;
+}
+
+.credits {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-1);
+  color: var(--muted);
+}

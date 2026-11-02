@@ -1,0 +1,45 @@
+/* Pages de texte (À propos, Confidentialité) : une colonne à la largeur de lecture */
+.page {
+  display: grid;
+  gap: var(--space-6);
+  max-width: calc(var(--measure) + 2 * var(--space-4));
+  padding-top: var(--space-7);
+  padding-bottom: var(--space-8);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+}
+
+.lead {
+  font-size: 19px;
+  color: var(--muted);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.section h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.links {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-1);
+}
+
+.small {
+  font-size: 14px;
+  color: var(--muted);
+}

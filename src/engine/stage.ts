@@ -37,6 +37,8 @@ export type StageOptions = {
   highlight?: string;
   /** Appelé à chaque image dessinée, avec sa durée, pour mesurer la fluidité. */
   onFrame?: (ms: number) => void;
+  /** Garde l'image après le rendu, pour la copier (vue impression). */
+  preserveDrawingBuffer?: boolean;
 };
 
 const DROP_MS = 420;
@@ -77,7 +79,7 @@ export class Stage {
     private container: HTMLElement,
     private options: StageOptions = {},
   ) {
-    this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: !!options.preserveDrawingBuffer });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.toneMapping = ACESFilmicToneMapping;
@@ -169,10 +171,41 @@ export class Stage {
     this.dirty = true;
   }
 
+  /** Le modèle terminé, entier, dans la vue par défaut (couverture, fin du montage). */
+  showAll() {
+    const model = this.model;
+    if (!model) return;
+    this.clearEffects();
+    this.current = -1;
+    this.root.quaternion.copy(FLIP);
+    model.traverse((o) => {
+      o.visible = true;
+      if (o.userData.klodsBase) o.position.copy(o.userData.klodsBase);
+    });
+    this.root.updateMatrixWorld(true);
+    this.frameContext(model, null);
+    this.dirty = true;
+  }
+
+  /** Rotation lente du modèle (couverture), sauf si l'utilisateur réduit les animations. */
+  setAutoRotate(on: boolean) {
+    this.controls.autoRotate = on && !this.reducedMotion;
+    this.controls.autoRotateSpeed = 1.5;
+    this.dirty = true;
+  }
+
+  /** Dessine tout de suite et renvoie l'image (PNG), pour la vue impression. */
+  snapshot(): string {
+    this.controls.update();
+    this.renderer.render(this.scene, this.camera);
+    return this.renderer.domElement.toDataURL("image/png");
+  }
+
   /** Vue d'ensemble du contexte de l'étape en cours, comme au premier affichage. */
   reframe() {
     const step = this.plan?.steps[this.current];
     if (step) this.frame(step);
+    else if (this.model) this.frameContext(this.model, null);
   }
 
   dispose() {
@@ -235,13 +268,17 @@ export class Stage {
   }
 
   private frame(step: Step) {
-    const sphere = this.sphereOf(step.context);
+    this.frameContext(step.context, step.rotation);
+  }
+
+  private frameContext(context: Object3D, rotation: [number, number, number] | null) {
+    const sphere = this.sphereOf(context);
     const fov = (this.camera.fov * Math.PI) / 180;
     const fitH = sphere.radius / Math.sin(fov / 2);
     const fitW = sphere.radius / Math.sin(Math.atan(Math.tan(fov / 2) * this.camera.aspect));
     const dist = Math.max(fitH, fitW) * 1.08;
     // vue de trois quarts, de face et un peu au-dessus, sauf si l'étape demande un autre angle (ROTSTEP)
-    const dir = viewDirection(step.rotation ?? DEFAULT_VIEW);
+    const dir = viewDirection(rotation ?? DEFAULT_VIEW);
     this.controls.target.copy(sphere.center);
     this.camera.position.copy(sphere.center).addScaledVector(dir, dist);
     this.camera.near = Math.max(0.1, dist / 200);

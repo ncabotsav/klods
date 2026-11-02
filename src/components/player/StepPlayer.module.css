@@ -163,3 +163,32 @@
   padding: var(--space-4);
   max-width: var(--measure);
 }
+
+/* Encadré des pièces : sur la vue 3D quand il y a la place, dessous sur téléphone */
+.calloutBelow {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .calloutOver {
+    display: none;
+  }
+
+  .calloutBelow {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    border: 1px solid var(--line);
+    scrollbar-width: thin;
+  }
+
+  .calloutBelow li {
+    flex: 0 0 auto;
+  }
+
+  .calloutBelow img {
+    width: 48px;
+    height: 48px;
+  }
+}

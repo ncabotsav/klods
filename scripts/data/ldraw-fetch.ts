@@ -27,13 +27,24 @@ async function main() {
   }
 
   const config = await fs.readFile(ldconfig, "utf8");
-  const update = config.match(/!LDRAW_ORG\s+Configuration\s+UPDATE\s+(\S+)/)?.[1] ?? "inconnue";
-  const parts = (await fs.readdir(path.join(LDRAW_LIBRARY, "parts"))).filter((f) => f.endsWith(".dat")).length;
+  const ldconfigUpdate = config.match(/!LDRAW_ORG\s+Configuration\s+UPDATE\s+(\S+)/)?.[1] ?? "inconnue";
+
+  // La version de la bibliothèque est la mise à jour la plus récente citée dans l'en-tête des pièces
+  // (« 0 !LDRAW_ORG Part UPDATE 2026-02 ») ; LDConfig.ldr a sa propre date, souvent plus ancienne.
+  const partFiles = (await fs.readdir(path.join(LDRAW_LIBRARY, "parts"))).filter((f) => f.endsWith(".dat"));
+  let libraryUpdate = "";
+  for (const f of partFiles) {
+    const head = (await fs.readFile(path.join(LDRAW_LIBRARY, "parts", f), "utf8")).slice(0, 600);
+    const u = head.match(/!LDRAW_ORG\s+\S+\s+(?:\S+\s+)?UPDATE\s+(\d{4}-\d{2})/)?.[1];
+    if (u && u > libraryUpdate) libraryUpdate = u;
+  }
+  libraryUpdate ||= "inconnue";
+
   await fs.writeFile(
     path.join(RAW_LDRAW, "version.json"),
-    JSON.stringify({ ldconfigUpdate: update, parts, fetchedAt: new Date().toISOString() }, null, 1),
+    JSON.stringify({ libraryUpdate, ldconfigUpdate, parts: partFiles.length, fetchedAt: new Date().toISOString() }, null, 1),
   );
-  console.log(`LDraw : bibliothèque prête, ${parts} pièces, LDConfig du ${update}`);
+  console.log(`LDraw : bibliothèque ${libraryUpdate} prête, ${partFiles.length} pièces (LDConfig du ${ldconfigUpdate})`);
 }
 
 main().catch((err) => {

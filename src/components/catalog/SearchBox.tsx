@@ -7,21 +7,10 @@ import styles from "./SearchBox.module.css";
 import SetCover from "./SetCover";
 import { createSearch, normalize, type SearchEntry } from "@/lib/search";
 import { officialManualUrl } from "@/lib/catalog";
-import { asset } from "@/lib/site";
+import { loadSearchIndex as loadIndex } from "@/lib/search-index";
 import { fr } from "@/i18n/fr";
 
 const MAX_RESULTS = 8;
-
-/** L'index est chargé une fois par page, au premier focus du champ (quelques dizaines de Ko compressés). */
-let indexPromise: Promise<SearchEntry[]> | null = null;
-function loadIndex() {
-  indexPromise ??= fetch(asset("/recherche.json")).then((r) => {
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json() as Promise<SearchEntry[]>;
-  });
-  indexPromise.catch(() => (indexPromise = null));
-  return indexPromise;
-}
 
 type Props = { examples?: { label: string; query: string }[]; autoFocus?: boolean };
 

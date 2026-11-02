@@ -9,6 +9,7 @@
  * - Chaque objet reçoit userData.klodsStep : l'index de l'étape qui l'ajoute.
  */
 import type { Object3D } from "three";
+import { assignInsertions, type InsertionStats } from "./insertion.ts";
 import { loaderName, type ModelText, type ViewRotation } from "./ldraw-text.ts";
 
 export type Step = {
@@ -34,6 +35,8 @@ export type StepPlan = {
   assemblyLetters: Map<string, string>;
   /** Nombre total de pièces posées, en comptant chaque copie des sous-ensembles. */
   totalParts: number;
+  /** Directions d'arrivée : combien d'objets posés, combien guidés par un point d'attache, temps de calcul. */
+  insertion: InsertionStats;
 };
 
 export const isPart = (o: Object3D) => /\.dat$/i.test(String(o.userData?.fileName ?? "")) && !!(o as { isGroup?: boolean }).isGroup;
@@ -126,5 +129,8 @@ export function buildSteps(model: Object3D, info: ModelText): StepPlan {
     if (o !== model && o.userData.klodsStep === undefined) o.userData.klodsStep = -1;
   });
 
-  return { steps, assemblyLetters: letters, totalParts: countParts(model) };
+  // par où chaque pièce arrive (userData.klodsInsert), d'après ses points d'attache
+  const insertion = assignInsertions(model, steps, info);
+
+  return { steps, assemblyLetters: letters, totalParts: countParts(model), insertion };
 }

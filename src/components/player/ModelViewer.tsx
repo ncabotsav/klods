@@ -14,10 +14,12 @@ type Props = {
   overlay?: ReactNode;
   onFrame?: (ms: number) => void;
   className?: string;
+  /** Page de travail : flèches de la direction d'arrivée des pièces. */
+  arrows?: boolean;
 };
 
 /** Vue 3D d'un modèle chargé : le modèle entier, ou le modèle à une étape donnée. */
-export default function ModelViewer({ loaded, mode, overlay, onFrame, className }: Props) {
+export default function ModelViewer({ loaded, mode, overlay, onFrame, className, arrows = false }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<InstanceType<LoadedModel["engine"]["Stage"]> | null>(null);
   const onFrameRef = useRef(onFrame);
@@ -48,6 +50,10 @@ export default function ModelViewer({ loaded, mode, overlay, onFrame, className 
     else stage.showStep(index, animate);
     stage.setAutoRotate(autoRotate);
   }, [loaded, kind, index, animate, autoRotate]);
+
+  useEffect(() => {
+    stageRef.current?.setInsertArrows(arrows);
+  }, [loaded, arrows]);
 
   return (
     <div className={`${styles.stage} ${className ?? ""}`} ref={containerRef}>

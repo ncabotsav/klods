@@ -18,6 +18,8 @@ export type ModelStats = {
   stepCommands: number;
   /** Sous-ensembles construits à part. */
   assemblies: number;
+  /** Directions d'arrivée : objets posés, guidés par un point d'attache, par un volume touché, temps de calcul (ms). */
+  insertion?: { placed: number; guided: number; touching: number; ms: number };
 };
 
 function colourOf(o: Object3D): string {
@@ -44,5 +46,6 @@ export async function analyzeModel(packedText: string): Promise<ModelStats> {
     uniqueParts: unique.size,
     stepCommands: info.stepCommands,
     assemblies: plan.assemblyLetters.size,
+    insertion: plan.insertion,
   };
 }

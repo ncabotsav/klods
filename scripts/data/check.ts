@@ -109,6 +109,13 @@ async function main() {
   const times = loaded.map((r) => r.ms).sort((a, b) => a - b);
   const pick = (q: number) => (times.length ? times[Math.min(times.length - 1, Math.floor(q * times.length))] / 1000 : 0);
   const assemblies = loaded.filter((r) => (r.stats!.assemblies ?? 0) > 0).length;
+  // directions d'arrivée des pièces (insertion.ts) : part guidée par un point d'attache, temps de calcul
+  const ins = loaded.flatMap((r) => (r.stats!.insertion ? [r.stats!.insertion] : []));
+  const sum = (k: "placed" | "guided" | "touching") => ins.reduce((n, x) => n + x[k], 0);
+  const insShare = (k: "guided" | "touching") => (sum("placed") ? ((100 * sum(k)) / sum("placed")).toFixed(1) : "0");
+  const insRatio = ins.map((x, i) => x.ms / Math.max(1, loaded[i].ms)).sort((a, b) => a - b);
+  const insTimes = ins.map((x) => x.ms).sort((a, b) => a - b);
+  const q = (list: number[], f: number) => (list.length ? list[Math.min(list.length - 1, Math.floor(f * list.length))] : 0);
 
   const summary = [
     `# Contrôle des modèles`,
@@ -120,6 +127,8 @@ async function main() {
     `- Avec des sous-ensembles : ${assemblies}`,
     `- Taille totale : ${(raw / 1e6).toFixed(1)} Mo bruts, ${(gz / 1e6).toFixed(1)} Mo compressés`,
     `- Chargement (Node, sans normales lissées) : médiane ${pick(0.5).toFixed(2)} s, 90 % sous ${pick(0.9).toFixed(2)} s`,
+    `- Directions d'arrivée : ${insShare("guided")} % des objets posés guidés par un point d'attache, ${insShare("touching")} % par contact`,
+    `- Calcul des directions : médiane ${q(insTimes, 0.5)} ms, 90 % sous ${q(insTimes, 0.9)} ms, max ${q(insTimes, 1)} ms ; part du chargement : médiane ${(100 * q(insRatio, 0.5)).toFixed(0)} %, 90 % sous ${(100 * q(insRatio, 0.9)).toFixed(0)} %`,
     `- Durée du contrôle : ${Math.round((Date.now() - t0) / 1000)} s`,
     ``,
     `## Les plus lents`,

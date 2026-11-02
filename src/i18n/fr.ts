@@ -311,6 +311,11 @@ export const fr = {
     size: "Fichier",
     status: "État",
     modelOption: (name: string, steps: number) => `${name} (${steps} étapes)`,
+    guided: "Pièces guidées",
+    guidedValue: (guided: number, touching: number, placed: number) =>
+      `${Math.round((100 * guided) / Math.max(1, placed))} % par un point d'attache, ${Math.round((100 * touching) / Math.max(1, placed))} % par contact`,
+    insertionTime: "Calcul des directions",
+    arrows: "Montrer la direction d'arrivée des pièces (bleu : point d'attache, rouge : contact ou repli)",
     noData: "Les données des sets ne sont pas disponibles ici. Lance le workflow « Données » ou `npm run data`.",
   },
   covers: {

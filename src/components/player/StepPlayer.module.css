@@ -131,7 +131,8 @@
   place-items: center;
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--muted);
+  /* sur le fond --stage, --muted manque de contraste pour un texte de cette taille */
+  color: var(--ink);
   padding: var(--space-4);
   text-align: center;
 }

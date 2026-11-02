@@ -86,17 +86,20 @@ export function themeParams(): { theme: string }[] {
 }
 
 /**
- * Sets à mettre en avant sur l'accueil, par thème : ceux qui ont des étapes et une couverture,
- * les plus gros d'abord (pas de données de popularité : la taille fait la vitrine).
+ * Sets à mettre en avant sur l'accueil, par thème : ceux qui ont des étapes et une couverture, de taille
+ * moyenne (150 à 800 pièces : assez pour donner envie, assez léger pour s'ouvrir vite sur un téléphone),
+ * les plus gros d'abord. Pas de données de popularité : la taille fait la vitrine.
  */
 export function featuredByTheme(themeCount = 4, perTheme = 4): { theme: Theme; sets: SetEntry[] }[] {
+  const size = (s: SetEntry) => defaultModel(s).parts;
+  const showcase = (s: SetEntry) => size(s) >= 150 && size(s) <= 800;
   return allThemes()
     .slice(0, themeCount)
     .map((theme) => ({
       theme,
       sets: allSets()
         .filter((s) => s.theme === theme.name && defaultModel(s).status === "ok")
-        .sort((a, b) => Number(hasCover(b.number)) - Number(hasCover(a.number)) || defaultModel(b).parts - defaultModel(a).parts)
+        .sort((a, b) => Number(showcase(b)) - Number(showcase(a)) || Number(hasCover(b.number)) - Number(hasCover(a.number)) || size(b) - size(a))
         .slice(0, perTheme),
     }))
     .filter((g) => g.sets.length > 0);

@@ -3,8 +3,6 @@ import styles from "@/components/TextPage.module.css";
 import { fr } from "@/i18n/fr";
 
 const t = fr.privacy;
-/** À changer à chaque modification du texte. */
-const UPDATED = "2 novembre 2026";
 
 export const metadata: Metadata = { title: t.title, description: t.lead, alternates: { canonical: "/confidentialite/" } };
 
@@ -23,7 +21,7 @@ export default function PrivacyPage() {
           ))}
         </section>
       ))}
-      <p className={styles.small}>{t.updated(UPDATED)}</p>
+      <p className={styles.small}>{t.updated}</p>
     </div>
   );
 }

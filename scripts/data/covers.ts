@@ -131,7 +131,9 @@ async function main() {
             await fsp.writeFile(cached(job, "jpg"), fromDataUrl(r.card));
             results.push({ number: job.number, status: "dessinee", ms: r.ms, loadMs: r.loadMs });
           } catch (err) {
-            results.push({ number: job.number, status: "echec", error: String((err as Error).message ?? err).slice(0, 300) });
+            const message = String((err as Error).message ?? err);
+            if (process.env.COVERS_DEBUG) console.log(`--- ${job.number}\n${message}\n${(err as Error).stack ?? ""}`);
+            results.push({ number: job.number, status: "echec", error: message.split("\n")[0].slice(0, 300) });
             // la page peut être bloquée sur un gros modèle : on repart d'une page neuve
             await page.close().catch(() => {});
             page = await openPage(browser);

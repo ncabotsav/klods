@@ -126,3 +126,19 @@ test("une référence introuvable se charge comme une pièce vide dans Node (san
   const { model, info } = await loadModelText(withMissing, { smoothNormals: false });
   assert.equal(buildSteps(model, info).totalParts, 36);
 });
+
+test("une couleur inconnue (code 361, cas réel de 75075-1) ne laisse aucun matériau vide", async () => {
+  const raw = gunzipSync(readFileSync("fixtures/ldraw/889-1.mpd.gz")).toString("utf8");
+  const recoloured = raw.replace(/^1 \d+ /gm, "1 361 ");
+  const { model } = await loadModelText(recoloured, { smoothNormals: false });
+  let empty = 0;
+  let objects = 0;
+  model.traverse((o) => {
+    const m = (o as { material?: unknown }).material;
+    if (m === undefined) return;
+    objects++;
+    if (m === null || (Array.isArray(m) && m.some((x) => !x))) empty++;
+  });
+  assert.ok(objects > 0);
+  assert.equal(empty, 0);
+});

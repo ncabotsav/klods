@@ -1,7 +1,7 @@
 /**
  * Charge un modèle packé avec LDrawLoader. Fonctionne dans le navigateur et dans Node (tests, contrôle).
  */
-import { LoadingManager, type Group } from "three";
+import { LoadingManager, type Group, type Material, type Object3D } from "three";
 import { LDrawLoader } from "three/addons/loaders/LDrawLoader.js";
 import { LDrawConditionalLineMaterial } from "three/addons/materials/LDrawConditionalLineMaterial.js";
 import { readModelText, type ModelText } from "./ldraw-text.ts";
@@ -42,12 +42,50 @@ const offline = () => {
   return manager;
 };
 
+/** Gris clair à la place du magenta de LDrawLoader pour une couleur inconnue : la pièce reste lisible. */
+const MISSING_COLOUR = 0xa0a5a9;
+const MISSING_EDGE = 0x333333;
+
+type LoaderInternals = {
+  missingColorMaterial: Material & { color: { set(c: number): void } };
+  missingEdgeColorMaterial: Material & { color: { set(c: number): void } };
+  missingConditionalEdgeColorMaterial: Material & { color: { set(c: number): void } };
+  conditionalEdgeMaterialCache: WeakMap<Material, Material>;
+};
+
+/**
+ * Couleurs inconnues (par exemple le code 361 de quelques fichiers OMR). LDrawLoader crée son matériau
+ * « couleur manquante » des lignes conditionnelles après avoir rempli sa table : les lignes de ces pièces
+ * reçoivent `null`, et le rendu plante (« reading 'visible' »). On recâble la table, en gris.
+ */
+function patchMissingColours(loader: LDrawLoader) {
+  const l = loader as unknown as LoaderInternals;
+  l.missingColorMaterial.color.set(MISSING_COLOUR);
+  l.missingEdgeColorMaterial.color.set(MISSING_EDGE);
+  l.missingConditionalEdgeColorMaterial.color.set(MISSING_EDGE);
+  l.conditionalEdgeMaterialCache.set(l.missingEdgeColorMaterial, l.missingConditionalEdgeColorMaterial);
+  return l;
+}
+
+/** Filet de sécurité : aucun objet du modèle ne garde un matériau vide. */
+function fillEmptyMaterials(model: Object3D, l: LoaderInternals) {
+  model.traverse((o) => {
+    const obj = o as Object3D & { material?: Material | (Material | null)[] | null; isConditionalLine?: boolean; isLineSegments?: boolean };
+    if (!("material" in obj)) return;
+    const fallback = obj.isConditionalLine ? l.missingConditionalEdgeColorMaterial : obj.isLineSegments ? l.missingEdgeColorMaterial : l.missingColorMaterial;
+    if (Array.isArray(obj.material)) obj.material = obj.material.map((m) => m ?? fallback);
+    else if (!obj.material) obj.material = fallback;
+  });
+}
+
 export async function loadModelText(raw: string, { smoothNormals = true }: LoadOptions = {}): Promise<LoadedModel> {
   const info = readModelText(raw);
   const loader = new LDrawLoader(offline());
   loader.setConditionalLineMaterial(LDrawConditionalLineMaterial);
+  const internals = patchMissingColours(loader);
   loader.smoothNormals = smoothNormals;
   loader.addDefaultMaterials();
   const model: Group = await new Promise((ok, ko) => loader.parse(info.text, ok, ko));
+  fillEmptyMaterials(model, internals);
   return { model, info };
 }

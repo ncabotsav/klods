@@ -43,7 +43,8 @@ manager.setURLModifier((url) => {
 });
 const loader = new LDrawLoader(manager);
 loader.setConditionalLineMaterial(LDrawConditionalLineMaterial);
-loader.smoothNormals = false;
+// comme le site pour un fichier de moins de 2 Mo (SMOOTH=0 pour le désactiver, comme le contrôle)
+loader.smoothNormals = process.env.SMOOTH !== "0";
 loader.addDefaultMaterials();
 const timer = setInterval(() => log(`chargement en cours, ${requests} requêtes`), 10_000);
 loader.parse(
@@ -51,6 +52,17 @@ loader.parse(
   (model) => {
     clearInterval(timer);
     log(`chargé, ${requests} requêtes`);
+    // enfants vides : le rendu de three.js lit .visible sur chaque enfant et plante dessus
+    const holes: string[] = [];
+    const walk = (o: import("three").Object3D, path: string) => {
+      o.children.forEach((c, i) => {
+        if (!c) holes.push(`${path}/${i}`);
+        else walk(c, `${path}/${c.name || c.type}`);
+      });
+    };
+    walk(model, model.name || "modèle");
+    log(`enfants vides : ${holes.length}`);
+    console.log(holes.slice(0, 20).join("\n"));
     const plan = buildSteps(model, info);
     log(`étapes : ${plan.steps.length}, pièces : ${plan.totalParts}, sous-ensembles : ${plan.assemblyLetters.size}`);
     process.exit(0);

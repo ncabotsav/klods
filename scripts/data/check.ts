@@ -106,6 +106,9 @@ async function main() {
   const gz = pack.reduce((n, e) => n + e.bytesGz, 0);
   const raw = pack.reduce((n, e) => n + e.bytes, 0);
   const slowest = [...results].sort((a, b) => b.ms - a.ms).slice(0, 5);
+  const times = loaded.map((r) => r.ms).sort((a, b) => a - b);
+  const pick = (q: number) => (times.length ? times[Math.min(times.length - 1, Math.floor(q * times.length))] / 1000 : 0);
+  const assemblies = loaded.filter((r) => (r.stats!.assemblies ?? 0) > 0).length;
 
   const summary = [
     `# Contrôle des modèles`,
@@ -114,7 +117,9 @@ async function main() {
     `- Se chargent avec des pièces : ${loaded.length} (${pct(loaded.length)} %)`,
     `- Dont avec de vraies étapes (2 ou plus) : ${withSteps.length} (${pct(withSteps.length)} %)`,
     `- Échecs de chargement : ${failed.length}, erreurs de pack : ${packErrors}`,
+    `- Avec des sous-ensembles : ${assemblies}`,
     `- Taille totale : ${(raw / 1e6).toFixed(1)} Mo bruts, ${(gz / 1e6).toFixed(1)} Mo compressés`,
+    `- Chargement (Node, sans normales lissées) : médiane ${pick(0.5).toFixed(2)} s, 90 % sous ${pick(0.9).toFixed(2)} s`,
     `- Durée du contrôle : ${Math.round((Date.now() - t0) / 1000)} s`,
     ``,
     `## Les plus lents`,

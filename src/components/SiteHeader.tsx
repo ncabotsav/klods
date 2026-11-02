@@ -2,22 +2,39 @@ import Link from "next/link";
 import Logo from "./Logo";
 import styles from "./SiteChrome.module.css";
 import { fr } from "@/i18n/fr";
-import { GITHUB_URL } from "@/lib/site";
+import { GITHUB_REPO, GITHUB_URL } from "@/lib/site";
 
-export default function SiteHeader() {
+/** Nombre d'étoiles du dépôt, lu une fois au build (rien si GitHub ne répond pas). */
+async function githubStars(): Promise<number | null> {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}`, {
+      headers: { Accept: "application/vnd.github+json", ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}) },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return null;
+    const n = (await res.json()).stargazers_count;
+    return typeof n === "number" ? n : null;
+  } catch {
+    return null;
+  }
+}
+
+export default async function SiteHeader() {
+  const stars = await githubStars();
   return (
     <header className={styles.header}>
       <div className={`wrap ${styles.headerInner}`}>
-        <Link href="/" className={styles.home} aria-label={`${fr.site.name}, accueil`}>
+        <Link href="/" className={styles.home} aria-label={fr.nav.home}>
           <Logo />
         </Link>
-        <nav className={styles.nav} aria-label="Navigation principale">
+        <nav className={styles.nav} aria-label={fr.nav.main}>
           <Link href="/catalogue/">{fr.nav.catalogue}</Link>
           <Link href="/atelier/">{fr.nav.workshop}</Link>
-          <a href={GITHUB_URL} className={styles.github} target="_blank" rel="noopener" aria-label={fr.nav.github}>
+          <a href={GITHUB_URL} className={styles.github} target="_blank" rel="noopener" aria-label={stars === null ? fr.nav.github : fr.nav.githubStars(stars)}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" />
             </svg>
+            {stars !== null && <span aria-hidden="true">{stars}</span>}
           </a>
         </nav>
       </div>

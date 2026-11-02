@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./SiteChrome.module.css";
 import { fr } from "@/i18n/fr";
 import { GITHUB_URL } from "@/lib/site";
@@ -8,6 +9,14 @@ export default function SiteFooter() {
       <div className={`wrap ${styles.footerInner}`}>
         <p className={styles.disclaimer}>{fr.footer.disclaimer}</p>
         <p className={styles.links}>
+          <Link href="/a-propos/">{fr.footer.about}</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/confidentialite/">{fr.footer.privacy}</Link>
+          <span aria-hidden="true">·</span>
+          <a href={`${GITHUB_URL}/issues/new`} target="_blank" rel="noopener">
+            {fr.footer.report}
+          </a>
+          <span aria-hidden="true">·</span>
           <a href={GITHUB_URL} target="_blank" rel="noopener">
             {fr.footer.source}
           </a>

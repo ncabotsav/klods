@@ -13,7 +13,7 @@ type Props = { params: Promise<{ numero: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const set = findSet((await params).numero);
-  return set ? { title: `${set.name} (${set.number})`, description: fr.site.description } : {};
+  return set ? { title: `${set.name} (${set.number})`, description: fr.site.description, robots: { index: false, follow: true }, alternates: { canonical: `/set/${set.number}/` } } : {};
 }
 
 export default async function MonterPage({ params }: Props) {

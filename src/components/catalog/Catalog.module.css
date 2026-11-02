@@ -1,0 +1,109 @@
+/* Grille de sets : cartes de même largeur, autant de colonnes que la place le permet */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: var(--accent);
+}
+
+/* toute la carte est cliquable, le lien reste sur le titre (lecteurs d'écran) */
+.cardLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.card:has(.cardLink:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.cardLink:focus-visible {
+  outline: none;
+}
+
+.cardBody {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+.cardTitle {
+  font-size: 17px;
+  font-weight: 700;
+  font-stretch: 100%;
+  line-height: 1.25;
+}
+
+.cardMeta {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cardStats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.badge {
+  font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 0 var(--space-2);
+  color: var(--ink);
+}
+
+.cover {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  background: var(--stage);
+  color: var(--muted);
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.coverLarge {
+  border-radius: var(--radius-lg);
+}
+
+.brick {
+  width: 40%;
+}

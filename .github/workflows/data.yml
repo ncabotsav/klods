@@ -58,8 +58,16 @@ jobs:
           path: |
             data/raw
             !data/raw/ldraw/ldraw
+            !data/raw/covers
           key: raw-${{ github.run_id }}
           restore-keys: raw-
+
+      - name: Restaurer les couvertures déjà dessinées
+        uses: actions/cache/restore@v6
+        with:
+          path: data/raw/covers
+          key: covers-${{ github.run_id }}
+          restore-keys: covers-
 
       - run: npm run data:omr
       - run: npm run data:ldraw
@@ -72,6 +80,7 @@ jobs:
           path: |
             data/raw
             !data/raw/ldraw/ldraw
+            !data/raw/covers
           key: raw-${{ github.run_id }}
 
       - id: pack
@@ -83,11 +92,32 @@ jobs:
         if: ${{ !cancelled() && steps.pack.outcome == 'success' }}
         run: npm run data:index
 
+      # couvertures et cartes de partage : dessinées par le moteur du site, dans Chromium sans écran
+      - id: covers
+        name: Couvertures
+        if: ${{ !cancelled() && steps.index.outcome == 'success' }}
+        env:
+          NEXT_PUBLIC_BASE_PATH: /klods
+          NEXT_TELEMETRY_DISABLED: 1
+        run: |
+          npm run build
+          npx playwright install --with-deps chromium
+          npm run data:covers
+
+      - name: Garder les couvertures pour la prochaine fois
+        if: ${{ !cancelled() && steps.covers.outcome == 'success' }}
+        uses: actions/cache/save@v6
+        with:
+          path: data/raw/covers
+          key: covers-${{ github.run_id }}
+
       - name: Résumé
         if: always()
         run: |
           {
             cat data/build/check-summary.md 2>/dev/null || echo "Pas de rapport de contrôle."
+            echo
+            cat data/build/covers-summary.md 2>/dev/null || true
             echo
             echo "## Fichiers publiés"
             du -sh public/data 2>/dev/null | awk '{print "- public/data : " $1}'

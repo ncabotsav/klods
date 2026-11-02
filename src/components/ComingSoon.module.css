@@ -15,3 +15,25 @@
   color: var(--muted);
   font-size: 18px;
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.missing {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--measure);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--hi);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+
+.missingTitle {
+  font-size: 22px;
+  font-weight: 800;
+}

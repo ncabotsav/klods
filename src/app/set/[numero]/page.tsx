@@ -55,7 +55,7 @@ export default async function SetPage({ params }: Props) {
     inLanguage: "fr",
     ...(hasCover(set.number) ? { image: `${SITE_URL}/${cardPath(set.number)}` } : {}),
     ...(withSteps ? { totalTime: `PT${minutes}M`, step: Array.from({ length: Math.min(main.steps, 3) }, (_, i) => ({ "@type": "HowToStep", position: i + 1, name: fr.set.howToStep(i + 1), url: `${SITE_URL}/set/${set.number}/monter/?etape=${i + 1}` })) } : {}),
-    isBasedOn: { "@type": "CreativeWork", name: `${set.number} ${set.name} (LDraw)`, author: authors.map((name) => ({ "@type": "Person", name })), license: "https://creativecommons.org/licenses/by/2.0/" },
+    isBasedOn: { "@type": "CreativeWork", name: fr.set.sourceModel(set.number, set.name), author: authors.map((name) => ({ "@type": "Person", name })), license: "https://creativecommons.org/licenses/by/2.0/" },
   };
 
   return (

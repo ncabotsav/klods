@@ -75,6 +75,7 @@ export const fr = {
     howToStep: (n: number) => `Étape ${n}`,
     howToName: (number: string, name: string) => `Notice de montage en 3D du set ${number} ${name}`,
     breadcrumb: "Fil d'Ariane",
+    sourceModel: (number: string, name: string) => `${number} ${name}, modèle LDraw`,
   },
   missingSet: {
     eyebrow: "Set absent",
@@ -176,7 +177,7 @@ export const fr = {
         ],
       },
     ],
-    updated: (date: string) => `Mis à jour le ${date}.`,
+    updated: "Mis à jour le 2 novembre 2026.",
   },
   soon: {
     eyebrow: "Bientôt",

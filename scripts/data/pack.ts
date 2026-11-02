@@ -39,7 +39,9 @@ const readLibrary = (p: string) => {
 };
 
 async function main() {
-  const sets: OmrSet[] = JSON.parse(await fsp.readFile(OMR_SETS_JSON, "utf8"));
+  // DATA_ONLY=40379-1,4915-1 : ne packe que ces sets (diagnostic)
+  const only = (process.env.DATA_ONLY ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  const sets: OmrSet[] = (JSON.parse(await fsp.readFile(OMR_SETS_JSON, "utf8")) as OmrSet[]).filter((s) => !only.length || only.includes(s.number));
   const ldconfig = await fsp.readFile(path.join(LDRAW_LIBRARY, "LDConfig.ldr"), "utf8");
   await fsp.rm(PUBLIC_MODELS, { recursive: true, force: true });
 

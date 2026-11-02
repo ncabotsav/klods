@@ -70,6 +70,7 @@ export const fr = {
     assemblies: "Sous-ensembles",
     size: "Fichier",
     status: "État",
+    modelOption: (name: string, steps: number) => `${name} (${steps} étapes)`,
     noData: "Les données des sets ne sont pas disponibles ici. Lance le workflow « Données » ou `npm run data`.",
   },
   notFound: {

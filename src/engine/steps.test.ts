@@ -109,3 +109,20 @@ test("ROTSTEP : ABS fixe, REL part de la vue par défaut, ADD s'ajoute, END revi
   assert.equal(info.stepCommands, 4);
   assert.doesNotMatch(info.text, /ROTSTEP/);
 });
+
+test("une ligne de pièce sans nom de fichier est écartée, le modèle se charge (cas réel de 40379-1)", async () => {
+  const raw = gunzipSync(readFileSync("fixtures/ldraw/889-1.mpd.gz")).toString("utf8");
+  const i = raw.indexOf("\n0 STEP");
+  const broken = `${raw.slice(0, i)}\n1 16 0 0 0 1 0 0 0 1 0 0 0 1${raw.slice(i)}`;
+  const { model, info } = await loadModelText(broken, { smoothNormals: false });
+  assert.equal(info.ignoredLines, 1);
+  assert.equal(buildSteps(model, info).totalParts, 35);
+});
+
+test("une référence introuvable se charge comme une pièce vide dans Node (sans ProgressEvent)", async () => {
+  const raw = gunzipSync(readFileSync("fixtures/ldraw/889-1.mpd.gz")).toString("utf8");
+  const i = raw.indexOf("\n0 STEP");
+  const withMissing = `${raw.slice(0, i)}\n1 4 0 0 0 1 0 0 0 1 0 0 0 1 n-existe-pas.dat${raw.slice(i)}`;
+  const { model, info } = await loadModelText(withMissing, { smoothNormals: false });
+  assert.equal(buildSteps(model, info).totalParts, 36);
+});

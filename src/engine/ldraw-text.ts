@@ -29,6 +29,8 @@ export type ModelText = {
   references: Map<string, { file: string; rotation: ViewRotation }[]>;
   /** Nombre de commandes STEP et ROTSTEP dans le texte d'origine. */
   stepCommands: number;
+  /** Lignes de pièce mal formées, écartées avant le chargement. */
+  ignoredLines: number;
 };
 
 export const normName = (name: string) => name.trim().replace(/\\/g, "/").toLowerCase();
@@ -64,6 +66,7 @@ export function readModelText(raw: string): ModelText {
   const descriptions = new Map<string, string>();
   const references = new Map<string, { file: string; rotation: ViewRotation }[]>();
   let stepCommands = 0;
+  let ignoredLines = 0;
 
   let current = "";
   let rotation: ViewRotation = null;
@@ -104,9 +107,14 @@ export function readModelText(raw: string): ModelText {
     }
     const ref = line.match(TYPE1);
     if (ref) references.get(current)!.push({ file: loaderName(ref[1]), rotation });
+    else if (/^\s*1\s/.test(line)) {
+      // ligne de pièce sans nom de fichier (vue dans 40379-1) : LDrawLoader chercherait « parts/ » ; on l'écarte
+      lines[i] = `0 // ligne ignorée par Klods : ${line.trim()}`;
+      ignoredLines++;
+    }
   }
 
-  return { text: lines.join("\n"), colours, descriptions, references, stepCommands };
+  return { text: lines.join("\n"), colours, descriptions, references, stepCommands, ignoredLines };
 }
 
 /** Décompresse un fichier .gz s'il l'est encore (un hébergeur peut l'avoir déjà décompressé en route). */

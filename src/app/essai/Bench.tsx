@@ -68,7 +68,7 @@ export default function Bench() {
           <span>{fr.bench.model}</span>
           <select id="bench-model" value={model.slug} onChange={(e) => go(current.number, e.target.value)}>
             {models.map((m) => (
-              <option key={m.slug} value={m.slug}>{`${m.name} (${m.steps} étapes)`}</option>
+              <option key={m.slug} value={m.slug}>{fr.bench.modelOption(m.name, m.steps)}</option>
             ))}
           </select>
         </label>

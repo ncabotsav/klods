@@ -28,6 +28,14 @@ NEXT_PUBLIC_BASE_PATH=/klods npm run build   # le site est dans out/
 
 Avant de pousser : `npm test && npm run lint && npm run typecheck && npm run build`.
 
+Tests de bout en bout du parcours de montage (sur le site construit, avec des données) :
+
+```bash
+npm run data:fixtures
+NEXT_PUBLIC_BASE_PATH=/klods npm run build
+npm run e2e
+```
+
 ## Pipeline de données
 
 Les modèles 3D ne sont pas dans Git : le workflow GitHub Actions **Données** les construit (onglet Actions, « Run workflow »), chaque lundi et sur les pull requests qui touchent au pipeline (échantillon de 25 sets). Ses résultats partent dans le cache, où le déploiement les reprend.

@@ -1,0 +1,447 @@
+.app {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-4) var(--space-6);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.phases {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  counter-reset: phase;
+}
+
+.phase {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 99px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.phase:hover:not(:disabled) {
+  color: var(--ink);
+}
+
+.phase[aria-current="step"] {
+  color: var(--ink);
+  background: var(--card);
+  border-color: var(--line);
+}
+
+.phase:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Couverture et fin : la 3D à gauche, le texte à droite ; l'un sous l'autre sur téléphone */
+.cover,
+.done {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .cover,
+  .done {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.coverStage {
+  height: clamp(320px, 60vh, 640px);
+}
+
+.coverText {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  min-width: 0;
+}
+
+.title {
+  font-size: clamp(30px, 4.5vw, 48px);
+  font-weight: 800;
+}
+
+.number {
+  font-family: var(--font-mono);
+  color: var(--muted);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+}
+
+.facts div {
+  display: grid;
+}
+
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.models ul {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.models a {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.models a[aria-current="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.warning {
+  background: var(--card);
+  border: 1px solid var(--hi);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.small {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.sectionTitle {
+  font-size: clamp(26px, 3.5vw, 36px);
+  font-weight: 800;
+}
+
+.subTitle {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* Montage */
+.build {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Pièces */
+.parts {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.partsHead {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.inventory {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-2);
+}
+
+.inventory li {
+  display: grid;
+  grid-template-columns: 64px auto minmax(0, 1fr);
+  grid-template-areas: "thumb qty name" "thumb actions actions";
+  gap: var(--space-1) var(--space-3);
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+}
+
+.inventory li.isMissing {
+  border-color: var(--hi);
+  border-width: 2px;
+}
+
+.thumb {
+  grid-area: thumb;
+  width: 64px;
+  height: 64px;
+  background: var(--stage);
+  border-radius: 8px;
+}
+
+.thumb img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.qty {
+  grid-area: qty;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.partName {
+  grid-area: name;
+  display: grid;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.partMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  display: inline-block;
+}
+
+.partActions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.linkBtn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.linkBtn[aria-pressed="true"] {
+  color: var(--ink);
+}
+
+.partsFoot {
+  position: sticky;
+  bottom: 0;
+  padding-block: var(--space-3);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.missingBox {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.missingBox ul {
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: 14px;
+  max-height: 30vh;
+  overflow: auto;
+}
+
+/* Fenêtres (taille réelle, toutes les étapes) */
+.dialog {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  color: var(--ink);
+  padding: var(--space-4);
+  width: min(720px, calc(100vw - 2 * var(--space-4)));
+  max-height: calc(100vh - 2 * var(--space-6));
+  display: grid;
+  gap: var(--space-3);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+
+.realSize {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: auto;
+  padding: var(--space-4);
+}
+
+.realSize img {
+  max-width: none;
+}
+
+.card {
+  border: 2px dashed var(--accent);
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 100%;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.field input[type="range"] {
+  accent-color: var(--accent);
+}
+
+.sheet {
+  width: min(860px, calc(100vw - 2 * var(--space-4)));
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.sheetHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.stepList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.stepList button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+}
+
+.stepList button[aria-current="step"] {
+  border-color: var(--accent);
+  border-width: 2px;
+}
+
+.stepNo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepAssembly {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* Fin */
+.matched {
+  display: grid;
+  gap: var(--space-2);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+
+.related ul {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-1);
+}

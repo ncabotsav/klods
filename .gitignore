@@ -23,3 +23,7 @@ npm-debug.log*
 # résultats intermédiaires et fichiers construits par le pipeline de données (npm run data)
 /data/build/
 /public/data/
+
+# tests de bout en bout
+/test-results/
+/playwright-report/

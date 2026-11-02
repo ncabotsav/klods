@@ -29,7 +29,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - Les scripts sont dans `scripts/data/`, en TypeScript exécuté directement par Node (pas de compilation) : imports avec l'extension `.ts`, seulement de la syntaxe effaçable (pas d'`enum`, pas de `namespace`).
 - Tout téléchargement passe par `fetchCached()` de `scripts/data/lib/http.ts` : cache disque, une requête par seconde par site, User-Agent du projet.
 - Le format de `public/data/sets.json` est défini une seule fois, dans `src/lib/catalog.ts`, et validé à l'écriture.
-- Tests : `npm test` (`node --test`), à côté du code (`*.test.ts`).
+- Tests : `npm test` (`node --test`), à côté du code (`*.test.ts`). Parcours complet : `npm run e2e` (Playwright, dossier `e2e/`), joué en CI sur chaque PR.
 
 ## Moteur 3D
 
@@ -37,6 +37,13 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - `stage.ts` et `thumbs.ts` sont réservés au navigateur, chargés à la demande depuis un composant client.
 - Tout changement du moteur d'étapes change le nombre d'étapes des sets : relancer le workflow « Données » après le merge.
 - `/essai` est la page de travail du moteur (non indexée, hors menu) : charge n'importe quel set et affiche les temps.
+
+## Parcours de montage
+
+- `/set/<numéro>/monter/` : couverture, pièces, montage, fin, dans un seul composant client (`src/components/build/BuildApp.tsx`). L'adresse porte l'état : `?modele=`, `?etape=12`, `?vue=pieces`, `?vue=fin` ; avancer d'une étape ajoute une entrée d'historique (le geste retour recule).
+- `/set/<numéro>/imprimer/` : toutes les étapes en blocs A4.
+- Pages construites au build pour chaque set de `public/data/sets.json` (`src/lib/catalog-server.ts`) ; sans données, une page « exemple » vide fait passer le build.
+- Progression dans le navigateur uniquement (`src/lib/progress.ts`, localStorage) : rien ne part sur un serveur.
 
 ## Avant de lancer un nouveau sprint
 

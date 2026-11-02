@@ -47,6 +47,19 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
+      # parcours de montage de bout en bout, sur le site construit (s'il y a des données)
+      - name: Tests de bout en bout
+        if: hashFiles('public/data/sets.json') != ''
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - name: Traces des tests en échec
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: traces-e2e
+          path: test-results
+          retention-days: 7
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:

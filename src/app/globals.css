@@ -177,3 +177,30 @@ p {
   opacity: 0.45;
   cursor: default;
 }
+
+/* Impression : fond blanc, encre noire, sans en-tête, pied de page ni boutons */
+@media print {
+  :root,
+  :root:not([data-theme="light"]),
+  :root[data-theme="dark"] {
+    --bg: #ffffff;
+    --card: #ffffff;
+    --stage: #ffffff;
+    --ink: #000000;
+    --muted: #444444;
+    --line: #999999;
+    color-scheme: light;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body > header,
+  body > footer,
+  .skip,
+  .noPrint {
+    display: none !important;
+  }
+}

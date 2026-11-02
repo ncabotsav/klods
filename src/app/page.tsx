@@ -1,10 +1,11 @@
 import styles from "./home.module.css";
+import ResumeBuilds from "@/components/ResumeBuilds";
 import { fr } from "@/i18n/fr";
 
 export default function Home() {
   const t = fr.home;
   return (
-    <div className="wrap">
+    <div className={`wrap ${styles.page}`}>
       <section className={styles.hero}>
         <p className="eyebrow">{t.eyebrow}</p>
         <h1 className={styles.title}>{t.title}</h1>
@@ -14,6 +15,8 @@ export default function Home() {
           {t.status}
         </p>
       </section>
+
+      <ResumeBuilds />
 
       <section className={styles.how} aria-labelledby="comment">
         <h2 id="comment" className={styles.howTitle}>

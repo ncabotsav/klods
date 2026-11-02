@@ -117,6 +117,8 @@ export function buildSteps(model: Object3D, info: ModelText): StepPlan {
     close();
   };
 
+  // repère pour les miniatures : l'orientation d'une pièce se calcule jusqu'à ce groupe
+  model.userData.klodsRoot = true;
   walk(model, [], null, 1);
 
   // un objet jamais posé (sous-ensemble vide, pièce hors étape) apparaît avec la première étape

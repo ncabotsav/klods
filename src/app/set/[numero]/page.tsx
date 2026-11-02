@@ -5,8 +5,9 @@ import styles from "./SetPage.module.css";
 import SetCover from "@/components/catalog/SetCover";
 import { SetGrid } from "@/components/catalog/SetCard";
 import StartButton from "@/components/catalog/StartButton";
-import { cardPath, findSet, hasCard, hasCover, relatedSets, searchEntries, setParams } from "@/lib/catalog-server";
-import { defaultModel, estimateMinutes, officialManualUrl, playableModels, slugify } from "@/lib/catalog";
+import { cardPath, findSet, hasCard, hasCover, relatedSets, searchEntries, setParams, setTheme, themeSlug } from "@/lib/catalog-server";
+import { themePathFr } from "@/i18n/themes-fr";
+import { defaultModel, estimateMinutes, officialManualUrl, playableModels } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/site";
 import { fr } from "@/i18n/fr";
 
@@ -44,6 +45,7 @@ export default async function SetPage({ params }: Props) {
   const related = new Set(relatedSets(set, 4).map((s) => s.number));
   const relatedEntries = searchEntries().filter((e) => related.has(e.n));
   const authors = [...new Set(models.map((m) => m.author))];
+  const theme = setTheme(set);
 
   // données structurées : une notice de montage (HowTo), avec sa durée et l'auteur du modèle 3D
   const jsonLd = {
@@ -63,10 +65,10 @@ export default async function SetPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <nav aria-label={fr.set.breadcrumb} className="eyebrow">
         <Link href="/catalogue/">{fr.catalogue.title}</Link>
-        {set.theme && (
+        {theme && (
           <>
             {" › "}
-            <Link href={`/catalogue/${slugify(set.theme)}/`}>{set.theme}</Link>
+            <Link href={`/catalogue/${themeSlug(theme)}/`}>{theme}</Link>
           </>
         )}
       </nav>
@@ -75,7 +77,7 @@ export default async function SetPage({ params }: Props) {
         <SetCover number={set.number} hasCover={hasCover(set.number)} large eager />
         <div className={styles.text}>
           <h1 className={styles.title}>{set.name}</h1>
-          <p className={styles.meta}>{[set.number, set.themePath.join(" › ") || set.theme, set.year].filter(Boolean).join(" · ")}</p>
+          <p className={styles.meta}>{[set.number, themePathFr(set.themePath) || theme, set.year].filter(Boolean).join(" · ")}</p>
 
           <dl className={styles.facts}>
             <div>
@@ -164,10 +166,10 @@ export default async function SetPage({ params }: Props) {
         )}
       </section>
 
-      {relatedEntries.length > 0 && set.theme && (
+      {relatedEntries.length > 0 && theme && (
         <section className={styles.section} aria-labelledby="autres">
           <h2 id="autres" className={styles.sectionTitle}>
-            {fr.set.more(set.theme)}
+            {fr.set.more(theme)}
           </h2>
           <SetGrid entries={relatedEntries} />
         </section>

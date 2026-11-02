@@ -23,7 +23,8 @@
     "check": "node scripts/data/check.ts",
     "data:fixtures": "node scripts/data/fixtures.ts",
     "e2e": "playwright test",
-    "data:covers": "node scripts/data/covers.ts"
+    "data:covers": "node scripts/data/covers.ts",
+    "data:themes": "node scripts/data/themes-report.ts"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "5.3.0",

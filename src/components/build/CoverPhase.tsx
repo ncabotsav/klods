@@ -8,6 +8,7 @@ import type { ModelState } from "@/components/player/useModel";
 import { estimateMinutes, type ModelEntry, type SetEntry } from "@/lib/catalog";
 import type { Progress } from "@/lib/progress";
 import { fr } from "@/i18n/fr";
+import { themePathFr } from "@/i18n/themes-fr";
 
 type Props = {
   set: SetEntry;
@@ -44,7 +45,7 @@ export default function CoverPhase({ set, model, models, state, progress, offici
       )}
 
       <div className={styles.coverText}>
-        <p className="eyebrow">{set.themePath.join(" › ") || set.theme}</p>
+        <p className="eyebrow">{themePathFr(set.themePath)}</p>
         <h1 className={styles.title}>{set.name}</h1>
         <p className={styles.number}>{set.number}</p>
 

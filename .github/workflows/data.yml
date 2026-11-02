@@ -91,6 +91,9 @@ jobs:
       - id: index
         if: ${{ !cancelled() && steps.pack.outcome == 'success' }}
         run: npm run data:index
+      - name: Thèmes
+        if: ${{ !cancelled() && steps.index.outcome == 'success' }}
+        run: npm run data:themes
 
       # couvertures et cartes de partage : dessinées par le moteur du site, dans Chromium sans écran
       - id: covers
@@ -118,6 +121,8 @@ jobs:
             cat data/build/check-summary.md 2>/dev/null || echo "Pas de rapport de contrôle."
             echo
             cat data/build/covers-summary.md 2>/dev/null || true
+            echo
+            cat data/build/themes-summary.md 2>/dev/null || true
             echo
             echo "## Fichiers publiés"
             du -sh public/data 2>/dev/null | awk '{print "- public/data : " $1}'

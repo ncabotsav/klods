@@ -10,8 +10,10 @@ export type SearchEntry = {
   n: string;
   /** nom */
   t: string;
-  /** thème de premier niveau */
+  /** thème de premier niveau (nom français) */
   h: string | null;
+  /** autres mots cherchables : noms d'origine des thèmes, s'ils diffèrent */
+  a?: string;
   /** année */
   y: number | null;
   /** pièces et étapes du modèle principal */
@@ -84,7 +86,7 @@ export function createSearch(entries: SearchEntry[]) {
       entry,
       base,
       name: normalize(entry.t),
-      words: [...tokens(entry.t), ...tokens(entry.h ?? ""), base, ...(entry.y ? [String(entry.y)] : [])],
+      words: [...tokens(entry.t), ...tokens(entry.h ?? ""), ...tokens(entry.a ?? ""), base, ...(entry.y ? [String(entry.y)] : [])],
     };
   });
 

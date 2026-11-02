@@ -208,6 +208,7 @@ export const fr = {
     buildTimes: (n: number) => `à construire ${n} fois`,
     noSteps: "Sans étapes de montage. Ce modèle 3D n'est pas découpé en étapes. Pour le monter pas à pas, suis la notice officielle.",
     officialManual: "Ouvrir la notice officielle",
+    noWebgl: "Ton navigateur ne peut pas afficher la 3D (WebGL indisponible). Les consignes et les pièces de chaque étape restent là.",
   },
   build: {
     phases: { cover: "Couverture", parts: "Pièces", build: "Montage", done: "Terminé" },

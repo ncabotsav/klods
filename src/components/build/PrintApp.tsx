@@ -7,6 +7,7 @@ import { stepCallouts, stepText, type Callout } from "@/components/player/callou
 import { useModel } from "@/components/player/useModel";
 import { defaultModel, playableModels, type SetEntry } from "@/lib/catalog";
 import { fr } from "@/i18n/fr";
+import { hasWebGL } from "@/lib/webgl";
 
 type Page = { index: number; image: string; callouts: Callout[]; text: string; assembly: string | null; repeat: number };
 
@@ -22,16 +23,17 @@ export default function PrintApp({ set }: { set: SetEntry }) {
   useEffect(() => {
     if (state.status !== "ready" || !hostRef.current) return;
     const loaded = state.loaded;
-    const stage = new loaded.engine.Stage(hostRef.current, { preserveDrawingBuffer: true });
-    stage.setModel(loaded.model, loaded.plan);
+    // sans WebGL, la notice s'imprime quand même : consignes et pièces, sans les vues 3D
+    const stage = hasWebGL() ? new loaded.engine.Stage(hostRef.current, { preserveDrawingBuffer: true }) : null;
+    stage?.setModel(loaded.model, loaded.plan);
     let cancelled = false;
     (async () => {
       const out: Page[] = [];
       const n = loaded.plan.steps.length;
       for (let i = 0; i < n && !cancelled; i++) {
-        stage.showStep(i, false);
+        stage?.showStep(i, false);
         const step = loaded.plan.steps[i];
-        out.push({ index: i, image: stage.snapshot(), callouts: stepCallouts(loaded, i), text: stepText(loaded, i), assembly: step.assembly, repeat: step.repeat });
+        out.push({ index: i, image: stage?.snapshot() ?? "", callouts: stepCallouts(loaded, i), text: stepText(loaded, i), assembly: step.assembly, repeat: step.repeat });
         // une image à la fois, en laissant la page respirer
         if (i % 4 === 3) {
           setPages([...out]);
@@ -42,7 +44,7 @@ export default function PrintApp({ set }: { set: SetEntry }) {
         setPages(out);
         setDone(true);
       }
-      stage.dispose();
+      stage?.dispose();
     })();
     return () => {
       cancelled = true;
@@ -99,7 +101,7 @@ export default function PrintApp({ set }: { set: SetEntry }) {
               </ul>
             )}
             {/* eslint-disable-next-line @next/next/no-img-element -- image générée dans le navigateur */}
-            <img className={styles.shot} src={p.image} alt="" />
+            {p.image ? <img className={styles.shot} src={p.image} alt="" /> : null}
             <p className={styles.text}>{p.text}</p>
           </li>
         ))}

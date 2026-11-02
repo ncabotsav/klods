@@ -22,8 +22,9 @@ export default defineConfig({
     ...(process.env.E2E_ALL_BROWSERS
       ? [
           { name: "safari-iphone", use: { ...devices["iPhone 13"] } },
-          // Firefox sans écran coupe WebGL faute de carte graphique : on le force (rendu logiciel)
-          { name: "firefox", use: { ...devices["Desktop Firefox"], launchOptions: { firefoxUserPrefs: { "webgl.force-enabled": true, "webgl.disabled": false } } } },
+          // Firefox sans écran n'a pas de WebGL sur les machines de CI (pas de pilote graphique) :
+          // il vérifie les pages et le montage sans vue 3D
+          { name: "firefox", use: { ...devices["Desktop Firefox"] } },
         ]
       : []),
   ],

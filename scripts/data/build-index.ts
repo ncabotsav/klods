@@ -25,7 +25,7 @@ async function main() {
   const pack: PackEntry[] = JSON.parse(await fsp.readFile(PACK_REPORT, "utf8"));
   const check: CheckEntry[] = (await exists(CHECK_REPORT)) ? JSON.parse(await fsp.readFile(CHECK_REPORT, "utf8")) : [];
   const version = (await exists(path.join(RAW_LDRAW, "version.json")))
-    ? JSON.parse(await fsp.readFile(path.join(RAW_LDRAW, "version.json"), "utf8")).ldconfigUpdate
+    ? JSON.parse(await fsp.readFile(path.join(RAW_LDRAW, "version.json"), "utf8")).libraryUpdate ?? "inconnue"
     : "inconnue";
 
   const rbSets = new Map((await readCsv("sets")).map((r) => [r.set_num, r]));

@@ -1,3 +1,4 @@
-# Identifiants des sets de l'OMR LDraw (https://library.ldraw.org/omr/sets/<id>), relevés le 2026-11-01 : 1 470 sets.
-# `npm run data:omr` cherche aussi les sets ajoutés depuis, au-delà du plus grand identifiant connu.
-1-324,326-357,359,361-696,698-789,791,793-852,854-931,933-1202,1204-1474,1659,1689,4513-4515
+# Identifiants des sets de l'OMR LDraw (https://library.ldraw.org/omr/sets/<id>) : 1583 sets au 2026-11-02.
+# La liste publique de l'OMR n'en affichait que 1 470 ; les autres ont été trouvés en avançant au-delà du plus grand identifiant.
+# `npm run data:omr` cherche les sets ajoutés depuis ; quand il en trouve, le résumé du workflow donne la nouvelle ligne à recopier ici.
+1-324,326-357,359,361-696,698-789,791,793-852,854-931,933-1202,1204-1474,1659,1689,4513-4537,4539-4546,4548-4557,4559-4570,4572-4597,4599-4629,4633-4636

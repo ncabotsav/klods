@@ -11,6 +11,6 @@ test("formatRanges est l'inverse de parseRanges", () => {
   assert.equal(formatRanges([5, 1, 2, 3, 7, 8, 3]), "1-3,5,7-8");
 });
 
-test("le fichier data/omr-ids.txt contient les 1 470 sets relevés", () => {
-  assert.equal(parseRanges(readFileSync("data/omr-ids.txt", "utf8")).length, 1470);
+test("le fichier data/omr-ids.txt contient au moins les 1 583 sets relevés le 2026-11-02", () => {
+  assert.ok(parseRanges(readFileSync("data/omr-ids.txt", "utf8")).length >= 1583);
 });

@@ -42,3 +42,16 @@ jobs:
             timeout 300 node scripts/data/diagnose.ts "$f" || echo "arrêt : code $?"
             SMOOTH=0 timeout 300 node scripts/data/diagnose.ts "$f" || echo "arrêt : code $?"
           done
+      # même dessin que le workflow « Données », pour voir l'erreur complète côté navigateur
+      - name: Couverture
+        env:
+          NEXT_PUBLIC_BASE_PATH: /klods
+          NEXT_TELEMETRY_DISABLED: 1
+          COVERS_DEBUG: 1
+        run: |
+          npm run data:rebrickable
+          npm run check || true
+          npm run data:index
+          npm run build
+          npx playwright install --with-deps chromium
+          npm run data:covers

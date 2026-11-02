@@ -52,9 +52,28 @@ jobs:
       # parcours de montage de bout en bout, sur le site construit (s'il y a des données)
       - name: Tests de bout en bout
         if: hashFiles('public/data/sets.json') != ''
+        env:
+          # Chrome (ordinateur et téléphone), Safari (iPhone) et Firefox
+          E2E_ALL_BROWSERS: 1
         run: |
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium firefox webkit
           npm run e2e
+      # mesure Lighthouse (téléphone simulé) sur le site construit, compressé comme sur GitHub Pages ;
+      # les notes vont dans le résumé du workflow, sans le faire échouer
+      - name: Lighthouse
+        if: hashFiles('public/data/sets.json') != ''
+        continue-on-error: true
+        run: |
+          node scripts/serve-out.mjs 4173 &
+          sleep 1
+          export CHROME_PATH="$(node -e 'console.log(require("playwright").chromium.executablePath())')"
+          set_number="$(node -e 'const s=require("./public/data/sets.json").sets; console.log((s.find(x=>x.number==="889-1")||s[0]).number)')"
+          echo "## Lighthouse (téléphone simulé)" >> "$GITHUB_STEP_SUMMARY"
+          for page in "" "set/$set_number/" "catalogue/"; do
+            npx -y lighthouse@13.5.0 "http://localhost:4173/klods/$page" --quiet --chrome-flags="--headless=new --no-sandbox" \
+              --only-categories=performance,accessibility,seo,best-practices --output=json --output-path=lh.json
+            node -e 'const r=require("./lh.json");const c=r.categories;console.log(`- /${process.argv[1]} : performance ${Math.round(c.performance.score*100)}, accessibilité ${Math.round(c.accessibility.score*100)}, bonnes pratiques ${Math.round(c["best-practices"].score*100)}, référencement ${Math.round(c.seo.score*100)} (LCP ${r.audits["largest-contentful-paint"].displayValue})`)' "$page" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
       - name: Traces des tests en échec
         if: failure()
         uses: actions/upload-artifact@v7

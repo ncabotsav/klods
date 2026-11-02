@@ -20,12 +20,20 @@ function orientationInModel(part: Object3D): Quaternion {
   return q;
 }
 let renderer: WebGLRenderer | null = null;
+/** WebGL indisponible : plus de miniatures (chaîne vide), le reste de la page continue. */
+let unavailable = false;
 let scene: Scene;
 let camera: PerspectiveCamera;
 const cache = new Map<string, string>();
 
-function setup() {
-  renderer = new WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+function setup(): boolean {
+  if (unavailable) return false;
+  try {
+    renderer = new WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  } catch {
+    unavailable = true;
+    return false;
+  }
   renderer.setPixelRatio(1);
   renderer.setSize(SIZE, SIZE, false);
   renderer.setClearColor(0x000000, 0);
@@ -35,13 +43,14 @@ function setup() {
   light.position.set(1, 2, 1.5);
   scene.add(light);
   camera = new PerspectiveCamera(28, 1, 0.1, 100000);
+  return true;
 }
 
 /** Image PNG (data URL) de la pièce `part`, telle qu'orientée dans la scène. */
 export function partThumbnail(key: string, part: Object3D): string {
   const hit = cache.get(key);
   if (hit) return hit;
-  if (!renderer) setup();
+  if (!renderer && !setup()) return "";
 
   renderer!.setSize(SIZE, SIZE, false);
   const clone = part.clone(true);
@@ -77,7 +86,7 @@ export const MM_PER_LDU = 0.4;
  * Renvoie l'image et sa taille en pixels CSS, à afficher telle quelle.
  */
 export function partTopView(part: Object3D, pxPerMm: number): { url: string; width: number; height: number } {
-  if (!renderer) setup();
+  if (!renderer && !setup()) return { url: "", width: 0, height: 0 };
   const clone = part.clone(true);
   clone.traverse((o) => (o.visible = true));
   // orientation dans le modèle (retourné, Y vers le haut), sans la position

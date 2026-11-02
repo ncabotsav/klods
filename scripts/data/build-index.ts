@@ -13,7 +13,7 @@ import type { OmrSet } from "./lib/omr-parse.ts";
 import type { PackEntry } from "./pack.ts";
 import type { CheckEntry } from "./check.ts";
 import { CHECK_REPORT, OMR_SETS_JSON, PACK_REPORT, RAW_LDRAW, RAW_REBRICKABLE, SETS_INDEX } from "./lib/paths.ts";
-import { SetsIndex, type ModelEntry, type ModelStatus, type SetEntry } from "../../src/lib/catalog.ts";
+import { SetsIndex, type ModelEntry, type ModelStatus, type SetEntry } from "../../src/lib/catalog-schema.ts";
 
 async function readCsv(name: string) {
   const file = path.join(RAW_REBRICKABLE, `${name}.csv`);

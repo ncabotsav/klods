@@ -11,7 +11,7 @@ export default function SetCover({ number, hasCover, large = false, eager = fals
     <div className={`${styles.cover} ${large ? styles.coverLarge : ""}`}>
       {hasCover ? (
         // eslint-disable-next-line @next/next/no-img-element -- site statique, pas d'optimisation d'images
-        <img src={asset(`/data/covers/${number}.webp`)} alt="" width={640} height={480} loading={eager ? "eager" : "lazy"} decoding="async" />
+        <img src={asset(`/data/covers/${number}.webp`)} alt="" width={640} height={480} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : "auto"} decoding="async" />
       ) : (
         <svg viewBox="0 0 120 90" className={styles.brick} role="img" aria-label={fr.set.noCover}>
           <path d="M20 40 L60 22 L100 40 L100 62 L60 80 L20 62 Z" fill="var(--card)" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />

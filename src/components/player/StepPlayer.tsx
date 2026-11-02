@@ -140,7 +140,7 @@ export function PartsCallout({ items, className }: { items: Callout[]; className
       {items.map((c) => (
         <li key={c.key} title={c.label}>
           {/* eslint-disable-next-line @next/next/no-img-element -- image générée dans le navigateur */}
-          <img src={c.url} alt="" width={56} height={56} />
+          {c.url ? <img src={c.url} alt="" width={56} height={56} /> : null}
           <b>{c.count}×</b>
         </li>
       ))}

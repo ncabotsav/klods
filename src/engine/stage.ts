@@ -45,6 +45,13 @@ export type StageOptions = {
 };
 
 const DROP_MS = 650;
+/**
+ * Qualité adaptative : si les images s'enchaînent trop lentement pendant un mouvement (moins de
+ * 25 par seconde sur une vingtaine d'images), on baisse la résolution du rendu, par paliers.
+ */
+const SLOW_FRAME_MS = 40;
+const SLOW_WINDOW = 20;
+const RATIO_STEPS = [2, 1.5, 1, 0.75];
 /** Écart entre deux pièces d'une même étape, et durée totale maximale de ces départs décalés. */
 const DROP_GAP_MS = 220;
 const DROP_SPREAD_MS = 1200;
@@ -81,6 +88,10 @@ export class Stage {
   private dirty = true;
   private raf = 0;
   private resizeObserver: ResizeObserver;
+  private lastFrame = 0;
+  private intervals: number[] = [];
+  /** Résolution du rendu (pixels par pixel CSS), baissée si l'appareil peine. */
+  private ratio: number;
   private reducedMotion: boolean;
   private highlightColor: Color;
 
@@ -89,7 +100,8 @@ export class Stage {
     private options: StageOptions = {},
   ) {
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: !!options.preserveDrawingBuffer });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.ratio = Math.min(window.devicePixelRatio || 1, 2);
+    this.renderer.setPixelRatio(this.ratio);
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.toneMapping = ACESFilmicToneMapping;
     this.renderer.domElement.style.display = "block";
@@ -378,5 +390,28 @@ export class Stage {
     const t0 = performance.now();
     this.renderer.render(this.scene, this.camera);
     this.options.onFrame?.(performance.now() - t0);
+    this.watchSpeed(t0);
   };
+
+  /** Mesure l'écart entre deux images d'un même mouvement ; trop lent, on baisse la résolution. */
+  private watchSpeed(now: number) {
+    const gap = now - this.lastFrame;
+    this.lastFrame = now;
+    if (gap > 250) return void (this.intervals = []); // nouvelle séquence après un temps calme
+    this.intervals.push(gap);
+    if (this.intervals.length < SLOW_WINDOW) return;
+    const mean = this.intervals.reduce((a, b) => a + b, 0) / this.intervals.length;
+    this.intervals = [];
+    if (mean <= SLOW_FRAME_MS) return;
+    const next = RATIO_STEPS.find((r) => r < this.ratio - 0.01);
+    if (next === undefined) return;
+    this.ratio = next;
+    this.renderer.setPixelRatio(next);
+    this.resize();
+  }
+
+  /** Résolution actuelle du rendu (page de travail). */
+  get pixelRatio() {
+    return this.ratio;
+  }
 }

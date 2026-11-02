@@ -6,7 +6,7 @@
  */
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { SetsIndex } from "../../src/lib/catalog.ts";
+import { SetsIndex } from "../../src/lib/catalog-schema.ts";
 import { BUILD, SETS_INDEX } from "./lib/paths.ts";
 import { THEMES_FR } from "../../src/i18n/themes-fr.ts";
 

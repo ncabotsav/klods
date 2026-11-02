@@ -33,7 +33,7 @@ export default async function ThemePage({ params }: Props) {
         <h1 className={styles.title}>{fr.catalogue.themeTitle(theme.name)}</h1>
         <p className={styles.lead}>{fr.catalogue.themeLead(theme.count, theme.name)}</p>
       </div>
-      <SetGrid entries={sets} />
+      <SetGrid entries={sets} headingLevel={2} eager={4} />
       <ThemeLinks />
     </div>
   );

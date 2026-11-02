@@ -209,10 +209,13 @@ export function assignInsertions(model: Object3D, steps: Step[], info: ModelText
         v.owners.add(owner);
         votes.set(k, v);
       };
-      for (const other of grid.near(aabb)) {
-        if (mineSet.has(other.part)) continue;
-        for (const p of mine) {
-          if (!p.reach.intersectsBox(other.aabb)) continue;
+      // voisins cherchés pièce par pièce : un gros sous-ensemble ne compare pas toutes ses pièces à tout le modèle
+      const touchedSet = new Set<Placed>();
+      for (const p of mine) {
+        const grown = p.aabb.clone().expandByScalar(MARGIN);
+        for (const other of grid.near(p.aabb)) {
+          if (mineSet.has(other.part) || !p.reach.intersectsBox(other.aabb)) continue;
+          if (other.aabb.intersectsBox(grown)) touchedSet.add(other);
           for (const c of p.conns) {
             for (const d of other.conns) if (aligned(c, d)) vote(c.a, other, 2);
             if (inside(other, c.p)) vote(c.a, other, 1);
@@ -222,7 +225,7 @@ export function assignInsertions(model: Object3D, steps: Step[], info: ModelText
       }
       const best = [...votes.values()].sort((x, y) => y.n - x.n)[0];
       // sans point d'attache : les pièces en place dont la nouvelle touche le volume
-      const touched = best ? [] : [...grid.near(aabb)].filter((o) => !mineSet.has(o.part) && o.aabb.intersectsBox(aabb.clone().expandByScalar(MARGIN)));
+      const touched = best ? [] : [...touchedSet];
 
       let dir: Vec3;
       if (best) {

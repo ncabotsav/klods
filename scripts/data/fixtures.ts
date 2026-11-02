@@ -9,7 +9,8 @@ import path from "node:path";
 import { gunzipSync } from "node:zlib";
 import { analyzeModel } from "./lib/ldraw-analyze.ts";
 import { PUBLIC_MODELS, ROOT, SETS_INDEX } from "./lib/paths.ts";
-import { SetsIndex, slugify, type SetEntry } from "../../src/lib/catalog.ts";
+import { slugify } from "../../src/lib/catalog.ts";
+import { SetsIndex, type SetEntry } from "../../src/lib/catalog-schema.ts";
 
 const SETS: { number: string; name: string; theme: string; themePath: string[]; year: number; author: string }[] = [
   { number: "4915-1", name: "Mini Construction", theme: "Creator", themePath: ["Creator", "Creator 3-in-1"], year: 2007, author: "Ken Drew [Ken]" },

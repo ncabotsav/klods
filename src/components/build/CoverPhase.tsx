@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import styles from "./BuildApp.module.css";
 import ModelViewer, { ViewerPlaceholder } from "@/components/player/ModelViewer";
 import type { ModelState } from "@/components/player/useModel";
-import { estimateMinutes, type ModelEntry, type SetEntry } from "@/lib/catalog";
+import { estimateMinutes, isHeavy, type ModelEntry, type SetEntry } from "@/lib/catalog";
 import type { Progress } from "@/lib/progress";
 import { fr } from "@/i18n/fr";
 import { themePathFr } from "@/i18n/themes-fr";
@@ -110,6 +110,7 @@ export default function CoverPhase({ set, model, models, state, progress, offici
         </div>
 
         <p className={styles.small}>{fr.build.cover.generatedNote}</p>
+        {isHeavy(model) && <p className={styles.small}>{fr.set.heavy}</p>}
         <p className={styles.small}>{fr.build.cover.author(model.author)}</p>
       </div>
     </div>

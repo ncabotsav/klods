@@ -5,11 +5,11 @@ import type { SearchEntry } from "@/lib/search";
 import { fr } from "@/i18n/fr";
 
 /** Carte d'un set dans une grille : couverture, nom, numéro, année, pièces et étapes. */
-export default function SetCard({ entry, headingLevel = 3 }: { entry: SearchEntry; headingLevel?: 2 | 3 }) {
+export default function SetCard({ entry, headingLevel = 3, eager = false }: { entry: SearchEntry; headingLevel?: 2 | 3; eager?: boolean }) {
   const H = headingLevel === 2 ? "h2" : "h3";
   return (
     <li className={styles.card}>
-      <SetCover number={entry.n} hasCover={entry.c} />
+      <SetCover number={entry.n} hasCover={entry.c} eager={eager} />
       <div className={styles.cardBody}>
         <H className={styles.cardTitle}>
           <Link href={`/set/${entry.n}/`} className={styles.cardLink}>
@@ -26,12 +26,15 @@ export default function SetCard({ entry, headingLevel = 3 }: { entry: SearchEntr
   );
 }
 
-/** Grille de cartes. */
-export function SetGrid({ entries, label }: { entries: SearchEntry[]; label?: string }) {
+/**
+ * Grille de cartes. `headingLevel` suit la page (2 sous le titre de la page, 3 sous une section) ;
+ * les `eager` premières couvertures se chargent tout de suite (le haut de la page).
+ */
+export function SetGrid({ entries, label, headingLevel = 3, eager = 0 }: { entries: SearchEntry[]; label?: string; headingLevel?: 2 | 3; eager?: number }) {
   return (
     <ul className={styles.grid} aria-label={label}>
-      {entries.map((e) => (
-        <SetCard key={e.n} entry={e} />
+      {entries.map((e, i) => (
+        <SetCard key={e.n} entry={e} headingLevel={headingLevel} eager={i < eager} />
       ))}
     </ul>
   );

@@ -4,6 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import styles from "./StepPlayer.module.css";
 import type { LoadedModel } from "./useModel";
 import { fr } from "@/i18n/fr";
+import { useWebGL } from "@/lib/webgl";
 
 export type ViewerMode = { kind: "all"; autoRotate?: boolean } | { kind: "step"; index: number; animate: boolean };
 
@@ -22,13 +23,14 @@ type Props = {
 export default function ModelViewer({ loaded, mode, overlay, onFrame, className, arrows = false }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<InstanceType<LoadedModel["engine"]["Stage"]> | null>(null);
+  const webgl = useWebGL();
   const onFrameRef = useRef(onFrame);
   useEffect(() => {
     onFrameRef.current = onFrame;
   }, [onFrame]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !webgl) return;
     const css = getComputedStyle(document.documentElement);
     const token = (name: string) => css.getPropertyValue(name).trim();
     const stage = new loaded.engine.Stage(containerRef.current, {
@@ -42,7 +44,7 @@ export default function ModelViewer({ loaded, mode, overlay, onFrame, className,
       stage.dispose();
       stageRef.current = null;
     };
-  }, [loaded]);
+  }, [loaded, webgl]);
 
   const kind = mode.kind;
   const index = mode.kind === "step" ? mode.index : -1;
@@ -59,6 +61,15 @@ export default function ModelViewer({ loaded, mode, overlay, onFrame, className,
   useEffect(() => {
     stageRef.current?.setInsertArrows(arrows);
   }, [loaded, arrows]);
+
+  // sans WebGL : un message à la place de la vue 3D ; consignes, pièces et navigation restent là
+  if (!webgl)
+    return (
+      <div className={`${styles.stage} ${className ?? ""}`}>
+        {overlay}
+        <ViewerMessage text={fr.player.noWebgl} />
+      </div>
+    );
 
   return (
     <div className={`${styles.stage} ${className ?? ""}`} ref={containerRef}>
@@ -87,5 +98,14 @@ export function ViewerPlaceholder({ text, error = false, className }: { text: st
         {text}
       </p>
     </div>
+  );
+}
+
+/** Message posé dans la zone de la vue 3D, sans la remplacer (l'encadré des pièces reste par-dessus). */
+function ViewerMessage({ text }: { text: string }) {
+  return (
+    <p className={styles.status} role="status">
+      {text}
+    </p>
   );
 }

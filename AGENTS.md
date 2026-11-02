@@ -28,7 +28,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 
 - Les scripts sont dans `scripts/data/`, en TypeScript exécuté directement par Node (pas de compilation) : imports avec l'extension `.ts`, seulement de la syntaxe effaçable (pas d'`enum`, pas de `namespace`).
 - Tout téléchargement passe par `fetchCached()` de `scripts/data/lib/http.ts` : cache disque, une requête par seconde par site, User-Agent du projet.
-- Le format de `public/data/sets.json` est défini une seule fois, dans `src/lib/catalog.ts`, et validé à l'écriture.
+- Le format de `public/data/sets.json` est défini une seule fois, dans `src/lib/catalog-schema.ts` (zod), et validé à l'écriture ; les petites fonctions sur le catalogue sont dans `src/lib/catalog.ts`, sans zod, pour ne pas alourdir les pages.
 - Tests : `npm test` (`node --test`), à côté du code (`*.test.ts`). Parcours complet : `npm run e2e` (Playwright, dossier `e2e/`), joué en CI sur chaque PR.
 
 ## Moteur 3D
@@ -45,6 +45,14 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - `/set/<numéro>/imprimer/` : toutes les étapes en blocs A4.
 - Pages construites au build pour chaque set de `public/data/sets.json` (`src/lib/catalog-server.ts`) ; sans données, une page « exemple » vide fait passer le build.
 - Progression dans le navigateur uniquement (`src/lib/progress.ts`, localStorage) : rien ne part sur un serveur.
+
+## Hors-ligne et performances
+
+- `public/sw.js` (service worker maison, enregistré par `src/components/ServiceWorker.tsx` sur le site construit) : fichiers du site en cache d'abord, modèles gardés (ouvrir un set garde aussi sa fiche et sa page de montage), pages réseau d'abord, sinon redirection vers `/hors-connexion/`, qui liste les sets gardés. Changer la stratégie : incrémenter `VERSION`.
+- `src/app/manifest.ts` et `public/icons/` : installation sur l'écran d'accueil.
+- Polices par `next/font/local` (`src/app/fonts.ts`, fichiers des paquets @fontsource) : préchargées ; les jetons `--font-*` de `globals.css` reprennent leurs variables.
+- Le moteur baisse seul la résolution du rendu si les images ralentissent (`stage.ts`).
+- Les tests de bout en bout comptent un audit axe (`e2e/accessibilite.spec.ts`, thème sombre compris) et le mode avion (`e2e/hors-ligne.spec.ts`). En CI, ils tournent aussi sur Safari (WebKit) et Firefox, et Lighthouse note l'accueil, une fiche et le catalogue dans le résumé du déploiement.
 
 ## Catalogue et référencement
 

@@ -77,9 +77,11 @@ export default function RealSize({ group, loaded, onClose }: { group: PartGroup;
         <>
           <p className={styles.muted}>{fr.build.realSize.lead}</p>
           <div className={styles.realSize}>
-            {image && (
+            {image.url ? (
               // eslint-disable-next-line @next/next/no-img-element -- image générée dans le navigateur
               <img src={image.url} alt={group.name.full} style={{ width: image.width, height: image.height }} />
+            ) : (
+              <p className={styles.muted}>{fr.player.noWebgl}</p>
             )}
           </div>
           <div className={styles.actions}>

@@ -1,15 +1,17 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import styles from "./CatalogueApp.module.css";
 import { SetGrid } from "./SetCard";
 import { createSearch, type SearchEntry } from "@/lib/search";
+import { loadSearchIndex } from "@/lib/search-index";
 import { filterEntries, PAGE_SIZE, type CatalogueFilters, type PartsBucket, type SortKey } from "@/lib/catalogue-filters";
 import { fr } from "@/i18n/fr";
 
 type Theme = { name: string; slug: string; count: number };
-type Props = { entries: SearchEntry[]; themes: Theme[]; decades: number[] };
+/** `first` : la première page, rendue au build ; le catalogue complet arrive ensuite par /recherche.json. */
+type Props = { first: SearchEntry[]; total: number; themes: Theme[]; decades: number[] };
 
 const SORTS = Object.keys(fr.catalogue.sorts) as SortKey[];
 const BUCKETS = Object.keys(fr.catalogue.partsBuckets) as PartsBucket[];
@@ -37,7 +39,16 @@ function writeFilters(f: CatalogueFilters, themes: Theme[]) {
 }
 
 /** Catalogue filtrable : recherche, thème, années, taille, avec étapes, tri, et « Afficher plus ». */
-export default function CatalogueApp({ entries, themes, decades }: Props) {
+export default function CatalogueApp({ first, total, themes, decades }: Props) {
+  const [all, setAll] = useState<SearchEntry[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    loadSearchIndex().then((list) => alive && setAll(list), () => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const entries = all ?? first;
   const id = useId();
   const params = useSearchParams();
   const [filters, setFilters] = useState(() => readFilters(new URLSearchParams(params.toString()), themes));
@@ -111,7 +122,7 @@ export default function CatalogueApp({ entries, themes, decades }: Props) {
 
       <div className={styles.bar}>
         <p role="status" aria-live="polite">
-          {fr.catalogue.count(shown.length, entries.length)}
+          {fr.catalogue.count(all ? shown.length : total, total)}
         </p>
         {active ? (
           <button type="button" className={styles.reset} onClick={() => update({ q: "", theme: "", decade: 0, parts: "", withSteps: false })}>
@@ -120,7 +131,7 @@ export default function CatalogueApp({ entries, themes, decades }: Props) {
         ) : null}
       </div>
 
-      {shown.length ? <SetGrid entries={shown.slice(0, limit)} /> : <p className={styles.empty}>{fr.catalogue.empty}</p>}
+      {shown.length ? <SetGrid entries={shown.slice(0, limit)} headingLevel={2} eager={4} /> : <p className={styles.empty}>{fr.catalogue.empty}</p>}
 
       {shown.length > limit && (
         <p className={styles.more}>

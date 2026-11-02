@@ -8,7 +8,7 @@ Projet en cours de construction. Préversion : [ncabotsav.github.io/klods](https
 
 - Next.js 16 (App Router, export statique), React 19, TypeScript
 - CSS Modules et variables CSS, sans kit UI
-- three.js et `LDrawLoader` pour la 3D (à partir du sprint 2)
+- three.js et `LDrawLoader` pour la 3D, moteur d'étapes maison dans `src/engine/`
 - Hébergement : GitHub Pages pour la préversion, Cloudflare au lancement public
 
 ## Lancer le projet
@@ -17,6 +17,8 @@ Projet en cours de construction. Préversion : [ncabotsav.github.io/klods](https
 npm install
 npm run dev        # http://localhost:3000
 ```
+
+Pour voir des modèles en local : `npm run data:fixtures`, puis la page de travail [localhost:3000/essai](http://localhost:3000/essai/).
 
 Construire le site statique comme sur GitHub Pages :
 
@@ -39,6 +41,7 @@ Les modèles 3D ne sont pas dans Git : le workflow GitHub Actions **Données** l
 | `npm run check` | Charge chaque modèle avec LDrawLoader, compte étapes et pièces, écrit `data/build/check-summary.md` |
 | `npm run data:index` | Construit `public/data/sets.json`, validé par le schéma de `src/lib/catalog.ts` |
 | `npm run data` | Tout, dans l'ordre |
+| `npm run data:fixtures` | Sans rien télécharger : `public/data` construit à partir des six modèles de `fixtures/ldraw`, pour développer en local |
 
 Variables utiles : `DATA_SAMPLE=25` (échantillon), `DATA_REFRESH=1` (retélécharger), `CHECK_MIN_PASS=95` (seuil du contrôle).
 

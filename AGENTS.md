@@ -31,6 +31,13 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - Le format de `public/data/sets.json` est défini une seule fois, dans `src/lib/catalog.ts`, et validé à l'écriture.
 - Tests : `npm test` (`node --test`), à côté du code (`*.test.ts`).
 
+## Moteur 3D
+
+- `src/engine/` est partagé par le site et par le contrôle du catalogue : `load.ts` (LDrawLoader), `ldraw-text.ts` (ROTSTEP, couleurs, descriptions), `steps.ts` (moteur d'étapes), `instructions.ts` (consignes en français). Ces fichiers tournent aussi dans Node : pas d'accès au DOM.
+- `stage.ts` et `thumbs.ts` sont réservés au navigateur, chargés à la demande depuis un composant client.
+- Tout changement du moteur d'étapes change le nombre d'étapes des sets : relancer le workflow « Données » après le merge.
+- `/essai` est la page de travail du moteur (non indexée, hors menu) : charge n'importe quel set et affiche les temps.
+
 ## Avant de lancer un nouveau sprint
 
 On ne commence jamais un sprint sans avoir repassé le précédent. La repasse se fait sur `main` à jour et suit ces étapes :

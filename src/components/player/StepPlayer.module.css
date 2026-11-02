@@ -1,0 +1,165 @@
+.player {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.stage {
+  position: relative;
+  background: var(--stage);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: clamp(340px, 64vh, 720px);
+}
+
+@media (max-width: 760px) {
+  .stage {
+    height: auto;
+    aspect-ratio: 4 / 4.6;
+    max-height: 62vh;
+  }
+}
+
+.overlay {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-3);
+  right: 64px;
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  pointer-events: none;
+}
+
+.stepNumber {
+  font-family: var(--font-display);
+  font-stretch: 112%;
+  font-weight: 800;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.big {
+  font-size: clamp(44px, 7vw, 72px);
+}
+
+.total {
+  font-size: 15px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.assembly {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 2px 10px;
+}
+
+.callout {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  background: var(--card);
+  border-radius: var(--radius);
+  max-width: min(100%, 440px);
+}
+
+.callout li {
+  display: grid;
+  justify-items: center;
+}
+
+.callout img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.callout b {
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.reframe {
+  position: absolute;
+  right: max(var(--space-3), env(safe-area-inset-right, 0px));
+  top: var(--space-3);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.reframe svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hint {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-2);
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.instruction {
+  font-size: 18px;
+  max-width: var(--measure);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.controls input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.noSteps {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  max-width: var(--measure);
+}

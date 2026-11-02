@@ -99,3 +99,26 @@ export const PART_WORDS_FR: Record<string, { word: string; plural: string; g: "m
   Support: { word: "support", plural: "supports", g: "m" },
   Round: { word: "pièce ronde", plural: "pièces rondes", g: "f" },
 };
+
+/** Pièces de figurine (« Minifig Head ») : le second mot donne la pièce. */
+export const MINIFIG_WORDS_FR: Record<string, { word: string; plural: string; g: "m" | "f" }> = {
+  Head: { word: "tête de figurine", plural: "têtes de figurine", g: "f" },
+  Torso: { word: "torse de figurine", plural: "torses de figurine", g: "m" },
+  Hips: { word: "bassin de figurine", plural: "bassins de figurine", g: "m" },
+  Legs: { word: "paire de jambes", plural: "paires de jambes", g: "f" },
+  Leg: { word: "jambe de figurine", plural: "jambes de figurine", g: "f" },
+  Arm: { word: "bras de figurine", plural: "bras de figurine", g: "m" },
+  Hand: { word: "main de figurine", plural: "mains de figurine", g: "f" },
+  Helmet: { word: "casque", plural: "casques", g: "m" },
+  Hat: { word: "chapeau", plural: "chapeaux", g: "m" },
+  Cap: { word: "casquette", plural: "casquettes", g: "f" },
+  Hair: { word: "cheveux de figurine", plural: "cheveux de figurine", g: "m" },
+  Airtanks: { word: "réservoir d'air", plural: "réservoirs d'air", g: "m" },
+  Torch: { word: "torche", plural: "torches", g: "f" },
+  Tool: { word: "outil", plural: "outils", g: "m" },
+  Gun: { word: "pistolet", plural: "pistolets", g: "m" },
+  Sword: { word: "épée", plural: "épées", g: "f" },
+  Shield: { word: "bouclier", plural: "boucliers", g: "m" },
+  Visor: { word: "visière", plural: "visières", g: "f" },
+  Cape: { word: "cape", plural: "capes", g: "f" },
+};

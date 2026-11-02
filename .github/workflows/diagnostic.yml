@@ -30,6 +30,7 @@ jobs:
           path: |
             data/raw
             !data/raw/ldraw/ldraw
+            !data/raw/covers
           key: raw-${{ github.run_id }}
           restore-keys: raw-
       - run: npm run data:omr
@@ -39,4 +40,5 @@ jobs:
         run: |
           for f in public/data/models/*/*.mpd.gz; do
             timeout 300 node scripts/data/diagnose.ts "$f" || echo "arrêt : code $?"
+            SMOOTH=0 timeout 300 node scripts/data/diagnose.ts "$f" || echo "arrêt : code $?"
           done

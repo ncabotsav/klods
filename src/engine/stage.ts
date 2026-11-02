@@ -38,6 +38,8 @@ export type StageOptions = {
   highlight?: string;
   /** Appelé à chaque image dessinée, avec sa durée, pour mesurer la fluidité. */
   onFrame?: (ms: number) => void;
+  /** Couleurs (CSS) des flèches de direction de la page de travail : guidée par un contact, ou non. */
+  arrowColors?: { guided: string; fallback: string };
   /** Garde l'image après le rendu, pour la copier (vue impression). */
   preserveDrawingBuffer?: boolean;
 };
@@ -172,7 +174,7 @@ export class Stage {
         const size = new Box3().setFromObject(o).getBoundingSphere(new Sphere()).radius;
         const at = new Box3().setFromObject(o).getCenter(new Vector3());
         const length = Math.max(size * 2, 30);
-        const arrow = new ArrowHelper(dir, at.addScaledVector(dir, size + length), length, o.userData.klodsGuided ? 0x0055bf : 0xd01012, length * 0.3, length * 0.18);
+        const arrow = new ArrowHelper(dir, at.addScaledVector(dir, size + length), length, new Color(o.userData.klodsGuided ? (this.options.arrowColors?.guided ?? "blue") : (this.options.arrowColors?.fallback ?? "gray")), length * 0.3, length * 0.18);
         arrow.setDirection(dir.clone().negate());
         arrow.renderOrder = 11;
         this.scene.add(arrow);

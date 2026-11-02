@@ -315,7 +315,7 @@ export const fr = {
     guidedValue: (guided: number, touching: number, placed: number) =>
       `${Math.round((100 * guided) / Math.max(1, placed))} % par un point d'attache, ${Math.round((100 * touching) / Math.max(1, placed))} % par contact`,
     insertionTime: "Calcul des directions",
-    arrows: "Montrer la direction d'arrivée des pièces (bleu : point d'attache, rouge : contact ou repli)",
+    arrows: "Montrer la direction d'arrivée des pièces (en couleur : guidée par un contact, en gris : par le haut de la pièce)",
     noData: "Les données des sets ne sont pas disponibles ici. Lance le workflow « Données » ou `npm run data`.",
   },
   covers: {

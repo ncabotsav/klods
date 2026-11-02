@@ -18,6 +18,7 @@ export default function Bench() {
   const [failed, setFailed] = useState(false);
   const [query, setQuery] = useState("");
   const [stats, setStats] = useState<PlayerStats | null>(null);
+  const [arrows, setArrows] = useState(false);
 
   useEffect(() => {
     fetch(asset("/data/sets.json"))
@@ -103,9 +104,21 @@ export default function Bench() {
           <dt>{fr.bench.assemblies}</dt>
           <dd>{stats?.assemblies ?? "…"}</dd>
         </div>
+        <div>
+          <dt>{fr.bench.guided}</dt>
+          <dd>{stats ? fr.bench.guidedValue(stats.insertion.guided, stats.insertion.touching, stats.insertion.placed) : "…"}</dd>
+        </div>
+        <div>
+          <dt>{fr.bench.insertionTime}</dt>
+          <dd>{stats ? `${stats.insertion.ms} ms` : "…"}</dd>
+        </div>
       </dl>
+      <label className={styles.check}>
+        <input type="checkbox" checked={arrows} onChange={(e) => setArrows(e.target.checked)} />
+        {fr.bench.arrows}
+      </label>
 
-      <StepPlayer key={model.file} src={model.file} bytes={model.bytes} officialUrl={officialUrl(current.number)} onStats={setStats} />
+      <StepPlayer key={model.file} src={model.file} bytes={model.bytes} officialUrl={officialUrl(current.number)} onStats={setStats} arrows={arrows} />
     </div>
   );
 }

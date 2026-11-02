@@ -33,7 +33,8 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 
 ## Moteur 3D
 
-- `src/engine/` est partagé par le site et par le contrôle du catalogue : `load.ts` (LDrawLoader), `ldraw-text.ts` (ROTSTEP, couleurs, descriptions), `steps.ts` (moteur d'étapes), `instructions.ts` (consignes en français). Ces fichiers tournent aussi dans Node : pas d'accès au DOM.
+- `src/engine/` est partagé par le site et par le contrôle du catalogue : `load.ts` (LDrawLoader), `ldraw-text.ts` (ROTSTEP, couleurs, descriptions), `steps.ts` (moteur d'étapes), `connectors.ts` (points d'attache lus dans les primitives LDraw), `insertion.ts` (direction d'arrivée de chaque pièce), `instructions.ts` (consignes en français). Ces fichiers tournent aussi dans Node : pas d'accès au DOM.
+- Direction d'arrivée : alignement de points d'attache, puis tenon entré dans le volume d'une pièce, puis volume touché, puis le haut de la pièce. `npm run check` mesure la part des pièces guidées et le temps de calcul ; sur `/essai`, la case « Montrer la direction d'arrivée » dessine les flèches.
 - `stage.ts` et `thumbs.ts` sont réservés au navigateur, chargés à la demande depuis un composant client.
 - Tout changement du moteur d'étapes change le nombre d'étapes des sets : relancer le workflow « Données » après le merge.
 - `/essai` est la page de travail du moteur (non indexée, hors menu) : charge n'importe quel set et affiche les temps.

@@ -10,6 +10,7 @@
  */
 import {
   ACESFilmicToneMapping,
+  ArrowHelper,
   Box3,
   BoxHelper,
   Color,
@@ -41,7 +42,10 @@ export type StageOptions = {
   preserveDrawingBuffer?: boolean;
 };
 
-const DROP_MS = 420;
+const DROP_MS = 650;
+/** Écart entre deux pièces d'une même étape, et durée totale maximale de ces départs décalés. */
+const DROP_GAP_MS = 220;
+const DROP_SPREAD_MS = 1200;
 /** Au-delà, on n'entoure pas les pièces : les cadres se chevauchent et brouillent l'étape. */
 const MAX_HIGHLIGHTS = 3;
 const FLIP = new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI);
@@ -68,6 +72,9 @@ export class Stage {
   private current = -1;
   private drops: Drop[] = [];
   private highlights: BoxHelper[] = [];
+  private arrows: ArrowHelper[] = [];
+  /** Page de travail : flèches de la direction d'arrivée des pièces de l'étape. */
+  private showArrows = false;
   private framed = new Map<Object3D, Sphere>();
   private dirty = true;
   private raf = 0;
@@ -156,17 +163,41 @@ export class Stage {
       }
     }
 
-    if (animate && !this.reducedMotion) {
-      const lift = this.sphereOf(step.context).radius * 0.25;
+    if (this.showArrows) {
       for (const o of added) {
-        const base = o.position.clone();
-        // « au-dessus » dans le monde, ramené dans le repère du parent de la pièce
-        const worldAbove = o.getWorldPosition(new Vector3()).add(new Vector3(0, lift, 0));
-        const from = o.parent!.worldToLocal(worldAbove);
-        o.userData.klodsBase ??= base;
-        o.position.copy(from);
-        this.drops.push({ obj: o, from, to: o.userData.klodsBase, t0: performance.now() });
+        const insert = o.userData.klodsInsert as [number, number, number] | undefined;
+        if (!insert) continue;
+        const q = o.parent!.getWorldQuaternion(new Quaternion());
+        const dir = new Vector3(...insert).applyQuaternion(q).normalize();
+        const size = new Box3().setFromObject(o).getBoundingSphere(new Sphere()).radius;
+        const at = new Box3().setFromObject(o).getCenter(new Vector3());
+        const length = Math.max(size * 2, 30);
+        const arrow = new ArrowHelper(dir, at.addScaledVector(dir, size + length), length, o.userData.klodsGuided ? 0x0055bf : 0xd01012, length * 0.3, length * 0.18);
+        arrow.setDirection(dir.clone().negate());
+        arrow.renderOrder = 11;
+        this.scene.add(arrow);
+        this.arrows.push(arrow);
       }
+    }
+
+    if (animate && !this.reducedMotion) {
+      // chaque pièce glisse vers sa place le long de sa direction d'arrivée (insertion.ts),
+      // l'une après l'autre ; la distance suit la taille de la pièce, bornée par celle du contexte
+      const context = this.sphereOf(step.context).radius;
+      const gap = Math.min(DROP_GAP_MS, (DROP_SPREAD_MS / Math.max(1, added.length - 1)) | 0);
+      const start = performance.now();
+      added.forEach((o, i) => {
+        o.userData.klodsBase ??= o.position.clone();
+        const base = o.userData.klodsBase as Vector3;
+        const size = (o.userData.klodsSize ??= new Box3().setFromObject(o).getBoundingSphere(new Sphere()).radius) as number;
+        const lift = Math.min(Math.max(size * 1.6, 30), Math.max(context * 0.35, 30));
+        const insert = o.userData.klodsInsert as [number, number, number] | undefined;
+        let from: Vector3;
+        if (insert) from = base.clone().addScaledVector(new Vector3(...insert), lift);
+        else from = o.parent!.worldToLocal(o.getWorldPosition(new Vector3()).add(new Vector3(0, lift, 0)));
+        o.position.copy(from);
+        this.drops.push({ obj: o, from, to: base, t0: start + i * gap });
+      });
     }
     this.dirty = true;
   }
@@ -185,6 +216,12 @@ export class Stage {
     this.root.updateMatrixWorld(true);
     this.frameContext(model, null);
     this.dirty = true;
+  }
+
+  /** Flèches des directions d'arrivée (page de travail) : bleues si guidées par un contact, rouges sinon. */
+  setInsertArrows(on: boolean) {
+    this.showArrows = on;
+    if (this.current >= 0) this.showStep(this.current);
   }
 
   /** Rotation lente du modèle (couverture), sauf si l'utilisateur réduit les animations. */
@@ -289,7 +326,10 @@ export class Stage {
   }
 
   private clearEffects() {
-    for (const d of this.drops) d.obj.position.copy(d.to);
+    for (const d of this.drops) {
+      d.obj.position.copy(d.to);
+      d.obj.visible = true;
+    }
     this.drops = [];
     for (const h of this.highlights) {
       this.scene.remove(h);
@@ -297,6 +337,11 @@ export class Stage {
       (h.material as { dispose(): void }).dispose();
     }
     this.highlights = [];
+    for (const a of this.arrows) {
+      this.scene.remove(a);
+      a.dispose();
+    }
+    this.arrows = [];
   }
 
   private resize() {
@@ -315,7 +360,9 @@ export class Stage {
     if (this.drops.length) {
       for (let k = this.drops.length - 1; k >= 0; k--) {
         const d = this.drops[k];
-        const t = Math.min(1, (now - d.t0) / DROP_MS);
+        const t = Math.max(0, Math.min(1, (now - d.t0) / DROP_MS));
+        // une pièce qui n'est pas encore partie reste cachée, puis glisse
+        d.obj.visible = now >= d.t0;
         const e = 1 - Math.pow(1 - t, 3);
         d.obj.position.lerpVectors(d.from, d.to, e);
         if (t >= 1) this.drops.splice(k, 1);

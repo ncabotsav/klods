@@ -14,9 +14,27 @@ export type LoadOptions = {
 };
 
 /*
+ * Hors navigateur (Node : tests, contrôle du catalogue), FileLoader de three.js utilise ProgressEvent,
+ * qui n'existe pas : sans ce remplaçant, une requête plante sans prévenir et le chargement ne finit jamais.
+ */
+if (typeof globalThis.ProgressEvent === "undefined") {
+  (globalThis as { ProgressEvent?: unknown }).ProgressEvent = class extends Event {
+    lengthComputable: boolean;
+    loaded: number;
+    total: number;
+    constructor(type: string, init: { lengthComputable?: boolean; loaded?: number; total?: number } = {}) {
+      super(type);
+      this.lengthComputable = init.lengthComputable ?? false;
+      this.loaded = init.loaded ?? 0;
+      this.total = init.total ?? 0;
+    }
+  };
+}
+
+/*
  * Un fichier packé contient tout. Si une référence manque malgré tout, LDrawLoader cherche le fichier
- * sur le réseau : on lui donne une adresse qui échoue tout de suite, plutôt qu'une adresse relative
- * qui bloque le chargement hors navigateur.
+ * sur le réseau : on lui répond tout de suite par un
+ * fichier vide (une adresse data:), sans rien demander au réseau.
  */
 const offline = () => {
   const manager = new LoadingManager();

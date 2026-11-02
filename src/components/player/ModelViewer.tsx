@@ -29,8 +29,13 @@ export default function ModelViewer({ loaded, mode, overlay, onFrame, className,
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const highlight = getComputedStyle(document.documentElement).getPropertyValue("--hi").trim();
-    const stage = new loaded.engine.Stage(containerRef.current, { highlight, onFrame: (ms) => onFrameRef.current?.(ms) });
+    const css = getComputedStyle(document.documentElement);
+    const token = (name: string) => css.getPropertyValue(name).trim();
+    const stage = new loaded.engine.Stage(containerRef.current, {
+      highlight: token("--hi"),
+      arrowColors: { guided: token("--accent"), fallback: token("--muted") },
+      onFrame: (ms) => onFrameRef.current?.(ms),
+    });
     stage.setModel(loaded.model, loaded.plan);
     stageRef.current = stage;
     return () => {

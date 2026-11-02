@@ -37,7 +37,7 @@ const UP: Vec3 = [0, -1, 0];
 
 type Step = { context: Object3D; parts: Object3D[]; assemblies: Object3D[] };
 /** Une pièce posée : ses points d'attache (repère du modèle), son volume (repère de la pièce), son centre. */
-type Placed = { part: Object3D; conns: Connector[]; box: Box3; toLocal: Matrix4; center: Vec3; aabb: Box3 };
+type Placed = { part: Object3D; conns: Connector[]; box: Box3; toLocal: Matrix4; center: Vec3; aabb: Box3; reach: Box3 };
 
 const dot = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const sub = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
@@ -140,6 +140,14 @@ export function assignInsertions(model: Object3D, steps: Step[], info: ModelText
   const modelMatrix = (o: Object3D) => new Matrix4().multiplyMatrices(toModel, o.matrixWorld);
 
   const cache = new Map<Object3D, Placed>();
+  // le volume d'une pièce dans son repère est le même pour toutes ses copies : un calcul par fichier
+  const boxes = new Map<string, Box3>();
+  const boxOf = (part: Object3D) => {
+    const file = String(part.userData.fileName);
+    let box = boxes.get(file);
+    if (!box) boxes.set(file, (box = localBox(part)));
+    return box;
+  };
   const placedOf = (part: Object3D): Placed => {
     let hit = cache.get(part);
     if (hit) return hit;
@@ -150,13 +158,22 @@ export function assignInsertions(model: Object3D, steps: Step[], info: ModelText
       const scale = a.length() || 1;
       return { p: v3(new Vector3(...c.p).applyMatrix4(m)), a: v3(a.divideScalar(scale)), len: c.len * scale };
     });
-    const box = localBox(part);
+    const box = boxOf(part);
     const aabb = box.isEmpty() ? new Box3().setFromCenterAndSize(new Vector3().setFromMatrixPosition(m), new Vector3(1, 1, 1)) : box.clone().applyMatrix4(m);
-    hit = { part, conns, box: box.isEmpty() ? box : box.clone().expandByScalar(MARGIN), toLocal: m.clone().invert(), center: v3(aabb.getCenter(new Vector3())), aabb };
+    hit = {
+      part,
+      conns,
+      box: box.isEmpty() ? box : box.clone().expandByScalar(MARGIN),
+      toLocal: m.clone().invert(),
+      center: v3(aabb.getCenter(new Vector3())),
+      aabb,
+      reach: aabb.clone().expandByScalar(AXIAL),
+    };
     cache.set(part, hit);
     return hit;
   };
-  const inside = (p: Placed, point: Vec3) => !p.box.isEmpty() && p.box.containsPoint(new Vector3(...point).applyMatrix4(p.toLocal));
+  const tmp = new Vector3();
+  const inside = (p: Placed, point: Vec3) => !p.box.isEmpty() && p.box.containsPoint(tmp.set(point[0], point[1], point[2]).applyMatrix4(p.toLocal));
   const partsOf = (o: Object3D): Object3D[] => {
     if (isPart(o)) return [o];
     const out: Object3D[] = [];
@@ -195,7 +212,7 @@ export function assignInsertions(model: Object3D, steps: Step[], info: ModelText
       for (const other of grid.near(aabb)) {
         if (mineSet.has(other.part)) continue;
         for (const p of mine) {
-          if (!p.aabb.clone().expandByScalar(AXIAL).intersectsBox(other.aabb)) continue;
+          if (!p.reach.intersectsBox(other.aabb)) continue;
           for (const c of p.conns) {
             for (const d of other.conns) if (aligned(c, d)) vote(c.a, other, 2);
             if (inside(other, c.p)) vote(c.a, other, 1);

@@ -1,0 +1,42 @@
+# Diagnostic d'un set : packe ce seul set à partir du cache des téléchargements, puis le charge
+# phase par phase (scripts/data/diagnose.ts). Lancement manuel, onglet Actions.
+name: Diagnostic
+
+on:
+  workflow_dispatch:
+    inputs:
+      set:
+        description: "Numéro du set, par exemple 40379-1"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATA_ONLY: ${{ inputs.set }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            data/raw
+            !data/raw/ldraw/ldraw
+          key: raw-${{ github.run_id }}
+          restore-keys: raw-
+      - run: npm run data:omr
+      - run: npm run data:ldraw
+      - run: npm run data:pack
+      - name: Diagnostic
+        run: |
+          for f in public/data/models/*/*.mpd.gz; do
+            timeout 300 node scripts/data/diagnose.ts "$f" || echo "arrêt : code $?"
+          done

@@ -75,6 +75,7 @@ export const fr = {
     howToStep: (n: number) => `Étape ${n}`,
     howToName: (number: string, name: string) => `Notice de montage en 3D du set ${number} ${name}`,
     breadcrumb: "Fil d'Ariane",
+    heavy: "Très gros set : son ouverture peut prendre jusqu'à une minute sur un téléphone. Il reste ensuite disponible sans réseau.",
     sourceModel: (number: string, name: string) => `${number} ${name}, modèle LDraw`,
   },
   missingSet: {
@@ -323,6 +324,21 @@ export const fr = {
     sceneLabel: "Modèle en cours de dessin",
     card: (parts: number, steps: number) => (steps > 1 ? `${parts} pièces · ${steps} étapes` : `${parts} pièces`),
     tagline: "Notice de montage en 3D, étape par étape",
+  },
+  error: {
+    title: "Cette page ne s'est pas chargée",
+    body: "Le réseau est peut-être coupé. Réessaie, ou ouvre un set déjà gardé sur ton appareil.",
+    retry: "Réessayer",
+    offline: "Voir les sets disponibles sans réseau",
+  },
+  offline: {
+    title: "Hors connexion",
+    lead: "Pas de réseau pour l'instant. Les sets que tu as déjà ouverts restent disponibles.",
+    available: "Sets disponibles sans réseau",
+    loading: "Recherche des sets gardés…",
+    none: "Aucun set gardé pour l'instant.",
+    item: (number: string, name: string) => `${name} (${number})`,
+    how: "Klods garde chaque set que tu ouvres, avec sa notice, pour le rejouer sans réseau.",
   },
   notFound: {
     title: "Cette page n'existe pas",

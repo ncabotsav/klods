@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import StepPlayer, { type PlayerStats } from "@/components/player/StepPlayer";
-import { SetsIndex, type SetEntry } from "@/lib/catalog";
+import { SetsIndex, type SetEntry } from "@/lib/catalog-schema";
 import { fr } from "@/i18n/fr";
 import { asset } from "@/lib/site";
 import styles from "./Bench.module.css";

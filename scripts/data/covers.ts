@@ -15,7 +15,8 @@ import { createHash } from "node:crypto";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { chromium, type Browser, type Page } from "@playwright/test";
-import { SetsIndex, defaultModel, playableModels } from "../../src/lib/catalog.ts";
+import { defaultModel, playableModels } from "../../src/lib/catalog.ts";
+import { SetsIndex } from "../../src/lib/catalog-schema.ts";
 import { BUILD, PUBLIC_DATA, RAW, ROOT, SETS_INDEX } from "./lib/paths.ts";
 import { themeFr } from "../../src/i18n/themes-fr.ts";
 

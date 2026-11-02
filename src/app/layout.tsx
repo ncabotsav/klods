@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/archivo/wdth.css";
-import "@fontsource/atkinson-hyperlegible/400.css";
-import "@fontsource/atkinson-hyperlegible/700.css";
-import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
+import { archivo, atkinson, plexMono } from "./fonts";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import PreviewBanner from "@/components/PreviewBanner";
+import ServiceWorker from "@/components/ServiceWorker";
 import { fr } from "@/i18n/fr";
 import { SITE_URL } from "@/lib/site";
 
@@ -41,7 +39,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={`${archivo.variable} ${atkinson.variable} ${plexMono.variable}`}>
       <body>
         <a href="#contenu" className="skip">
           {fr.nav.skip}
@@ -50,6 +48,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <PreviewBanner />
         <main id="contenu">{children}</main>
         <SiteFooter />
+        <ServiceWorker />
       </body>
     </html>
   );

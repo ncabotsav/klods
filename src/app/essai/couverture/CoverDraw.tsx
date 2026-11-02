@@ -143,29 +143,30 @@ export default function CoverDraw() {
       ctx.fillStyle = CARD.hi;
       ctx.fillRect(0, CARD_H - 14, CARD_W, 14);
 
-      await Promise.all(
-        ['800 50px "Archivo Variable"', '500 24px "IBM Plex Mono"', '400 28px "Atkinson Hyperlegible"', '700 28px "Atkinson Hyperlegible"'].map((f) =>
-          document.fonts.load(f),
-        ),
-      );
+      // les familles des polices du site (next/font leur donne un nom à elles), lues dans les jetons
+      const css = getComputedStyle(document.documentElement);
+      const display = css.getPropertyValue("--font-display").trim();
+      const mono = css.getPropertyValue("--font-mono").trim();
+      const body = css.getPropertyValue("--font-body").trim();
+      await Promise.all([`800 50px ${display}`, `500 24px ${mono}`, `400 28px ${body}`, `700 28px ${body}`].map((f) => document.fonts.load(f)));
       const x = 720;
       const w = CARD_W - x - 56;
       ctx.textBaseline = "alphabetic";
       ctx.fillStyle = CARD.accent;
-      ctx.font = '800 40px "Archivo Variable", "Arial Black", sans-serif';
+      ctx.font = `800 40px ${display}`;
       ctx.fillText(fr.site.name, x, 112);
       ctx.fillStyle = CARD.muted;
-      ctx.font = '500 24px "IBM Plex Mono", monospace';
+      ctx.font = `500 24px ${mono}`;
       ctx.fillText([req.number, req.theme, req.year].filter(Boolean).join(" · "), x, 196);
       ctx.fillStyle = CARD.ink;
-      ctx.font = '800 50px "Archivo Variable", "Arial Black", sans-serif';
+      ctx.font = `800 50px ${display}`;
       const lines = wrap(ctx, req.name, w, 4);
       lines.forEach((l, i) => ctx.fillText(l, x, 262 + i * 58));
       ctx.fillStyle = CARD.muted;
-      ctx.font = '400 28px "Atkinson Hyperlegible", sans-serif';
+      ctx.font = `400 28px ${body}`;
       ctx.fillText(fr.covers.card(req.parts, req.steps), x, 262 + lines.length * 58 + 34);
       ctx.fillStyle = CARD.ink;
-      ctx.font = '700 26px "Atkinson Hyperlegible", sans-serif';
+      ctx.font = `700 26px ${body}`;
       wrap(ctx, fr.covers.tagline, w, 2).forEach((l, i, all) => ctx.fillText(l, x, CARD_H - 58 - (all.length - 1 - i) * 34));
 
       return { cover: cover.toDataURL("image/webp", 0.86), card: card.toDataURL("image/jpeg", 0.84), ms: Math.round(performance.now() - t0), loadMs: Math.round(tLoad) };

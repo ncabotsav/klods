@@ -120,7 +120,7 @@ export default function CatalogueApp({ entries, themes, decades }: Props) {
         ) : null}
       </div>
 
-      {shown.length ? <SetGrid entries={shown.slice(0, limit)} /> : <p className={styles.empty}>{fr.catalogue.empty}</p>}
+      {shown.length ? <SetGrid entries={shown.slice(0, limit)} headingLevel={2} eager={4} /> : <p className={styles.empty}>{fr.catalogue.empty}</p>}
 
       {shown.length > limit && (
         <p className={styles.more}>

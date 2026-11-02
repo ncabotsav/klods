@@ -14,10 +14,13 @@
   --accent: #0055bf;
   --accent-ink: #ffffff;
   --hi: #f2b705;
+  /* texte posé sur le jaune --hi : toujours sombre, quel que soit le thème */
+  --hi-ink: #14202b;
 
-  --font-display: "Archivo Variable", "Arial Black", system-ui, sans-serif;
-  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* familles chargées par next/font (src/app/fonts.ts) */
+  --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
+  --font-body: var(--font-atkinson), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
 
   --radius: 10px;
   --radius-lg: 14px;

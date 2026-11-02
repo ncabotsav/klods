@@ -1,7 +1,8 @@
 import "server-only";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { SetsIndex, defaultModel, playableModels, slugify, type SetEntry } from "./catalog";
+import { defaultModel, playableModels, slugify, type SetEntry } from "./catalog";
+import { SetsIndex } from "./catalog-schema";
 import type { SearchEntry } from "./search";
 import { themeFr } from "@/i18n/themes-fr";
 

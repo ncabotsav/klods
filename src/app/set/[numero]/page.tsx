@@ -7,7 +7,7 @@ import { SetGrid } from "@/components/catalog/SetCard";
 import StartButton from "@/components/catalog/StartButton";
 import { cardPath, findSet, hasCard, hasCover, relatedSets, searchEntries, setParams, setTheme, themeSlug } from "@/lib/catalog-server";
 import { themePathFr } from "@/i18n/themes-fr";
-import { defaultModel, estimateMinutes, officialManualUrl, playableModels } from "@/lib/catalog";
+import { defaultModel, estimateMinutes, isHeavy, officialManualUrl, playableModels } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/site";
 import { fr } from "@/i18n/fr";
 
@@ -121,6 +121,7 @@ export default async function SetPage({ params }: Props) {
           )}
 
           {incomplete && <p className={styles.warning}>{fr.build.cover.incomplete}</p>}
+          {isHeavy(main) && <p className={styles.note}>{fr.set.heavy}</p>}
           {withSteps && <p className={styles.note}>{fr.build.cover.generatedNote}</p>}
         </div>
       </div>

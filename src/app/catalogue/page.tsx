@@ -26,7 +26,7 @@ export default function CataloguePage() {
         <h1 className={styles.title}>{t.title}</h1>
         <p className={styles.lead}>{t.lead(entries.length, firstYear())}</p>
       </div>
-      <Suspense fallback={<SetGrid entries={first} />}>
+      <Suspense fallback={<SetGrid entries={first} headingLevel={2} eager={4} />}>
         <CatalogueApp entries={entries} themes={themes} decades={decadesOf(entries)} />
       </Suspense>
       <ThemeLinks />

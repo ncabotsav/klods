@@ -22,7 +22,8 @@ export default defineConfig({
     ...(process.env.E2E_ALL_BROWSERS
       ? [
           { name: "safari-iphone", use: { ...devices["iPhone 13"] } },
-          { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+          // Firefox sans écran coupe WebGL faute de carte graphique : on le force (rendu logiciel)
+          { name: "firefox", use: { ...devices["Desktop Firefox"], launchOptions: { firefoxUserPrefs: { "webgl.force-enabled": true, "webgl.disabled": false } } } },
         ]
       : []),
   ],

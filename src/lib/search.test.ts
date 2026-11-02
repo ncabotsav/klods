@@ -56,3 +56,9 @@ test("tous les mots doivent correspondre", () => {
   assert.equal(search("").length, 0);
   assert.equal(search("zzzz").length, 0);
 });
+
+test("le nom anglais d'un thème traduit reste cherchable", () => {
+  const { search } = createSearch([{ n: "6390-1", t: "Main Street", h: "Ville", a: "Town Classic Town", y: 1980, p: 500, s: 40, e: true, c: false }]);
+  assert.equal(search("ville")[0]?.entry.n, "6390-1");
+  assert.equal(search("town")[0]?.entry.n, "6390-1");
+});

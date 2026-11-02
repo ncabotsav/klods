@@ -8,13 +8,8 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import { SetsIndex } from "../../src/lib/catalog.ts";
 import { BUILD, SETS_INDEX } from "./lib/paths.ts";
+import { THEMES_FR } from "../../src/i18n/themes-fr.ts";
 
-let THEMES_FR: Record<string, string> = {};
-try {
-  THEMES_FR = (await import("../../src/i18n/themes-fr.ts")).THEMES_FR;
-} catch {
-  // pas encore de dictionnaire : tout est à traduire
-}
 
 const index = SetsIndex.parse(JSON.parse(await fsp.readFile(SETS_INDEX, "utf8")));
 const counts = new Map<string, number>();

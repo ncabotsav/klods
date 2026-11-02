@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { SetsIndex, defaultModel, playableModels, slugify, type SetEntry } from "./catalog";
 import type { SearchEntry } from "./search";
+import { themeFr } from "@/i18n/themes-fr";
 
 /**
  * Lecture de public/data/sets.json pendant le build (pages statiques des sets).
@@ -60,19 +61,32 @@ export const hasSteps = (set: SetEntry) => defaultModel(set).status !== "sans-et
 export function searchEntries(): SearchEntry[] {
   return allSets().map((s) => {
     const m = defaultModel(s);
-    return { n: s.number, t: s.name, h: s.theme, y: s.year, p: m.parts, s: m.steps, e: m.status !== "sans-etapes", c: hasCover(s.number) };
+    const h = s.theme ? themeFr(s.theme) : null;
+    // le nom anglais du thème reste cherchable (« Town » trouve les sets « Ville »)
+    const a = s.themePath.filter((t) => themeFr(t) !== t).join(" ") || undefined;
+    return { n: s.number, t: s.name, h, ...(a ? { a } : {}), y: s.year, p: m.parts, s: m.steps, e: m.status !== "sans-etapes", c: hasCover(s.number) };
   });
 }
 
+/** Un thème de premier niveau, sous son nom français ; plusieurs thèmes anglais peuvent s'y retrouver. */
 export type Theme = { name: string; slug: string; count: number };
+
+/** Adresse d'un thème : son nom français, sans la marque (jamais dans une URL). */
+export const themeSlug = (frName: string) => slugify(frName.replace(/\blego(land)?\b®?/gi, " ")) || "theme";
+
+/** Nom français du thème de premier niveau d'un set. */
+export const setTheme = (s: SetEntry) => (s.theme ? themeFr(s.theme) : null);
 
 /** Thèmes de premier niveau, du plus fourni au moins fourni. */
 export function allThemes(): Theme[] {
   const counts = new Map<string, number>();
-  for (const s of allSets()) if (s.theme) counts.set(s.theme, (counts.get(s.theme) ?? 0) + 1);
+  for (const s of allSets()) {
+    const t = setTheme(s);
+    if (t) counts.set(t, (counts.get(t) ?? 0) + 1);
+  }
   return [...counts]
-    .map(([name, count]) => ({ name, slug: slugify(name), count }))
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    .map(([name, count]) => ({ name, slug: themeSlug(name), count }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "fr"));
 }
 
 export function findTheme(slug: string): Theme | undefined {
@@ -98,7 +112,7 @@ export function featuredByTheme(themeCount = 4, perTheme = 4): { theme: Theme; s
     .map((theme) => ({
       theme,
       sets: allSets()
-        .filter((s) => s.theme === theme.name && defaultModel(s).status === "ok")
+        .filter((s) => setTheme(s) === theme.name && defaultModel(s).status === "ok")
         .sort((a, b) => Number(showcase(b)) - Number(showcase(a)) || Number(hasCover(b.number)) - Number(hasCover(a.number)) || size(b) - size(a))
         .slice(0, perTheme),
     }))

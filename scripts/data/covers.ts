@@ -17,9 +17,10 @@ import path from "node:path";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { SetsIndex, defaultModel, playableModels } from "../../src/lib/catalog.ts";
 import { BUILD, PUBLIC_DATA, RAW, ROOT, SETS_INDEX } from "./lib/paths.ts";
+import { themeFr } from "../../src/i18n/themes-fr.ts";
 
 /** À changer quand le dessin change : toutes les couvertures sont alors redessinées. */
-const COVER_VERSION = "1";
+const COVER_VERSION = "2";
 const PORT = Number(process.env.COVERS_PORT ?? 4174);
 const PAGES = Math.max(1, Number(process.env.COVERS_PAGES ?? 2));
 const TIMEOUT_MS = Number(process.env.COVERS_TIMEOUT_MS ?? 120_000);
@@ -54,7 +55,7 @@ async function jobs(): Promise<Job[]> {
     list.push({
       number: set.number,
       hash,
-      req: { file: m.file, bytes: m.bytes, number: set.number, name: set.name, theme: set.theme, year: set.year, parts: m.parts, steps: m.steps },
+      req: { file: m.file, bytes: m.bytes, number: set.number, name: set.name, theme: set.theme ? themeFr(set.theme) : null, year: set.year, parts: m.parts, steps: m.steps },
     });
   }
   return list;

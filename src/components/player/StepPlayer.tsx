@@ -183,17 +183,7 @@ export default function StepPlayer({ src, bytes = 0, officialUrl, onStats }: Pro
                 {assembly.repeat > 1 && <span> · {fr.player.buildTimes(assembly.repeat)}</span>}
               </p>
             )}
-            {callouts.length > 0 && (
-              <ul className={styles.callout} aria-label={fr.player.partsInStep}>
-                {callouts.map((c) => (
-                  <li key={c.key} title={c.label}>
-                    {/* eslint-disable-next-line @next/next/no-img-element -- image générée dans le navigateur */}
-                    <img src={c.url} alt="" width={56} height={56} />
-                    <b>{c.count}×</b>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {callouts.length > 0 && <PartsCallout items={callouts} className={styles.calloutOver} />}
           </div>
         )}
         {status === "ready" && (
@@ -210,6 +200,9 @@ export default function StepPlayer({ src, bytes = 0, officialUrl, onStats }: Pro
           </p>
         )}
       </div>
+
+      {/* sur téléphone, les pièces passent sous la vue 3D pour ne pas la cacher */}
+      {status === "ready" && callouts.length > 0 && <PartsCallout items={callouts} className={styles.calloutBelow} />}
 
       {singleStep && (
         <div className={styles.noSteps}>
@@ -245,5 +238,19 @@ export default function StepPlayer({ src, bytes = 0, officialUrl, onStats }: Pro
         </>
       )}
     </div>
+  );
+}
+
+function PartsCallout({ items, className }: { items: Callout[]; className: string }) {
+  return (
+    <ul className={`${styles.callout} ${className}`} aria-label={fr.player.partsInStep}>
+      {items.map((c) => (
+        <li key={c.key} title={c.label}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- image générée dans le navigateur */}
+          <img src={c.url} alt="" width={56} height={56} />
+          <b>{c.count}×</b>
+        </li>
+      ))}
+    </ul>
   );
 }

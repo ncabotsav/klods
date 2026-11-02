@@ -84,10 +84,10 @@ export default function PartsPhase({ loaded, missing, onToggleMissing, onDone }:
                 </span>
               </span>
               <span className={styles.partActions}>
-                <button type="button" className={styles.linkBtn} onClick={() => setSizing(g)}>
+                <button type="button" className={styles.linkBtn} aria-label={fr.build.parts.realSizeOf(g.name.full)} onClick={() => setSizing(g)}>
                   {fr.build.parts.realSize}
                 </button>
-                <button type="button" className={styles.linkBtn} aria-pressed={isMissing} onClick={() => onToggleMissing(g.key)}>
+                <button type="button" className={styles.linkBtn} aria-pressed={isMissing} aria-label={fr.build.parts.missingOf(g.name.full)} onClick={() => onToggleMissing(g.key)}>
                   {isMissing ? fr.build.parts.missingOn : fr.build.parts.missing}
                 </button>
               </span>

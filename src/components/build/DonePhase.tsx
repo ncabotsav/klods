@@ -23,8 +23,8 @@ type Props = {
 /** Lien vers une issue GitHub préremplie : pas de serveur avant le sprint 7, les retours passent par là. */
 function reportUrl(set: SetEntry, model: ModelEntry) {
   const q = new URLSearchParams({
-    title: `${set.number} ${set.name} : le modèle ne correspond pas à la boîte`,
-    body: `Set : ${set.number} (${set.name})\nModèle : ${model.name}\nFichier : ${model.file}\n\nCe qui ne correspond pas :\n`,
+    title: fr.build.done.reportTitle(set.number, set.name),
+    body: fr.build.done.reportBody(set.number, set.name, model.name, model.file),
   });
   return `${GITHUB_URL}/issues/new?${q}`;
 }

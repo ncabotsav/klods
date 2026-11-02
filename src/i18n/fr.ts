@@ -88,6 +88,8 @@ export const fr = {
       missingOn: "Marquée manquante",
       number: "Pièce n°",
       realSize: "Taille réelle",
+      realSizeOf: (name: string) => `Taille réelle : ${name}`,
+      missingOf: (name: string) => `Manquante : ${name}`,
       missingTitle: "Pièces manquantes",
       missingLead: "Note leurs numéros : le service client du fabricant peut envoyer les pièces manquantes d'un set.",
       missingLink: "Demander des pièces manquantes",
@@ -124,6 +126,9 @@ export const fr = {
       thanks: "Merci, c'est noté.",
       reportLead: "Dis-nous ce qui ne correspondait pas : ça aide à corriger le modèle.",
       report: "Signaler le problème sur GitHub",
+      reportTitle: (number: string, name: string) => `${number} ${name} : le modèle ne correspond pas à la boîte`,
+      reportBody: (number: string, name: string, model: string, file: string) =>
+        `Set : ${number} (${name})\nModèle : ${model}\nFichier : ${file}\n\nCe qui ne correspond pas :\n`,
       next: "À monter ensuite",
       back: "Revoir la dernière étape",
       again: "Recommencer",

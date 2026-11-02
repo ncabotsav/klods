@@ -65,6 +65,18 @@ export default function BuildApp({ set, related }: Props) {
     [models.length, params, model.slug],
   );
 
+  // ouvert directement sur une étape (« ?etape=12 », lien ou rechargement) : cette étape devient l'étape à reprendre
+  const initialRef = useRef(initial);
+  useEffect(() => {
+    const first = initialRef.current;
+    if (first.phase !== "build") return;
+    updateProgress(baseRef.current, (p) => ({
+      step: first.index,
+      seen: p.seen.includes(first.index) ? p.seen : [...p.seen, first.index],
+      lastAt: Date.now(),
+    }));
+  }, []);
+
   // le geste retour du téléphone recule d'une étape (ou revient à la phase précédente)
   useEffect(() => {
     const onPop = () => {

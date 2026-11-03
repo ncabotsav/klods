@@ -6,7 +6,9 @@
   "name": "klods",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
-  "workers_dev": true,
+  // pas d'adresse workers.dev : le site vit sur son domaine (preview.klods.app jusqu'à la bascule)
+  "workers_dev": false,
+  "routes": [{ "pattern": "preview.klods.app", "custom_domain": true }],
   "assets": {
     "directory": "./out",
     "binding": "ASSETS",

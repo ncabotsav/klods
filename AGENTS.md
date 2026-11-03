@@ -15,7 +15,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - En-têtes de sécurité et cache : `public/_headers`. Les tests de bout en bout échouent si la CSP bloque quelque chose.
 - Retours : formulaire `/retours/` (`src/components/FeedbackForm.tsx`), validation partagée dans `src/lib/feedback.ts`, gardés un an dans Workers KV, e-mail vers le secret `FEEDBACK_TO`. Jamais l'adresse IP.
 - Supervision : workflow « Supervision » toutes les 30 minutes (pages clés, un modèle, la 404, le Worker) ; un échec part par e-mail via les notifications GitHub Actions.
-- Mesure d'audience : Cloudflare Web Analytics, sans cookie, posée seulement si la variable `CF_ANALYTICS_TOKEN` du dépôt existe.
+- Mesure d'audience : Cloudflare Web Analytics, sans cookie, injecté automatiquement par Cloudflare sur klods.app (rien dans le code). `src/components/Analytics.tsx` ne sert que si on coupe l'injection : il pose alors le script avec la variable `CF_ANALYTICS_TOKEN` du dépôt. La CSP autorise ses domaines.
 
 ## Règles de la maison
 

@@ -153,3 +153,57 @@ export function formatDuration(ms: number): string {
   const m = minutes % 60;
   return m ? `${h} h ${String(m).padStart(2, "0")}` : `${h} h`;
 }
+
+/** Montages terminés, du plus récent au plus ancien. */
+export function finishedBuilds(store: Store): Progress[] {
+  return Object.values(store)
+    .filter((p) => p.finishedAt)
+    .sort((a, b) => (b.finishedAt ?? 0) - (a.finishedAt ?? 0));
+}
+
+/** Chiffres de l'atelier : sets terminés (un set compte une fois), étapes vues et temps passé à monter. */
+export function workshopTotals(store: Store) {
+  const all = Object.values(store);
+  return {
+    finished: new Set(all.filter((p) => p.finishedAt).map((p) => p.number)).size,
+    steps: all.reduce((n, p) => n + new Set(p.seen).size, 0),
+    activeMs: all.reduce((n, p) => n + p.activeMs, 0),
+  };
+}
+
+const EXPORT_FORMAT = "klods-atelier";
+
+/** Fichier de sauvegarde de l'atelier, pour le garder ou le passer à un autre appareil. */
+export function exportProgress(store: Store, now = Date.now()): string {
+  return JSON.stringify({ format: EXPORT_FORMAT, version: 1, exportedAt: now, builds: Object.values(store) }, null, 1);
+}
+
+const isProgress = (p: unknown): p is Progress => {
+  const o = p as Progress;
+  return !!o && typeof o.number === "string" && typeof o.model === "string" && typeof o.name === "string" && typeof o.steps === "number" && typeof o.step === "number" && Array.isArray(o.seen) && typeof o.updatedAt === "number";
+};
+
+/**
+ * Lit un fichier de sauvegarde et le fusionne avec l'atelier : pour un même montage, la version la plus
+ * récente gagne. Renvoie le nombre de montages ajoutés ou mis à jour, ou null si le fichier n'est pas reconnu.
+ */
+export function importProgress(text: string): number | null {
+  let data: { format?: string; builds?: unknown[] };
+  try {
+    data = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (data?.format !== EXPORT_FORMAT || !Array.isArray(data.builds)) return null;
+  const store = { ...read() };
+  let changed = 0;
+  for (const b of data.builds) {
+    if (!isProgress(b)) continue;
+    const key = keyOf(b.number, b.model);
+    if (store[key] && store[key].updatedAt >= b.updatedAt) continue;
+    store[key] = { ...b, missing: Array.isArray(b.missing) ? b.missing : [], seen: b.seen.filter((n) => Number.isInteger(n)) };
+    changed++;
+  }
+  if (changed) write(store);
+  return changed;
+}

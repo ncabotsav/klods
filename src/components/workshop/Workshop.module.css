@@ -1,0 +1,144 @@
+/* Mon atelier : une colonne large, des cartes en grille */
+.page {
+  display: grid;
+  gap: var(--space-6);
+  padding-top: var(--space-7);
+  padding-bottom: var(--space-8);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--measure);
+}
+
+.title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+}
+
+.lead {
+  font-size: 19px;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: var(--space-3);
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-1);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.stats dt {
+  color: var(--muted);
+}
+
+.stats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 32px;
+}
+
+.section,
+.save,
+.empty {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sectionTitle,
+.empty h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.shelf {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  /* deux colonnes dès le téléphone : les sets côte à côte */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  gap: var(--space-4);
+}
+
+.item {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.itemText {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.name a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.name a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.meta {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.rebuild {
+  justify-self: start;
+  margin-top: var(--space-2);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.message:empty {
+  display: none;
+}

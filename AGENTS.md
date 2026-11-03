@@ -23,7 +23,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - **Marque LEGO** : jamais dans un nom, une URL ou un nom de fichier public. Dans un texte, toujours en adjectif (« les sets LEGO® »), avec le ®, dans la même police que le texte autour. L'avertissement du pied de page reste sur toutes les pages.
 - **Attribution** : chaque fiche de set cite l'auteur du fichier LDraw (licence CC BY). Les données Rebrickable sont créditées dans le pied de page et la page À propos.
 - **Données brutes hors de Git** : les fichiers téléchargés (OMR, bibliothèque LDraw, CSV Rebrickable) vont dans `data/raw/`, ignoré par Git. Seuls les fichiers construits par les scripts sont publiés.
-- **Textes** : tous dans `src/i18n/fr.ts`, jamais en dur dans les composants. Le français est la langue de référence ; l'anglais suivra la même structure.
+- **Textes** : tous dans `src/i18n/fr.ts` (référence) et `src/i18n/en.ts` (même structure, vérifiée par TypeScript), jamais en dur dans les composants. Côté serveur, `dictFor(locale)` ; côté client, `useT()` ou `useLocale()` de `src/i18n/LocaleProvider.tsx`. Les traductions anglaises sont écrites à la main.
 - **Ton** : on tutoie, phrases courtes et concrètes, voix active. Un bouton dit ce qui se passe (« Commencer », « Étape suivante »). Pas de tiret cadratin dans les textes de l'interface : virgule, deux-points ou parenthèses.
 - **Couleurs** : uniquement par les jetons de `src/app/globals.css`. Le thème sombre redéfinit les jetons, jamais les composants.
 - **Style** : CSS Modules et variables CSS, pas de kit UI. Mise en page en flex ou grid avec `gap`.
@@ -36,9 +36,18 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - Le format de `public/data/sets.json` est défini une seule fois, dans `src/lib/catalog-schema.ts` (zod), et validé à l'écriture ; les petites fonctions sur le catalogue sont dans `src/lib/catalog.ts`, sans zod, pour ne pas alourdir les pages.
 - Tests : `npm test` (`node --test`), à côté du code (`*.test.ts`). Parcours complet : `npm run e2e` (Playwright, dossier `e2e/`), joué en CI sur chaque PR.
 
+## Deux langues
+
+- Pages qu'on trouve par un moteur de recherche, dans les deux langues : français à la racine (`src/app/(pages)/`), anglais sous `/en` (`src/app/en/`). Les deux routes appellent la même vue de `src/views/` avec la langue. Chaque page déclare sa jumelle (`bilingual()` de `src/lib/seo.ts`, hreflang) ; le sitemap liste les deux.
+- Pages communes (`src/app/(outils)/` : montage, impression, atelier, retours, hors connexion, essai) et 404 : la langue choisie dans le navigateur (`src/lib/locale-pref.ts`), à défaut celle du navigateur. Une page d'une langue enregistre ce choix.
+- Lien FR / EN dans l'en-tête (`LanguageSwitch`) : même page dans l'autre langue (lue dans les liens hreflang), ou changement sur place sur une page commune.
+- Thèmes : nom et adresse dans chaque langue (`themeName()` de `src/i18n/themes-fr.ts`), un groupe français = un groupe anglais. Index de recherche par langue : `/recherche.json`, `/en/recherche.json`.
+- Les fiches de sets n'ont qu'un `index.html` dans chaque langue : on y va par `setPageHref()`, jamais `next/link`.
+- Les tests de bout en bout tournent avec un navigateur en français ; `e2e/langues.spec.ts` vérifie l'anglais.
+
 ## Moteur 3D
 
-- `src/engine/` est partagé par le site et par le contrôle du catalogue : `load.ts` (LDrawLoader), `ldraw-text.ts` (ROTSTEP, couleurs, descriptions), `steps.ts` (moteur d'étapes), `connectors.ts` (points d'attache lus dans les primitives LDraw), `insertion.ts` (direction d'arrivée de chaque pièce), `instructions.ts` (consignes en français). Ces fichiers tournent aussi dans Node : pas d'accès au DOM.
+- `src/engine/` est partagé par le site et par le contrôle du catalogue : `load.ts` (LDrawLoader), `ldraw-text.ts` (ROTSTEP, couleurs, descriptions), `steps.ts` (moteur d'étapes), `connectors.ts` (points d'attache lus dans les primitives LDraw), `insertion.ts` (direction d'arrivée de chaque pièce), `instructions.ts` (consignes en français et en anglais). Ces fichiers tournent aussi dans Node : pas d'accès au DOM.
 - Direction d'arrivée : alignement de points d'attache, puis tenon entré dans le volume d'une pièce, puis volume touché, puis le haut de la pièce. `npm run check` mesure la part des pièces guidées et le temps de calcul ; sur `/essai`, la case « Montrer la direction d'arrivée » dessine les flèches.
 - Au-delà de 1 Mo, `useModel` calcule les directions d'arrivée dans un Web Worker (`insertion.worker.ts`) pendant que la page charge le modèle, puis les pose (`applyInsertions`) ; repli sur la page si le Worker échoue.
 - `stage.ts` et `thumbs.ts` sont réservés au navigateur, chargés à la demande depuis un composant client.

@@ -62,3 +62,14 @@ test("accessibilité en thème sombre : accueil, fiche, étape", async ({ page }
   await expect(page.getByRole("button", { name: /Étape suivante/ })).toBeVisible({ timeout: 60_000 });
   await audit(page);
 });
+
+test("accessibilité : encart « Reprendre », avant et après le retrait d'un montage", async ({ page }) => {
+  await page.goto(`set/${SET}/monter/?etape=2`);
+  await expect(page.locator("p[aria-live]").first()).toContainText("2 sur", { timeout: 60_000 });
+  await page.goto("./");
+  await expect(page.getByRole("region", { name: "Reprendre" })).toBeVisible();
+  await audit(page);
+  await page.getByRole("button", { name: /^Retirer « .+ » de la liste$/ }).click();
+  await expect(page.getByRole("button", { name: "Annuler" })).toBeFocused();
+  await audit(page);
+});

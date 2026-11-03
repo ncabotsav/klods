@@ -58,3 +58,25 @@ test("marquer une pièce manquante", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Pièces manquantes" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Demander des pièces manquantes" })).toBeVisible();
 });
+
+test("retirer un montage de « Reprendre », puis annuler", async ({ page }) => {
+  await page.goto(`set/${SET}/monter/?etape=3`);
+  await expect(stepLabel(page)).toContainText("3 sur", { timeout: 60_000 });
+  await page.goto("./");
+  const resume = page.getByRole("region", { name: "Reprendre" });
+  const remove = resume.getByRole("button", { name: /^Retirer « .+ » de la liste$/ });
+  await expect(remove).toHaveCount(1);
+  await remove.click();
+  // le focus passe sur « Annuler », qui lit le message
+  const undo = page.getByRole("button", { name: "Annuler" });
+  await expect(undo).toBeFocused();
+  await expect(page.getByText(/est retiré, avec sa progression/)).toBeVisible();
+  await expect(resume.getByRole("link", { name: /Continuer/ })).toHaveCount(0);
+  await undo.click();
+  await expect(resume.getByRole("link", { name: /Continuer/ })).toHaveCount(1);
+  await expect(resume.getByRole("link", { name: /Continuer/ })).toBeFocused();
+  // retirer pour de bon : l'encart disparaît une fois le bandeau parti
+  await remove.click();
+  await page.reload();
+  await expect(page.getByRole("region", { name: "Reprendre" })).toHaveCount(0);
+});

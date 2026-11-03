@@ -51,7 +51,11 @@ export function countParts(o: Object3D): number {
 
 const letter = (i: number): string => (i < 26 ? String.fromCharCode(65 + i) : `${letter(Math.floor(i / 26) - 1)}${String.fromCharCode(65 + (i % 26))}`);
 
-export function buildSteps(model: Object3D, info: ModelText): StepPlan {
+/**
+ * `insertion: false` saute le calcul des directions d'arrivée (le plus long sur un gros modèle) :
+ * le parcours de montage le fait alors dans un Web Worker et les pose ensuite (`applyInsertions`).
+ */
+export function buildSteps(model: Object3D, info: ModelText, { insertion: withInsertion = true }: { insertion?: boolean } = {}): StepPlan {
   const steps: Step[] = [];
   const letters = new Map<string, string>();
   const uses = new Map<string, number>();
@@ -130,7 +134,7 @@ export function buildSteps(model: Object3D, info: ModelText): StepPlan {
   });
 
   // par où chaque pièce arrive (userData.klodsInsert), d'après ses points d'attache
-  const insertion = assignInsertions(model, steps, info);
+  const insertion = withInsertion ? assignInsertions(model, steps, info) : { placed: 0, guided: 0, touching: 0, ms: 0 };
 
   return { steps, assemblyLetters: letters, totalParts: countParts(model), insertion };
 }

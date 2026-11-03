@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 import type { Object3D } from "three";
-import { aligned } from "./insertion.ts";
+import { aligned, applyInsertions, readInsertions } from "./insertion.ts";
 import { parseRefs, refKey } from "./connectors.ts";
 import { loadModelText } from "./load.ts";
 import { buildSteps } from "./steps.ts";
@@ -79,4 +79,16 @@ test("sur les modèles de référence, plus de 80 % des objets posés suivent un
     const { insertion } = buildSteps(model, info);
     assert.ok((insertion.guided + insertion.touching) / insertion.placed > 0.8, `${set} : ${JSON.stringify(insertion)}`);
   }
+});
+
+test("les directions calculées sur une copie se posent à l'identique sur une autre (Web Worker)", async () => {
+  const text = gunzipSync(readFileSync("fixtures/ldraw/889-1.mpd.gz")).toString("utf8");
+  const a = await loadModelText(text, { smoothNormals: false });
+  const full = buildSteps(a.model, a.info);
+  const data = readInsertions(full.steps, full.insertion);
+  const b = await loadModelText(text, { smoothNormals: false });
+  const bare = buildSteps(b.model, b.info, { insertion: false });
+  assert.ok(applyInsertions(bare.steps, data));
+  assert.deepEqual(readInsertions(bare.steps, full.insertion), data);
+  assert.ok(!applyInsertions(bare.steps.slice(1), data));
 });

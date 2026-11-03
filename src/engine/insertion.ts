@@ -264,3 +264,34 @@ export function assignInsertions(model: Object3D, steps: Step[], info: ModelText
 
   return { placed, guided, touching, ms: Math.round(performance.now() - t0) };
 }
+
+/** Directions calculées ailleurs (Web Worker) : à plat, dans l'ordre des objets posés étape par étape. */
+export type InsertionData = { dirs: number[]; guided: number[]; stats: InsertionStats };
+
+const insertionItems = (steps: Step[]) => steps.flatMap((s) => [...s.parts, ...s.assemblies]);
+
+/** Lit les directions posées par `assignInsertions`, pour les envoyer d'un fil d'exécution à l'autre. */
+export function readInsertions(steps: Step[], stats: InsertionStats): InsertionData {
+  const dirs: number[] = [];
+  const guided: number[] = [];
+  for (const item of insertionItems(steps)) {
+    const d = (item.userData.klodsInsert as Vec3 | undefined) ?? UP;
+    dirs.push(d[0], d[1], d[2]);
+    guided.push(item.userData.klodsGuided ? 1 : 0);
+  }
+  return { dirs, guided, stats };
+}
+
+/**
+ * Pose sur un modèle les directions lues sur une autre copie du même fichier (même texte, même moteur :
+ * mêmes objets dans le même ordre). Renvoie false si les deux ne correspondent pas.
+ */
+export function applyInsertions(steps: Step[], data: InsertionData): boolean {
+  const items = insertionItems(steps);
+  if (items.length * 3 !== data.dirs.length) return false;
+  items.forEach((item, i) => {
+    item.userData.klodsInsert = [data.dirs[i * 3], data.dirs[i * 3 + 1], data.dirs[i * 3 + 2]];
+    item.userData.klodsGuided = data.guided[i] === 1;
+  });
+  return true;
+}

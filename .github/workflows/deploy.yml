@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: pages-${{ github.ref }}
@@ -45,23 +46,45 @@ jobs:
           path: public/data
           key: site-data-latest
           restore-keys: site-data-
+      # portée des tests de bout en bout :
+      # - sur une PR : Chrome toujours ; Safari, Firefox et Lighthouse si la PR touche au moteur 3D,
+      #   au parcours de montage, au service worker, aux tests ou aux dépendances
+      # - après les données (workflow « Données ») : Chrome, les modèles ont pu changer
+      # - après un merge sur main : rien, tout a été joué sur la PR ; on construit et on publie
+      # - lancement manuel : tout
+      - id: scope
+        name: Portée des tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          case "${{ github.event_name }}" in
+            pull_request)
+              files="$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate --jq '.[].filename')"
+              echo "$files"
+              full=false
+              echo "$files" | grep -qE '^(src/engine/|src/components/(build|player)/|src/lib/webgl|public/sw\.js|e2e/|playwright\.config|package(-lock)?\.json|next\.config|\.github/)' && full=true
+              echo "e2e=true" >> "$GITHUB_OUTPUT"; echo "full=$full" >> "$GITHUB_OUTPUT" ;;
+            workflow_run) echo "e2e=true" >> "$GITHUB_OUTPUT"; echo "full=false" >> "$GITHUB_OUTPUT" ;;
+            workflow_dispatch) echo "e2e=true" >> "$GITHUB_OUTPUT"; echo "full=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "e2e=false" >> "$GITHUB_OUTPUT"; echo "full=false" >> "$GITHUB_OUTPUT" ;;
+          esac
       - run: npm test
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
       # parcours de montage de bout en bout, sur le site construit (s'il y a des données)
       - name: Tests de bout en bout
-        if: hashFiles('public/data/sets.json') != ''
+        if: steps.scope.outputs.e2e == 'true' && hashFiles('public/data/sets.json') != ''
         env:
-          # Chrome (ordinateur et téléphone), Safari (iPhone) et Firefox
-          E2E_ALL_BROWSERS: 1
+          # Chrome (ordinateur et téléphone) ; Safari (iPhone) et Firefox quand la portée est complète
+          E2E_ALL_BROWSERS: ${{ steps.scope.outputs.full == 'true' && '1' || '' }}
         run: |
-          npx playwright install --with-deps chromium firefox webkit
+          if [ -n "$E2E_ALL_BROWSERS" ]; then npx playwright install --with-deps chromium firefox webkit; else npx playwright install --with-deps chromium; fi
           npm run e2e
       # mesure Lighthouse (téléphone simulé) sur le site construit, compressé comme sur GitHub Pages ;
       # les notes vont dans le résumé du workflow, sans le faire échouer
       - name: Lighthouse
-        if: hashFiles('public/data/sets.json') != ''
+        if: steps.scope.outputs.full == 'true' && hashFiles('public/data/sets.json') != ''
         continue-on-error: true
         run: |
           node scripts/serve-out.mjs 4173 &

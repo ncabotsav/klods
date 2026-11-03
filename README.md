@@ -2,7 +2,7 @@
 
 Notices de montage LEGO® en 3D, étape par étape. Tape le numéro de ton set : chaque étape s'affiche en 3D, avec les pièces à prendre.
 
-Projet en cours de construction. Préversion : [ncabotsav.github.io/klods](https://ncabotsav.github.io/klods/)
+En ligne sur [klods.app](https://klods.app/). Le code reste ici, sur GitHub.
 
 ## Stack
 

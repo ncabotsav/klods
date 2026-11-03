@@ -3,7 +3,6 @@ import "./globals.css";
 import { archivo, atkinson, plexMono } from "./fonts";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import PreviewBanner from "@/components/PreviewBanner";
 import ServiceWorker from "@/components/ServiceWorker";
 import Analytics from "@/components/Analytics";
 import { fr } from "@/i18n/fr";
@@ -46,7 +45,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {fr.nav.skip}
         </a>
         <SiteHeader />
-        <PreviewBanner />
         <main id="contenu">{children}</main>
         <SiteFooter />
         <ServiceWorker />

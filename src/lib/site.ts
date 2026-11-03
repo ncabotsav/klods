@@ -6,7 +6,7 @@ export const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /** Adresse publique du site, pour les cartes de partage, le sitemap et les liens absolus. */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://ncabotsav.github.io/klods").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://klods.app").replace(/\/$/, "");
 
 /**
  * Chemin d'un fichier de /public, préfixé par BASE_PATH.

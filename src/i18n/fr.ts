@@ -111,12 +111,6 @@ export const fr = {
     themeDescription: (theme: string, n: number) => `Notices de montage en 3D des sets LEGO® ${theme} : ${n} modèles à suivre étape par étape.`,
     back: "Tout le catalogue",
   },
-  preview: {
-    label: "Préversion",
-    body: "Klods est en test. Un souci, une idée ?",
-    link: "Dis-le sur GitHub",
-    close: "Fermer le bandeau",
-  },
   about: {
     title: "À propos",
     lead: "Klods joue les notices de montage en 3D, étape par étape, à partir de modèles publiés par la communauté LDraw.",
@@ -291,10 +285,6 @@ export const fr = {
   },
   soon: {
     eyebrow: "Bientôt",
-    catalogue: {
-      title: "Catalogue",
-      body: "Le catalogue des sets arrive avec la préversion. Il listera tous les sets disponibles en 3D, par thème et par année.",
-    },
     workshop: {
       title: "Mon atelier",
       body: "Ici apparaîtront les sets que tu as montés et ceux en cours, gardés dans ton navigateur. Aucun compte nécessaire.",

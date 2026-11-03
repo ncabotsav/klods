@@ -121,6 +121,24 @@ export function updateProgress(
   return next;
 }
 
+/** Efface la progression d'un montage ; renvoie ce qui a été effacé, pour pouvoir l'annuler. */
+export function removeProgress(number: string, model: string): Progress | undefined {
+  const store = { ...read() };
+  const key = keyOf(number, model);
+  const removed = store[key];
+  if (!removed) return undefined;
+  delete store[key];
+  write(store);
+  return removed;
+}
+
+/** Remet une progression effacée (bouton « Annuler »). */
+export function restoreProgress(p: Progress) {
+  const store = { ...read() };
+  store[keyOf(p.number, p.model)] = p;
+  write(store);
+}
+
 /** Montages commencés et pas terminés, du plus récent au plus ancien. */
 export function inProgress(store: Store): Progress[] {
   return Object.values(store)

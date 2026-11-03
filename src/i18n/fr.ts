@@ -299,6 +299,10 @@ export const fr = {
     title: "Reprendre",
     step: (n: number, total: number) => `Étape ${n} sur ${total}`,
     open: "Continuer",
+    remove: (name: string) => `Retirer « ${name} » de la liste`,
+    removeTitle: "Retirer de la liste",
+    removed: (name: string) => `« ${name} » est retiré, avec sa progression.`,
+    undo: "Annuler",
   },
   bench: {
     title: "Banc d'essai",

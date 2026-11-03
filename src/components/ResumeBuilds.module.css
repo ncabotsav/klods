@@ -17,7 +17,13 @@
   gap: var(--space-3);
 }
 
+/* la carte porte le lien (toute la carte) et, à côté, la croix pour retirer le montage */
+.card {
+  position: relative;
+}
+
 .item {
+  height: 100%;
   display: grid;
   gap: var(--space-1);
   background: var(--card);
@@ -33,6 +39,8 @@
 }
 
 .name {
+  /* place pour la croix */
+  padding-right: 36px;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 18px;
@@ -60,4 +68,50 @@
 .open {
   font-weight: 700;
   color: var(--accent);
+}
+
+/* croix : 44 px de zone de toucher, au coin de la carte */
+.remove {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.remove:hover {
+  color: var(--ink);
+  background: var(--stage);
+}
+
+.remove svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.undo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+}
+
+.undo[hidden] {
+  display: none;
 }

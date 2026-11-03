@@ -9,7 +9,7 @@ export default function Logo() {
         <rect x="17" y="0" width="7" height="5" rx="1.5" />
         <rect x="0" y="4" width="28" height="16" rx="3" />
       </svg>
-      Klods
+      <span className={styles.logoName}>Klods</span>
     </span>
   );
 }

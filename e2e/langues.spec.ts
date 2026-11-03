@@ -22,9 +22,13 @@ test("les pages anglaises existent, déclarent leur version française, et passe
 
 test("le lien de langue mène à la même page dans l'autre langue", async ({ page }) => {
   await page.goto(`set/${SET}/`);
-  await page.getByRole("link", { name: "Read in English" }).click();
+  // la langue de la page est annoncée comme actuelle, l'autre est un lien
+  const langs = page.getByRole("group", { name: "Langue" });
+  await expect(langs.locator('[aria-current="true"]')).toHaveText("FR");
+  await langs.getByRole("link", { name: "English" }).click();
   await expect(page).toHaveURL(new RegExp(`/en/set/${SET}/$`));
-  await page.getByRole("link", { name: "Lire en français" }).click();
+  await expect(page.getByRole("group", { name: "Language" }).locator('[aria-current="true"]')).toHaveText("EN");
+  await page.getByRole("link", { name: "Français" }).click();
   await expect(page).toHaveURL(new RegExp(`/klods/set/${SET}/$`));
 });
 
@@ -38,7 +42,7 @@ test("après une page anglaise, le montage parle anglais ; il change de langue s
   await expect(page.getByText(/^(Add \d|Place )/).first()).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 
-  await page.getByRole("link", { name: "Lire en français" }).click();
+  await page.getByRole("link", { name: "Français" }).click();
   await expect(page.locator("p[aria-live]").first()).toContainText("1 sur");
   await expect(page.getByText(/^(Ajoute \d|Pose )/).first()).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");

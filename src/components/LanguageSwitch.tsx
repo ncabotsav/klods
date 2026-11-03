@@ -32,7 +32,7 @@ export default function LanguageSwitch() {
 
   // sans JavaScript : l'accueil de l'autre langue
   return (
-    <a href={asset(other === "fr" ? "/" : "/en/")} hrefLang={other} lang={other} className={styles.lang} onClick={go} aria-label={t.nav.otherLabel}>
+    <a href={asset(other === "fr" ? "/" : "/en/")} hrefLang={other} lang={other} className={styles.lang} onClick={go} aria-label={`${t.nav.otherCode}, ${t.nav.otherLabel}`} title={t.nav.otherLabel}>
       {t.nav.otherCode}
     </a>
   );

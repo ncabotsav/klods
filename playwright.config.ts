@@ -14,6 +14,8 @@ export default defineConfig({
   reporter: process.env.CI ? [["list"], ["github"]] : "list",
   use: {
     baseURL: "http://localhost:4173/klods/",
+    // navigateur en français : les pages communes (montage, atelier…) prennent la langue du navigateur
+    locale: "fr-FR",
     trace: "retain-on-failure",
   },
   projects: [

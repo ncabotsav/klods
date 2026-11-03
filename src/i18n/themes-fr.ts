@@ -157,3 +157,26 @@ export const themeFr = (name: string) => THEMES_FR[name] ?? name;
 
 /** Chemin des thèmes en français (« Ville › Ville classique »). */
 export const themePathFr = (path: string[]) => path.map(themeFr).join(" › ");
+
+/**
+ * Noms anglais des groupes de thèmes français qui ne sont pas un simple nom Rebrickable : plusieurs
+ * thèmes d'origine réunis (Train et Trains), ou un nom qui porte la marque (jamais seule dans un titre).
+ * Les autres thèmes gardent leur nom d'origine en anglais.
+ */
+const GROUPS_EN: Record<string, string> = {
+  Art: "Art",
+  Boutiques: "Brand Stores",
+  Exclusivités: "Exclusives",
+  "Ideas et CUUSOO": "Ideas and CUUSOO",
+  "Premières gammes (1970–1980)": "Early sets (1970–1980)",
+  "La Grande Aventure LEGO®": "The LEGO® Movie",
+  Trains: "Trains",
+  "Ultimate Collector Series": "Ultimate Collector Series",
+};
+
+/** Nom d'un thème dans une langue du site. */
+export const themeName = (name: string, locale: "fr" | "en") =>
+  locale === "fr" ? themeFr(name) : (GROUPS_EN[themeFr(name)] ?? name.replace(/\bLEGO\b(?!®)/g, "LEGO®"));
+
+/** Chemin des thèmes dans une langue (« Ville › Ville classique », « Town › Classic Town »). */
+export const themePathIn = (path: string[], locale: "fr" | "en") => path.map((t) => themeName(t, locale)).join(" › ");

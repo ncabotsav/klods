@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./StepPlayer.module.css";
 import ModelViewer, { ViewerPlaceholder } from "./ModelViewer";
 import { stepCallouts, stepText, type Callout } from "./callouts";
-import { useModel, type LoadedModel } from "./useModel";
-import { fr } from "@/i18n/fr";
+import { loadPhaseText, useModel, type LoadedModel } from "./useModel";
+import { useLocale, useT } from "@/i18n/LocaleProvider";
 
 export type PlayerStats = {
   loadMs: number;
@@ -34,10 +34,11 @@ type StepViewProps = {
 
 /** Une étape de la notice : vue 3D, numéro, pièces, consigne, navigation. */
 export function StepView({ loaded, index, animate, onGo, officialUrl, onFrame, finish, arrows }: StepViewProps) {
+  const { t: fr, locale } = useLocale();
   const count = loaded.plan.steps.length;
   const step = loaded.plan.steps[index];
-  const callouts = useMemo(() => stepCallouts(loaded, index), [loaded, index]);
-  const text = useMemo(() => stepText(loaded, index), [loaded, index]);
+  const callouts = useMemo(() => stepCallouts(loaded, index, locale, fr), [loaded, index, locale, fr]);
+  const text = useMemo(() => stepText(loaded, index, locale), [loaded, index, locale]);
 
   // flèches du clavier, hors des champs de saisie ; Entrée sur un bouton garde son propre effet
   const nav = useRef({ index, count, onGo, finish });
@@ -135,6 +136,7 @@ export function StepView({ loaded, index, animate, onGo, officialUrl, onFrame, f
 }
 
 export function PartsCallout({ items, className }: { items: Callout[]; className: string }) {
+  const fr = useT();
   return (
     <ul className={`${styles.callout} ${className}`} aria-label={fr.player.partsInStep}>
       {items.map((c) => (
@@ -159,6 +161,7 @@ type Props = {
 
 /** Lecteur autonome (page /essai) : charge le modèle et joue ses étapes, avec les mesures. */
 export default function StepPlayer({ src, bytes = 0, officialUrl, onStats, arrows }: Props) {
+  const fr = useT();
   const state = useModel(src, bytes);
   const [index, setIndex] = useState(0);
   const [animate, setAnimate] = useState(false);
@@ -182,7 +185,7 @@ export default function StepPlayer({ src, bytes = 0, officialUrl, onStats, arrow
   }, [loaded, onStats]);
 
   if (state.status === "error") return <ViewerPlaceholder text={fr.player.error} error />;
-  if (state.status === "loading") return <ViewerPlaceholder text={state.phase} />;
+  if (state.status === "loading") return <ViewerPlaceholder text={loadPhaseText(state.phase, fr)} />;
   return (
     <StepView
       loaded={state.loaded}

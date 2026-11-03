@@ -2,11 +2,12 @@
 
 import { useEffect } from "react";
 import styles from "@/components/ComingSoon.module.css";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 import { asset } from "@/lib/site";
 
 /** Page d'erreur de l'application, en français (sans réseau, ou une page qui ne se charge pas). */
 export default function Error({ error, retry }: { error: unknown; retry: () => void }) {
+  const fr = useT();
   useEffect(() => {
     console.error(error);
   }, [error]);

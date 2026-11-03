@@ -10,10 +10,10 @@ import DonePhase from "./DonePhase";
 import StepsSheet from "./StepsSheet";
 import { StepView } from "@/components/player/StepPlayer";
 import { ViewerPlaceholder } from "@/components/player/ModelViewer";
-import { useModel } from "@/components/player/useModel";
+import { loadPhaseText, useModel } from "@/components/player/useModel";
 import { defaultModel, officialManualUrl, playableModels, type SetEntry } from "@/lib/catalog";
 import { addActiveTime, followedEnough, getServerSnapshot, getSnapshot, subscribe, updateProgress } from "@/lib/progress";
-import { fr } from "@/i18n/fr";
+import { useLocale } from "@/i18n/LocaleProvider";
 import { feedbackHref } from "@/lib/feedback";
 
 export type Phase = "cover" | "parts" | "build" | "done";
@@ -31,6 +31,7 @@ function phaseFromUrl(params: URLSearchParams): { phase: Phase; index: number } 
 }
 
 export default function BuildApp({ set, related, hasCover = false }: Props) {
+  const { t: fr, locale } = useLocale();
   const params = useSearchParams();
   const models = playableModels(set);
   const model = models.find((m) => m.slug === params.get("modele")) ?? defaultModel(set);
@@ -168,7 +169,7 @@ export default function BuildApp({ set, related, hasCover = false }: Props) {
     startBuilding(0);
   }, [startBuilding]);
 
-  const official = officialManualUrl(set.number);
+  const official = officialManualUrl(set.number, locale);
   const phases: Phase[] = ["cover", "parts", "build", "done"];
 
   return (
@@ -262,7 +263,7 @@ export default function BuildApp({ set, related, hasCover = false }: Props) {
             )}
           </div>
         ) : (
-          <ViewerPlaceholder text={state.status === "error" ? fr.player.error : state.status === "loading" ? state.phase : ""} error={state.status === "error"} />
+          <ViewerPlaceholder text={state.status === "error" ? fr.player.error : state.status === "loading" ? loadPhaseText(state.phase, fr) : ""} error={state.status === "error"} />
         ))}
 
       {phase === "done" && (

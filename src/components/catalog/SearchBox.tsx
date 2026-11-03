@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import styles from "./SearchBox.module.css";
 import SetCover from "./SetCover";
@@ -9,7 +7,8 @@ import SearchIcon from "./SearchIcon";
 import { createSearch, normalize, type SearchEntry } from "@/lib/search";
 import { officialManualUrl } from "@/lib/catalog";
 import { loadSearchIndex as loadIndex } from "@/lib/search-index";
-import { fr } from "@/i18n/fr";
+import { setPageHref } from "@/lib/site";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 const MAX_RESULTS = 8;
 
@@ -20,8 +19,8 @@ type Props = { examples?: { label: string; query: string }[]; autoFocus?: boolea
  * Entrée ouvre le premier, flèche bas descend dans la liste.
  */
 export default function SearchBox({ examples = [], autoFocus = false }: Props) {
+  const { t: fr, locale } = useLocale();
   const id = useId();
-  const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLUListElement>(null);
   const [query, setQuery] = useState("");
@@ -34,7 +33,7 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
 
   const prepare = () => {
     if (entries || failed) return;
-    loadIndex().then(setEntries, () => setFailed(true));
+    loadIndex(locale).then(setEntries, () => setFailed(true));
   };
 
   useEffect(() => {
@@ -51,7 +50,7 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
         className={styles.form}
         onSubmit={(e) => {
           e.preventDefault();
-          if (hits[0]) router.push(`/set/${hits[0].entry.n}/`);
+          if (hits[0]) window.location.assign(setPageHref(locale, hits[0].entry.n));
         }}
       >
         <label htmlFor={`${id}-q`} className={styles.label}>
@@ -135,9 +134,9 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
         >
           {hits.map(({ entry }) => (
             <li key={entry.n}>
-              <Link href={`/set/${entry.n}/`} className={styles.result}>
+              <a href={setPageHref(locale, entry.n)} className={styles.result}>
                 <span className={styles.thumb}>
-                  <SetCover number={entry.n} hasCover={entry.c} />
+                  <SetCover locale={locale} number={entry.n} hasCover={entry.c} />
                 </span>
                 <span className={styles.resultText}>
                   <span className={styles.resultName}>{entry.t}</span>
@@ -145,7 +144,7 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
                     {[entry.n, entry.h, entry.y].filter(Boolean).join(" · ")} · {entry.e ? fr.set.steps(entry.s) : fr.set.noSteps}
                   </span>
                 </span>
-              </Link>
+              </a>
             </li>
           ))}
         </ul>
@@ -154,7 +153,7 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
       {typed && entries && !hits.length && number && (
         <p className={styles.missing}>
           {fr.search.noneNumber(number)}{" "}
-          <a href={officialManualUrl(number)} target="_blank" rel="noopener">
+          <a href={officialManualUrl(number, locale)} target="_blank" rel="noopener">
             {fr.search.official}
           </a>
         </p>

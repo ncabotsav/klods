@@ -6,13 +6,14 @@ import styles from "./Print.module.css";
 import { stepCallouts, stepText, type Callout } from "@/components/player/callouts";
 import { useModel } from "@/components/player/useModel";
 import { defaultModel, playableModels, type SetEntry } from "@/lib/catalog";
-import { fr } from "@/i18n/fr";
+import { useLocale } from "@/i18n/LocaleProvider";
 import { hasWebGL } from "@/lib/webgl";
 
 type Page = { index: number; image: string; callouts: Callout[]; text: string; assembly: string | null; repeat: number };
 
 /** Vue impression : chaque étape dessinée une fois, avec ses pièces et sa consigne, en blocs A4. */
 export default function PrintApp({ set }: { set: SetEntry }) {
+  const { t: fr, locale } = useLocale();
   const params = useSearchParams();
   const model = playableModels(set).find((m) => m.slug === params.get("modele")) ?? defaultModel(set);
   const state = useModel(model.file, model.bytes);
@@ -33,7 +34,7 @@ export default function PrintApp({ set }: { set: SetEntry }) {
       for (let i = 0; i < n && !cancelled; i++) {
         stage?.showStep(i, false);
         const step = loaded.plan.steps[i];
-        out.push({ index: i, image: stage?.snapshot() ?? "", callouts: stepCallouts(loaded, i), text: stepText(loaded, i), assembly: step.assembly, repeat: step.repeat });
+        out.push({ index: i, image: stage?.snapshot() ?? "", callouts: stepCallouts(loaded, i, locale, fr), text: stepText(loaded, i, locale), assembly: step.assembly, repeat: step.repeat });
         // une image à la fois, en laissant la page respirer
         if (i % 4 === 3) {
           setPages([...out]);
@@ -49,7 +50,7 @@ export default function PrintApp({ set }: { set: SetEntry }) {
     return () => {
       cancelled = true;
     };
-  }, [state]);
+  }, [state, locale, fr]);
 
   const total = state.status === "ready" ? state.loaded.plan.steps.length : model.steps;
 

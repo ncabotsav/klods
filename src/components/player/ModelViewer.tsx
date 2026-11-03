@@ -3,7 +3,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import styles from "./StepPlayer.module.css";
 import type { LoadedModel } from "./useModel";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 import { useWebGL } from "@/lib/webgl";
 
 export type ViewerMode = { kind: "all"; autoRotate?: boolean } | { kind: "step"; index: number; animate: boolean };
@@ -21,6 +21,7 @@ type Props = {
 
 /** Vue 3D d'un modèle chargé : le modèle entier, ou le modèle à une étape donnée. */
 export default function ModelViewer({ loaded, mode, overlay, onFrame, className, arrows = false }: Props) {
+  const fr = useT();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<InstanceType<LoadedModel["engine"]["Stage"]> | null>(null);
   const webgl = useWebGL();

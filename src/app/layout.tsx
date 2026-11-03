@@ -1,30 +1,21 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { archivo, atkinson, plexMono } from "./fonts";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
 import ServiceWorker from "@/components/ServiceWorker";
 import Analytics from "@/components/Analytics";
-import { fr } from "@/i18n/fr";
-import { SITE_URL } from "@/lib/site";
+import { siteMetadata } from "@/lib/site-metadata";
 
-const title = fr.site.title;
-
-export const metadata: Metadata = {
-  metadataBase: new URL(`${SITE_URL}/`),
-  title: { default: title, template: `%s · ${fr.site.name}` },
-  description: fr.site.description,
-  applicationName: fr.site.name,
-  openGraph: {
-    type: "website",
-    siteName: fr.site.name,
-    title,
-    description: fr.site.description,
-    locale: "fr_FR",
-    images: [{ url: "/partage.png", width: 1200, height: 630, alt: fr.site.name }],
-  },
-  twitter: { card: "summary_large_image", title, description: fr.site.description, images: ["/partage.png"] },
-};
+/*
+ * Mise en page racine, commune aux deux langues. L'habillage (en-tête, pied de page) et la langue
+ * viennent des groupes de pages :
+ * - (pages) : pages françaises qu'on trouve par un moteur de recherche, à la racine ;
+ * - en : leurs versions anglaises, sous /en ;
+ * - (outils) : pages communes (montage, impression, atelier, retours, hors connexion), dans la langue
+ *   choisie dans le navigateur.
+ * La page construite est déclarée en français ; une page anglaise porte lang="en" sur son contenu,
+ * et la langue de la balise html suit celle de la page dès son chargement.
+ */
+export const metadata: Metadata = siteMetadata("fr");
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -41,12 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="fr" className={`${archivo.variable} ${atkinson.variable} ${plexMono.variable}`}>
       <body>
-        <a href="#contenu" className="skip">
-          {fr.nav.skip}
-        </a>
-        <SiteHeader />
-        <main id="contenu">{children}</main>
-        <SiteFooter />
+        {children}
         <ServiceWorker />
         <Analytics />
       </body>

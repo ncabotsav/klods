@@ -5,9 +5,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "./FeedbackForm.module.css";
 import { FEEDBACK_KINDS, MESSAGE_MAX, feedbackContext, parseFeedback, type FeedbackError, type FeedbackKind } from "@/lib/feedback";
 import { asset, buildPageHref, CONTACT_EMAIL } from "@/lib/site";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 
-const t = fr.feedback;
 type Ctx = ReturnType<typeof feedbackContext>;
 type State = { kind: "idle" } | { kind: "sending" } | { kind: "sent" } | { kind: "error"; error: FeedbackError | "limit" | "network" };
 
@@ -27,6 +26,7 @@ function backHref(ctx: Ctx): string | null {
  * vient de l'adresse et part avec le message. Envoi à /api/retours (Worker Cloudflare).
  */
 export default function FeedbackForm() {
+  const t = useT().feedback;
   const [ctx, setCtx] = useState<Ctx>({});
   const [kind, setKind] = useState<FeedbackKind | "">("");
   const [state, setState] = useState<State>({ kind: "idle" });

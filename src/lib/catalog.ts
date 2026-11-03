@@ -25,14 +25,17 @@ export const defaultModel = (set: SetEntry) => {
 };
 
 /** Lien vers la notice officielle : le numéro sans le suffixe de version (« 4915-1 » → « 4915 »). */
-export const officialManualUrl = (number: string) =>
-  `https://www.lego.com/fr-fr/service/building-instructions/${encodeURIComponent(number.replace(/-\d+$/, ""))}`;
+/** Pays du site du fabricant pour chaque langue de Klods (lien sortant seulement). */
+const OFFICIAL_REGION = { fr: "fr-fr", en: "en-gb" } as const;
+
+export const officialManualUrl = (number: string, locale: "fr" | "en" = "fr") =>
+  `https://www.lego.com/${OFFICIAL_REGION[locale]}/service/building-instructions/${encodeURIComponent(number.replace(/-\d+$/, ""))}`;
 
 /** Très gros modèle (plus de 6 Mo de texte LDraw) : l'ouverture prend du temps, surtout sur téléphone. */
 export const isHeavy = (model: Pick<ModelEntry, "bytes">) => model.bytes > 6_000_000;
 
 /** Service des pièces manquantes du fabricant. */
-export const MISSING_PARTS_URL = "https://www.lego.com/fr-fr/service/replacementparts";
+export const missingPartsUrl = (locale: "fr" | "en" = "fr") => `https://www.lego.com/${OFFICIAL_REGION[locale]}/service/replacementparts`;
 
 /**
  * Durée de montage estimée, en minutes, arrondie à 5 minutes : environ 7 secondes par pièce,

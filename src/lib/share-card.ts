@@ -5,7 +5,7 @@
  */
 import { asset, SITE_URL } from "./site";
 import { wrapText } from "./wrap-text";
-import { fr } from "@/i18n/fr";
+import type { Dict } from "@/i18n";
 
 /*
  * Les images sont des fichiers, pas de l'interface : elles ne lisent pas les jetons CSS.
@@ -26,7 +26,7 @@ const loadImage = (src: string) =>
   });
 
 /** Dessine la carte et la renvoie en PNG. */
-export async function drawShareCard(info: ShareInfo): Promise<Blob> {
+export async function drawShareCard(info: ShareInfo, t: Dict): Promise<Blob> {
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
@@ -59,7 +59,7 @@ export async function drawShareCard(info: ShareInfo): Promise<Blob> {
   const w = W - x - 56;
   ctx.fillStyle = CARD_COLORS.accent;
   ctx.font = `800 40px ${display}`;
-  ctx.fillText(fr.site.name, x, 112);
+  ctx.fillText(t.site.name, x, 112);
   ctx.fillStyle = CARD_COLORS.muted;
   ctx.font = `500 24px ${mono}`;
   ctx.fillText(info.number, x, 190);
@@ -68,7 +68,7 @@ export async function drawShareCard(info: ShareInfo): Promise<Blob> {
   const lines = wrapText((s) => ctx.measureText(s).width, info.name, w, 3);
   lines.forEach((l, i) => ctx.fillText(l, x, 256 + i * 58));
   ctx.font = `700 34px ${body}`;
-  ctx.fillText(info.formattedTime ? fr.share.cardTime(info.formattedTime) : fr.share.cardDone, x, 256 + lines.length * 58 + 44);
+  ctx.fillText(info.formattedTime ? t.share.cardTime(info.formattedTime) : t.share.cardDone, x, 256 + lines.length * 58 + 44);
   ctx.fillStyle = CARD_COLORS.muted;
   ctx.font = `500 24px ${mono}`;
   ctx.fillText(new URL(SITE_URL).host, x, H - 58);
@@ -79,11 +79,11 @@ export async function drawShareCard(info: ShareInfo): Promise<Blob> {
 export type ShareResult = "shared" | "downloaded" | "cancelled";
 
 /** Partage la carte par le menu du système ; sinon, télécharge l'image. */
-export async function shareBuild(info: ShareInfo): Promise<ShareResult> {
-  const blob = await drawShareCard(info);
+export async function shareBuild(info: ShareInfo, t: Dict, pagePath = `/set/${info.number}/`): Promise<ShareResult> {
+  const blob = await drawShareCard(info, t);
   const file = new File([blob], `klods-${info.number}.png`, { type: "image/png" });
-  const text = info.formattedTime ? fr.share.text(info.name, info.formattedTime) : fr.share.textNoTime(info.name);
-  const url = `${SITE_URL}/set/${info.number}/`;
+  const text = info.formattedTime ? t.share.text(info.name, info.formattedTime) : t.share.textNoTime(info.name);
+  const url = `${SITE_URL}${pagePath}`;
   if (navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: info.name, text: `${text} ${url}` });

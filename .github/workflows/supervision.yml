@@ -31,6 +31,12 @@ jobs:
           check /catalogue/ 200 "Catalogue"
           check /sitemap.xml 200 "<urlset"
           check /robots.txt 200 "Sitemap"
+          # pages légales et formulaire de retours (critère du sprint 7)
+          check /mentions-legales/ 200 "CABOT-SAVIN"
+          check /confidentialite/ 200 "Web Analytics"
+          check /conditions/ 200 "Conditions"
+          check /credits/ 200 "LDraw"
+          check /retours/ 200 "Envoyer un retour"
           # une fiche et son modèle, pris dans l'index du site
           curl -sS -m 20 "$SITE/data/sets.json" -o sets.json || { echo "::error::/data/sets.json injoignable"; exit 1; }
           read -r set file < <(node -e 'const s=require("./sets.json").sets.find(x=>x.models.some(m=>m.status==="ok"));const m=s.models.find(m=>m.status==="ok");console.log(s.number,m.file)')

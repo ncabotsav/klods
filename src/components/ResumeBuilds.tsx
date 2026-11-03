@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import styles from "./ResumeBuilds.module.css";
 import { getServerSnapshot, getSnapshot, inProgress, removeProgress, restoreProgress, subscribe, type Progress } from "@/lib/progress";
 import { fr } from "@/i18n/fr";
+import { buildPageHref } from "@/lib/site";
 
 /** Le bandeau « Annuler » reste ce temps-là, et tant que le focus est dessus. */
 const UNDO_MS = 8000;
@@ -60,7 +60,7 @@ export default function ResumeBuilds() {
             const q = new URLSearchParams({ modele: b.model, etape: String(b.step + 1) });
             return (
               <li key={key} className={styles.card}>
-                <Link href={`/set/${b.number}/monter/?${q}`} className={styles.item} data-key={key}>
+                <a href={buildPageHref(`/set/${b.number}/monter/?${q}`)} className={styles.item} data-key={key}>
                   <span className={styles.name}>{b.name}</span>
                   <span className={styles.meta}>
                     {b.number} · {fr.resume.step(b.step + 1, b.steps)}
@@ -69,7 +69,7 @@ export default function ResumeBuilds() {
                     <span style={{ width: `${Math.round(((b.step + 1) / Math.max(1, b.steps)) * 100)}%` }} />
                   </span>
                   <span className={styles.open}>{fr.resume.open} →</span>
-                </Link>
+                </a>
                 <button type="button" className={styles.remove} onClick={() => remove(b)} aria-label={fr.resume.remove(b.name)} title={fr.resume.removeTitle}>
                   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <path d="M6 6l12 12M18 6L6 18" />

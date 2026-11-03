@@ -11,7 +11,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: url("/"), changeFrequency: "weekly", priority: 1 },
     { url: url("/catalogue/"), changeFrequency: "weekly", priority: 0.9 },
     { url: url("/a-propos/"), changeFrequency: "monthly", priority: 0.3 },
+    { url: url("/credits/"), changeFrequency: "monthly", priority: 0.3 },
     { url: url("/confidentialite/"), changeFrequency: "yearly", priority: 0.2 },
+    { url: url("/conditions/"), changeFrequency: "yearly", priority: 0.2 },
+    { url: url("/mentions-legales/"), changeFrequency: "yearly", priority: 0.2 },
     ...allThemes().map((t) => ({ url: url(`/catalogue/${t.slug}/`), changeFrequency: "weekly" as const, priority: 0.6 })),
     ...allSets().map((s) => ({ url: url(`/set/${s.number}/`), changeFrequency: "monthly" as const, priority: 0.8 })),
   ];

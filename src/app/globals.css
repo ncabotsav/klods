@@ -16,6 +16,8 @@
   --hi: #f2b705;
   /* texte posé sur le jaune --hi : toujours sombre, quel que soit le thème */
   --hi-ink: #14202b;
+  /* erreurs de formulaire */
+  --danger: #b3261e;
 
   /* familles chargées par next/font (src/app/fonts.ts) */
   --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
@@ -49,6 +51,7 @@
     --accent: #5aa2ff;
     --accent-ink: #08121c;
     --hi: #ffcd03;
+    --danger: #ff8a80;
     color-scheme: dark;
   }
 }
@@ -63,6 +66,7 @@
   --accent: #5aa2ff;
   --accent-ink: #08121c;
   --hi: #ffcd03;
+  --danger: #ff8a80;
   color-scheme: dark;
 }
 

@@ -6,7 +6,8 @@ import ModelViewer from "@/components/player/ModelViewer";
 import type { ModelState } from "@/components/player/useModel";
 import { estimateMinutes, type ModelEntry, type SetEntry } from "@/lib/catalog";
 import { formatDuration, type Progress } from "@/lib/progress";
-import { GITHUB_URL } from "@/lib/site";
+import { buildPageHref } from "@/lib/site";
+import { feedbackHref } from "@/lib/feedback";
 import { fr } from "@/i18n/fr";
 
 type Props = {
@@ -19,15 +20,6 @@ type Props = {
   onRestart: () => void;
   onMatched: (matched: boolean) => void;
 };
-
-/** Lien vers une issue GitHub préremplie : pas de serveur avant le sprint 7, les retours passent par là. */
-function reportUrl(set: SetEntry, model: ModelEntry) {
-  const q = new URLSearchParams({
-    title: fr.build.done.reportTitle(set.number, set.name),
-    body: fr.build.done.reportBody(set.number, set.name, model.name, model.file),
-  });
-  return `${GITHUB_URL}/issues/new?${q}`;
-}
 
 /** Fin du montage : le modèle fini, le temps passé, « ça correspondait ? », et des sets à monter ensuite. */
 export default function DonePhase({ set, model, state, progress, related, onBack, onRestart, onMatched }: Props) {
@@ -68,9 +60,9 @@ export default function DonePhase({ set, model, state, progress, related, onBack
           ) : (
             <>
               <p className={styles.muted}>{fr.build.done.reportLead}</p>
-              <a className="btn" href={reportUrl(set, model)} target="_blank" rel="noopener">
+              <Link className="btn" href={feedbackHref({ kind: "piece", set: set.number, model: model.slug })}>
                 {fr.build.done.report}
-              </a>
+              </Link>
             </>
           )}
         </div>
@@ -90,9 +82,9 @@ export default function DonePhase({ set, model, state, progress, related, onBack
             <ul>
               {related.map((r) => (
                 <li key={r.number}>
-                  <Link href={`/set/${r.number}/monter/`}>
+                  <a href={buildPageHref(`/set/${r.number}/monter/`)}>
                     <span className={styles.number}>{r.number}</span> {r.name}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>

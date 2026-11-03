@@ -6,11 +6,15 @@ Klods joue les notices de montage LEGO® en 3D, étape par étape, à partir des
 
 Cette version a des API et des conventions qui peuvent différer de ce que tu connais. Avant d'écrire du code Next.js, lis le guide concerné dans `node_modules/next/dist/docs/` et tiens compte des avertissements de dépréciation. `agentRules: false` dans `next.config.ts` empêche `next dev` de réécrire ce fichier.
 
-## Site statique
+## Site statique et hébergement
 
-- Klods est exporté en site statique (`output: "export"`) tant qu'il est sur GitHub Pages : pas de routes API, pas de rendu à la demande, pas d'optimisation d'images, pas de middleware.
-- Sur Pages, le site vit sous `/klods` (`NEXT_PUBLIC_BASE_PATH`). `next/link` ajoute ce préfixe tout seul ; pour `fetch()` et les `<img>` vers `/public`, passe par `asset()` de `src/lib/site.ts`.
-- Les routes API (IA, retours) arrivent au sprint 7, avec l'hébergement sur Cloudflare.
+- Klods est exporté en site statique (`output: "export"`) : pas de routes API Next, pas de rendu à la demande, pas d'optimisation d'images, pas de middleware.
+- Hébergé sur Cloudflare Workers (`wrangler.jsonc`) : les fichiers de `out/` sont servis tels quels, le Worker `worker/index.ts` ne reçoit que `/api/*` (aujourd'hui `/api/retours`). Job `cloudflare` du workflow « Déploiement », actif si les secrets `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ACCOUNT_ID` existent ; build à la racine (`NEXT_PUBLIC_BASE_PATH` vide). Le code reste sur GitHub.
+- Tant que la bascule n'est pas faite, GitHub Pages sert aussi le site sous `/klods` (`NEXT_PUBLIC_BASE_PATH`). `next/link` ajoute ce préfixe tout seul ; pour `fetch()` et les `<img>` vers `/public`, passe par `asset()` de `src/lib/site.ts`.
+- `npm run build` lance ensuite `scripts/site/finalize.ts` : retire les fichiers de navigation interne des pages `/monter/` et `/imprimer/` (on y va par des liens simples, `buildPageHref()`, jamais `next/link`), pose une CSP stricte dans chaque page (empreintes des scripts en ligne) et échoue au-delà de 19 000 fichiers (limite Cloudflare gratuite : 20 000) ou d'un fichier de plus de 25 Mio.
+- En-têtes de sécurité et cache : `public/_headers`. Les tests de bout en bout échouent si la CSP bloque quelque chose.
+- Retours : formulaire `/retours/` (`src/components/FeedbackForm.tsx`), validation partagée dans `src/lib/feedback.ts`, gardés un an dans Workers KV, e-mail vers le secret `FEEDBACK_TO`. Jamais l'adresse IP.
+- Mesure d'audience : Cloudflare Web Analytics, sans cookie, posée seulement si la variable `CF_ANALYTICS_TOKEN` du dépôt existe.
 
 ## Règles de la maison
 

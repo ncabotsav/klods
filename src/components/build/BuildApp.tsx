@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./BuildApp.module.css";
@@ -13,6 +14,7 @@ import { useModel } from "@/components/player/useModel";
 import { defaultModel, officialManualUrl, playableModels, type SetEntry } from "@/lib/catalog";
 import { addActiveTime, followedEnough, getServerSnapshot, getSnapshot, subscribe, updateProgress } from "@/lib/progress";
 import { fr } from "@/i18n/fr";
+import { feedbackHref } from "@/lib/feedback";
 
 export type Phase = "cover" | "parts" | "build" | "done";
 
@@ -243,6 +245,9 @@ export default function BuildApp({ set, related }: Props) {
               <a className="btn" href={`../imprimer/?modele=${encodeURIComponent(model.slug)}`}>
                 {fr.build.steps.print}
               </a>
+              <Link className="btn" href={feedbackHref({ kind: "etape", set: set.number, model: model.slug, step: Math.min(index, steps - 1) + 1 })}>
+                {fr.build.steps.report}
+              </Link>
             </div>
             {sheet && (
               <StepsSheet

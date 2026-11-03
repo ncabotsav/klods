@@ -8,7 +8,7 @@ import StartButton from "@/components/catalog/StartButton";
 import { cardPath, findSet, hasCard, hasCover, relatedSets, searchEntries, setParams, setTheme, themeSlug } from "@/lib/catalog-server";
 import { themePathFr } from "@/i18n/themes-fr";
 import { defaultModel, estimateMinutes, isHeavy, officialManualUrl, playableModels } from "@/lib/catalog";
-import { SITE_URL } from "@/lib/site";
+import { buildPageHref, SITE_URL } from "@/lib/site";
 import { fr } from "@/i18n/fr";
 
 /** Une fiche par set du catalogue, construite au build ; un set absent tombe sur la page 404, qui le reconnaît. */
@@ -113,9 +113,9 @@ export default async function SetPage({ params }: Props) {
                 <a className="btn btn-primary" href={official} target="_blank" rel="noopener">
                   {fr.set.officialManual}
                 </a>
-                <Link className="btn" href={`/set/${set.number}/monter/`}>
+                <a className="btn" href={buildPageHref(`/set/${set.number}/monter/`)}>
                   {fr.set.seeModel}
-                </Link>
+                </a>
               </div>
             </div>
           )}
@@ -136,9 +136,9 @@ export default async function SetPage({ params }: Props) {
               <li key={m.slug}>
                 <span className={styles.modelName}>{m.main ? fr.build.cover.mainModel : m.name}</span>
                 <span className={styles.modelMeta}>{fr.set.modelSteps(m.steps, m.parts)}</span>
-                <Link href={`/set/${set.number}/monter/?modele=${encodeURIComponent(m.slug)}`} aria-label={`${fr.set.build} : ${m.main ? fr.build.cover.mainModel : m.name}`}>
+                <a href={buildPageHref(`/set/${set.number}/monter/?modele=${encodeURIComponent(m.slug)}`)} aria-label={`${fr.set.build} : ${m.main ? fr.build.cover.mainModel : m.name}`}>
                   {fr.set.build}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
@@ -162,7 +162,7 @@ export default async function SetPage({ params }: Props) {
         </ul>
         {withSteps && (
           <p>
-            <Link href={`/set/${set.number}/imprimer/`}>{fr.set.print}</Link>
+            <a href={buildPageHref(`/set/${set.number}/imprimer/`)}>{fr.set.print}</a>
           </p>
         )}
       </section>

@@ -1,0 +1,25 @@
+// Klods sur Cloudflare Workers : les fichiers de out/ (site statique, modèles, couvertures) sont
+// servis directement ; le Worker (worker/index.ts) ne reçoit que /api/*.
+// Déployé par le workflow « Déploiement » (job cloudflare) avec `wrangler deploy`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "klods",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // retours du formulaire, gardés un an (créé par wrangler au premier déploiement)
+  "kv_namespaces": [{ "binding": "RETOURS" }],
+  // 5 retours par minute et par adresse IP
+  "ratelimits": [{ "name": "LIMITE", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }],
+  // e-mail de notification vers l'adresse vérifiée dans Email Routing (secret FEEDBACK_TO)
+  "send_email": [{ "name": "EMAIL" }],
+  "vars": { "FEEDBACK_FROM": "retours@klods.app" },
+  "observability": { "enabled": true }
+}

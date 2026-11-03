@@ -153,33 +153,141 @@ export const fr = {
     libraryLine: (date: string) => `Bibliothèque de pièces LDraw du ${date}.`,
   },
   privacy: {
-    title: "Confidentialité et conditions",
-    lead: "Version de la préversion. Court, parce qu'il y a peu à dire : Klods ne collecte rien.",
+    title: "Confidentialité",
+    lead: "Klods ne demande pas de compte et ne dépose aucun cookie. Voici ce qui est gardé, où, et combien de temps.",
     sections: [
       {
-        title: "Ce qui est stocké, et où",
+        title: "Ta progression reste chez toi",
         body: [
-          "Ta progression (étape en cours, temps de montage, pièces marquées manquantes) et le réglage de la taille réelle restent dans ton navigateur (localStorage). Rien ne part sur un serveur.",
+          "Ta progression (étape en cours, temps de montage, pièces marquées manquantes), les sets gardés pour le hors-ligne et tes réglages restent dans ton navigateur. Rien ne part sur un serveur.",
           "Pour tout effacer, vide les données du site dans ton navigateur.",
         ],
       },
       {
-        title: "Cookies et mesure d'audience",
-        body: ["Klods ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience pendant la préversion. Le site est hébergé par GitHub Pages, qui peut garder des journaux techniques (adresse IP) pour sa sécurité."],
-      },
-      {
-        title: "Signaler un problème",
-        body: ["Les boutons « Signaler » ouvrent une page de GitHub. Ce que tu y écris est public et soumis aux conditions de GitHub."],
-      },
-      {
-        title: "Conditions d'usage",
+        title: "Les retours que tu envoies",
         body: [
-          "Klods est fourni tel quel, gratuitement. Vérifie avec la notice officielle avant de démonter un set ou de commander des pièces.",
-          "LEGO® est une marque du Groupe LEGO, qui ne parraine, n'autorise ni ne soutient ce site. Les modèles LDraw appartiennent à leurs auteurs (licence CC BY).",
+          "Quand tu envoies un retour, on garde ton message, son type, le set, le modèle et l'étape concernés, la page d'où il vient, ton navigateur (pour reproduire un bug) et, si tu la donnes, ton adresse e-mail. Ton adresse IP n'est pas enregistrée.",
+          "Ces retours servent seulement à corriger le site et les modèles. Ils sont gardés un an chez Cloudflare (Workers KV), puis effacés automatiquement. Une copie arrive par e-mail au responsable du site.",
+        ],
+      },
+      {
+        title: "Mesure d'audience",
+        body: [
+          "Klods compte ses visites avec Cloudflare Web Analytics : sans cookie, sans identifiant, sans suivi d'une visite à l'autre. On voit le nombre de pages vues, les pages les plus lues et le type d'appareil, jamais qui tu es.",
+        ],
+      },
+      {
+        title: "Hébergement",
+        body: [
+          "Le site est servi par Cloudflare, qui traite ton adresse IP pour acheminer les pages et protéger le site, et peut garder des journaux techniques pour sa sécurité.",
+        ],
+      },
+      {
+        title: "Tes droits",
+        body: [
+          "Le responsable du traitement est Nicolas CABOT-SAVIN. Tu peux demander à voir, corriger ou effacer un retour que tu as envoyé : écris à contact@klods.app en donnant la date et l'adresse e-mail utilisée, s'il y en a une.",
+          "Si tu estimes que tes données ne sont pas respectées, tu peux saisir la CNIL (cnil.fr).",
         ],
       },
     ],
-    updated: "Mis à jour le 2 novembre 2026.",
+    updated: "Mis à jour le 3 novembre 2026.",
+  },
+  legal: {
+    title: "Mentions légales",
+    lead: "Qui publie Klods, et qui l'héberge.",
+    sections: [
+      {
+        title: "Éditeur",
+        body: [
+          "Klods est un site personnel, non commercial, édité par Nicolas CABOT-SAVIN, particulier.",
+          "Directeur de la publication : Nicolas CABOT-SAVIN.",
+          "Contact : contact@klods.app",
+        ],
+      },
+      {
+        title: "Hébergeur",
+        body: ["Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, États-Unis. Site : cloudflare.com."],
+      },
+      {
+        title: "Marques",
+        body: [
+          "LEGO® est une marque du Groupe LEGO, qui ne parraine, n'autorise ni ne soutient ce site. Klods est un projet de fan, indépendant et non officiel. Il n'utilise ni les notices, ni les photos, ni le logo du fabricant.",
+          "Les autres marques citées appartiennent à leurs propriétaires.",
+        ],
+      },
+      {
+        title: "Contenus",
+        body: [
+          "Les modèles 3D appartiennent à leurs auteurs et sont publiés sous licence Creative Commons Attribution (CC BY) : la page Crédits et chaque fiche de set les citent. Le code du site est sous licence MIT.",
+        ],
+      },
+    ],
+    updated: "Mis à jour le 3 novembre 2026.",
+  },
+  terms: {
+    title: "Conditions d'utilisation",
+    lead: "Courtes, parce que Klods est gratuit et sans compte.",
+    sections: [
+      {
+        title: "Le service",
+        body: [
+          "Klods affiche gratuitement des notices de montage en 3D, générées à partir de modèles LDraw publiés par leurs auteurs. Il est fourni tel quel, sans garantie : un modèle peut différer de la boîte (ordre des étapes, pièces, couleurs).",
+          "En cas de doute, la notice officielle fait foi. Vérifie-la avant de démonter un set ou de commander des pièces.",
+        ],
+      },
+      {
+        title: "Ce que tu peux faire",
+        body: [
+          "Utiliser le site, imprimer les notices pour ton usage personnel, partager les liens. Les modèles LDraw peuvent être réutilisés selon leur licence CC BY, en citant leurs auteurs.",
+        ],
+      },
+      {
+        title: "Ce qu'on te demande",
+        body: [
+          "Ne pas surcharger le site (envois automatisés, aspiration massive) et ne pas envoyer de retours insultants ou sans rapport. Les retours abusifs sont supprimés.",
+        ],
+      },
+      {
+        title: "Changements",
+        body: [
+          "Ces conditions peuvent évoluer avec le site. La date en bas de page indique la dernière version. Elles relèvent du droit français.",
+        ],
+      },
+    ],
+    updated: "Mis à jour le 3 novembre 2026.",
+  },
+  credits: {
+    title: "Crédits",
+    lead: "Klods existe grâce au travail de la communauté LDraw et à des outils libres. Merci à eux.",
+    sections: [
+      {
+        title: "Modèles LDraw",
+        body: [
+          "Chaque set est un fichier de l'Official Model Repository (OMR) de LDraw.org, publié par son auteur sous licence Creative Commons Attribution (CC BY). La fiche de chaque set nomme l'auteur de chaque modèle. Les notices sont générées par Klods à partir de ces fichiers.",
+        ],
+      },
+      {
+        title: "Pièces LDraw",
+        body: ["Les pièces viennent de la bibliothèque officielle de LDraw.org, publiée sous licence Creative Commons Attribution (CC BY) par ses auteurs et relecteurs."],
+      },
+      {
+        title: "Données des sets",
+        body: ["Le nom, le thème, l'année et le nombre de pièces des sets viennent de Rebrickable. Les noms de thèmes en français sont des traductions de Klods."],
+      },
+      {
+        title: "Logiciels et polices",
+        body: [
+          "Rendu 3D : three.js et son chargeur LDraw (licence MIT). Site : Next.js et React (licence MIT).",
+          "Polices : Archivo, Atkinson Hyperlegible et IBM Plex Mono (SIL Open Font License).",
+        ],
+      },
+      {
+        title: "Inspiration",
+        body: ["Klods s'inspire de Bygga, qui fait la même chose pour les meubles en kit."],
+      },
+    ],
+    links: "Liens",
+    updated: "Mis à jour le 3 novembre 2026.",
   },
   soon: {
     eyebrow: "Bientôt",
@@ -266,6 +374,7 @@ export const fr = {
       close: "Revenir à l'étape",
       finish: "Terminer",
       print: "Imprimer la notice",
+      report: "Signaler un souci",
       goTo: (n: number) => `Aller à l'étape ${n}`,
     },
     done: {
@@ -279,10 +388,7 @@ export const fr = {
       no: "Non",
       thanks: "Merci, c'est noté.",
       reportLead: "Dis-nous ce qui ne correspondait pas : ça aide à corriger le modèle.",
-      report: "Signaler le problème sur GitHub",
-      reportTitle: (number: string, name: string) => `${number} ${name} : le modèle ne correspond pas à la boîte`,
-      reportBody: (number: string, name: string, model: string, file: string) =>
-        `Set : ${number} (${name})\nModèle : ${model}\nFichier : ${file}\n\nCe qui ne correspond pas :\n`,
+      report: "Signaler le problème",
       next: "À monter ensuite",
       back: "Revoir la dernière étape",
       again: "Recommencer",
@@ -352,6 +458,44 @@ export const fr = {
     back: "Retour à l'accueil",
     catalogue: "Voir le catalogue",
   },
+  feedback: {
+    title: "Envoyer un retour",
+    lead: "Une étape pas claire, une pièce fausse, un bug ? Dis-le ici : chaque retour est lu.",
+    kindLegend: "De quoi s'agit-il ?",
+    kinds: {
+      etape: "Une étape pas claire",
+      piece: "Une pièce fausse ou manquante",
+      bug: "Un bug du site",
+      idee: "Une idée",
+    },
+    about: "Ton retour concerne :",
+    aboutSet: (set: string) => `le set ${set}`,
+    aboutModel: (model: string) => `modèle ${model}`,
+    aboutStep: (step: number) => `étape ${step}`,
+    aboutPage: (page: string) => `la page ${page}`,
+    message: "Ton message",
+    messageHint: "Ce que tu as vu, et ce que tu attendais. 2 000 caractères au plus.",
+    email: "Ton adresse e-mail (facultatif)",
+    emailHint: "Seulement pour te répondre. Elle n'est ni affichée ni partagée.",
+    trap: "Laisse ce champ vide",
+    send: "Envoyer",
+    sending: "Envoi en cours…",
+    sentTitle: "Merci, ton retour est bien arrivé.",
+    sentBody: "On le lit et on corrige dès que possible.",
+    back: "Revenir à la page",
+    another: "Envoyer un autre retour",
+    errors: {
+      kind: "Choisis de quoi il s'agit.",
+      message: "Écris au moins quelques mots, 2 000 caractères au plus.",
+      email: "Cette adresse e-mail ne semble pas valide.",
+      context: "Le lien vers le set est incorrect. Envoie ton retour depuis la page du set.",
+      spam: "Ton retour n'a pas pu partir.",
+      limit: "Trop d'envois d'un coup. Réessaie dans une minute.",
+      network: (email: string) => `Ton retour n'est pas parti. Vérifie ta connexion, ou écris à ${email}.`,
+    },
+    kept: "Ce que tu envoies est gardé un an, puis effacé.",
+    privacy: "Confidentialité",
+  },
   footer: {
     disclaimer:
       "LEGO® est une marque du Groupe LEGO, qui ne parraine, n'autorise ni ne soutient ce site. Klods est un projet indépendant et non officiel.",
@@ -361,6 +505,9 @@ export const fr = {
     setData: "Données des sets",
     about: "À propos",
     privacy: "Confidentialité",
+    legal: "Mentions légales",
+    terms: "Conditions",
+    credits: "Crédits",
     report: "Signaler un problème",
   },
 } as const;

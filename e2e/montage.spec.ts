@@ -80,3 +80,20 @@ test("retirer un montage de « Reprendre », puis annuler", async ({ page }) => 
   await page.reload();
   await expect(page.getByRole("region", { name: "Reprendre" })).toHaveCount(0);
 });
+
+test("un gros modèle calcule ses directions d'arrivée dans un Web Worker", async ({ page }) => {
+  // seuil abaissé : le petit modèle de test passe par le même chemin qu'un gros set
+  await page.addInitScript(() => ((window as { klodsWorkerLimit?: number }).klodsWorkerLimit = 0));
+  const workers: string[] = [];
+  page.on("worker", (w) => workers.push(w.url()));
+  const fallback: string[] = [];
+  page.on("console", (m) => m.text().includes("calcul sur la page") && fallback.push(m.text()));
+  await page.goto(`set/${SET}/monter/`);
+  await page.getByRole("button", { name: "Commencer" }).click({ timeout: 60_000 });
+  await page.getByRole("button", { name: "Tout est là, je commence" }).click();
+  await expect(stepLabel(page)).toContainText("1 sur");
+  await next(page).click();
+  await expect(stepLabel(page)).toContainText("2 sur");
+  expect(workers.length).toBeGreaterThan(0);
+  expect(fallback).toEqual([]);
+});

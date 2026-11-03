@@ -2,38 +2,49 @@
 
 import styles from "./SiteChrome.module.css";
 import { useLocale } from "@/i18n/LocaleProvider";
-import type { Locale } from "@/i18n";
+import { LOCALES, LOCALE_NAMES, type Locale } from "@/i18n";
 import { asset, BASE_PATH } from "@/lib/site";
 
 /**
- * Lien vers l'autre langue, discret, dans l'en-tête.
- * - Page d'une langue (accueil, fiche…) : va à la même page dans l'autre langue, lue dans les liens
- *   `hreflang` de la page (ils changent avec la page, même après une navigation interne).
+ * Sélecteur de langue de l'en-tête, en deux segments : FR | EN. La langue de la page est remplie et
+ * annoncée comme actuelle ; l'autre est un lien. Chaque langue porte son nom dans sa propre langue, précédé
+ * du code affiché (« EN, English ») : le nom lu commence par le texte visible.
+ * - Page d'une langue (accueil, fiche…) : le lien va à la même page dans l'autre langue, lue dans les
+ *   liens `hreflang` de la page (ils changent avec la page, même après une navigation interne).
  * - Page commune (montage, atelier…) : change la langue sur place, et la garde pour la suite.
  */
 export default function LanguageSwitch() {
-  const { t, fixed, setLocale } = useLocale();
-  const other = t.nav.otherLocale as Locale;
+  const { t, locale, fixed, setLocale } = useLocale();
 
-  const go = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const alternate = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${other}"]`);
-    setLocale(other);
+  const go = (target: Locale) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const alternate = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${target}"]`);
+    setLocale(target);
     if (fixed && alternate) {
       e.preventDefault();
       const url = new URL(alternate.href);
+      const path = BASE_PATH && !url.pathname.startsWith(`${BASE_PATH}/`) ? asset(url.pathname) : url.pathname;
       // chargement complet voulu : l'autre langue a sa propre mise en page, et les fiches n'ont pas de navigation interne
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      const target = BASE_PATH && !url.pathname.startsWith(`${BASE_PATH}/`) ? asset(url.pathname) : url.pathname;
-      window.location.assign(`${target}${url.search}`);
+      window.location.assign(`${path}${url.search}`);
     } else if (!fixed) {
       e.preventDefault();
     }
   };
 
-  // sans JavaScript : l'accueil de l'autre langue
   return (
-    <a href={asset(other === "fr" ? "/" : "/en/")} hrefLang={other} lang={other} className={styles.lang} onClick={go} aria-label={`${t.nav.otherCode}, ${t.nav.otherLabel}`} title={t.nav.otherLabel}>
-      {t.nav.otherCode}
-    </a>
+    <div role="group" aria-label={t.nav.language} className={styles.langs}>
+      {LOCALES.map((l) =>
+        l === locale ? (
+          <span key={l} lang={l} className={styles.langCurrent} aria-current="true" aria-label={`${LOCALE_NAMES[l].code}, ${LOCALE_NAMES[l].name}`}>
+            {LOCALE_NAMES[l].code}
+          </span>
+        ) : (
+          // sans JavaScript : l'accueil de l'autre langue
+          <a key={l} href={asset(l === "fr" ? "/" : "/en/")} hrefLang={l} lang={l} className={styles.langOther} onClick={go(l)} aria-label={`${LOCALE_NAMES[l].code}, ${LOCALE_NAMES[l].name}`} title={LOCALE_NAMES[l].name}>
+            {LOCALE_NAMES[l].code}
+          </a>
+        ),
+      )}
+    </div>
   );
 }

@@ -19,9 +19,7 @@ export const en: Dict = {
     main: "Main navigation",
     home: "Klods, home",
     skip: "Skip to content",
-    otherLocale: "fr",
-    otherCode: "FR",
-    otherLabel: "Lire en français",
+    language: "Language",
   },
   home: {
     eyebrow: "3D building instructions",

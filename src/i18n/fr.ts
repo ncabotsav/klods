@@ -18,10 +18,8 @@ export const fr = {
     main: "Navigation principale",
     home: "Klods, accueil",
     skip: "Aller au contenu",
-    /** Lien vers l'autre langue : code court affiché, phrase lue, dans cette autre langue. */
-    otherLocale: "en",
-    otherCode: "EN",
-    otherLabel: "Read in English",
+    /** Sélecteur de langue de l'en-tête (les noms des langues sont dans src/i18n/index.ts). */
+    language: "Langue",
   },
   home: {
     eyebrow: "Notices de montage en 3D",

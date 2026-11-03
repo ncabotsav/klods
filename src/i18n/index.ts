@@ -18,5 +18,11 @@ export const dictFor = (locale: Locale): Dict => DICTS[locale];
 export const localePrefix = (locale: Locale) => (locale === "fr" ? "" : "/en");
 export const localeHref = (locale: Locale, path: string) => `${localePrefix(locale)}${path}`;
 
+/**
+ * Nom de chaque langue écrit dans cette langue (« Français », « English ») et code court affiché :
+ * on cherche sa langue sous son propre nom. Pas de drapeaux : une langue n'est pas un pays.
+ */
+export const LOCALE_NAMES: Record<Locale, { name: string; code: string }> = { fr: { name: "Français", code: "FR" }, en: { name: "English", code: "EN" } };
+
 /** Langue « BCP 47 » complète, pour les dates, les nombres et Open Graph. */
 export const LOCALE_TAGS: Record<Locale, string> = { fr: "fr-FR", en: "en-GB" };

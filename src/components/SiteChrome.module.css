@@ -70,18 +70,51 @@
 }
 
 .github svg {
+  /* taille fixe : Safari réduisait l'icône à un point (max-width: 100 % dans une boîte flex) */
+  flex: none;
   width: 18px;
   height: 18px;
+  max-width: none;
   fill: currentColor;
 }
 
 @media (max-width: 480px) {
   .nav {
-    gap: var(--space-3);
+    gap: var(--space-2);
     font-size: 14px;
   }
   .logo {
     font-size: 22px;
+  }
+  /* téléphone : le nom suffit, la brique laisse la place au sélecteur de langue */
+  .mark {
+    display: none;
+  }
+  .langs,
+  .github {
+    height: 32px;
+  }
+  .langCurrent,
+  .langOther {
+    min-width: 28px;
+    padding: 0 6px;
+  }
+}
+
+/* petits téléphones : le lien GitHub reste dans le pied de page (« Code source ») */
+@media (max-width: 400px) {
+  .github {
+    display: none;
+  }
+}
+
+/* très petits écrans : la brique seule tient lieu de logo (le lien garde son nom « Klods, accueil ») */
+@media (max-width: 360px) {
+  .mark {
+    display: block;
+  }
+  .logoName {
+    display: none;
   }
 }
 
@@ -109,17 +142,42 @@
 }
 
 
-/* lien vers l'autre langue : même pastille discrète que GitHub */
-.lang {
+/* sélecteur de langue : deux segments dans une pastille, la langue de la page remplie */
+.langs {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 3px;
+  gap: 2px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.langCurrent,
+.langOther {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  height: 36px;
-  padding: 0 10px;
+  min-width: 34px;
+  height: 100%;
+  padding: 0 8px;
   border-radius: 99px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  border: 1px solid var(--line);
-  background: var(--card);
+}
+
+.langCurrent {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+.nav a.langOther {
+  color: var(--muted);
+}
+
+.nav a.langOther:hover {
+  color: var(--ink);
+  background: var(--stage);
 }

@@ -46,3 +46,14 @@ test("le sitemap liste toutes les fiches", async ({ request }) => {
   const missing = index.filter((e) => !sitemap.includes(`/set/${e.n}/</loc>`));
   expect(missing).toEqual([]);
 });
+
+test("le bandeau Préversion se ferme et le reste", async ({ page }) => {
+  await page.goto("./");
+  const banner = page.getByRole("complementary", { name: "Préversion" });
+  await expect(banner).toBeVisible();
+  await page.getByRole("button", { name: "Fermer le bandeau" }).click();
+  await expect(banner).toBeHidden();
+  await page.goto("catalogue/");
+  await expect(page.getByRole("heading", { name: "Catalogue", level: 1 })).toBeVisible();
+  await expect(banner).toBeHidden();
+});

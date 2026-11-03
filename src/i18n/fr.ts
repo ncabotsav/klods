@@ -115,6 +115,7 @@ export const fr = {
     label: "Préversion",
     body: "Klods est en test. Un souci, une idée ?",
     link: "Dis-le sur GitHub",
+    close: "Fermer le bandeau",
   },
   about: {
     title: "À propos",

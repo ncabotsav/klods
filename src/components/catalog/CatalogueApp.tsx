@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useId, useMemo, useState } from "react";
 import styles from "./CatalogueApp.module.css";
 import { SetGrid } from "./SetCard";
+import SearchIcon from "./SearchIcon";
 import { createSearch, type SearchEntry } from "@/lib/search";
 import { loadSearchIndex } from "@/lib/search-index";
 import { filterEntries, PAGE_SIZE, type CatalogueFilters, type PartsBucket, type SortKey } from "@/lib/catalogue-filters";
@@ -69,7 +70,10 @@ export default function CatalogueApp({ first, total, themes, decades }: Props) {
       <form className={styles.filters} aria-label={fr.catalogue.filters} onSubmit={(e) => e.preventDefault()} role="search">
         <div className={`${styles.field} ${styles.wide}`}>
           <label htmlFor={`${id}-q`}>{fr.search.label}</label>
-          <input id={`${id}-q`} type="search" value={filters.q} placeholder={fr.search.placeholder} onChange={(e) => update({ q: e.target.value })} />
+          <span className={styles.search}>
+            <SearchIcon className={styles.searchIcon} />
+            <input id={`${id}-q`} type="search" value={filters.q} placeholder={fr.search.placeholder} onChange={(e) => update({ q: e.target.value })} />
+          </span>
         </div>
         <div className={styles.field}>
           <label htmlFor={`${id}-theme`}>{fr.catalogue.theme}</label>

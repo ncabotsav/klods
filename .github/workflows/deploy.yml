@@ -76,10 +76,10 @@ jobs:
       - name: Tests de bout en bout
         if: steps.scope.outputs.e2e == 'true' && hashFiles('public/data/sets.json') != ''
         env:
-          # Chrome (ordinateur et téléphone) ; Safari (iPhone) et Firefox quand la portée est complète
+          # Chrome (ordinateur et téléphone) ; Safari (iPhone), Firefox et Edge quand la portée est complète
           E2E_ALL_BROWSERS: ${{ steps.scope.outputs.full == 'true' && '1' || '' }}
         run: |
-          if [ -n "$E2E_ALL_BROWSERS" ]; then npx playwright install --with-deps chromium firefox webkit; else npx playwright install --with-deps chromium; fi
+          if [ -n "$E2E_ALL_BROWSERS" ]; then npx playwright install --with-deps chromium firefox webkit msedge; else npx playwright install --with-deps chromium; fi
           npm run e2e
       # mesure Lighthouse (téléphone simulé) sur le site construit, compressé comme sur GitHub Pages ;
       # les notes vont dans le résumé du workflow, sans le faire échouer

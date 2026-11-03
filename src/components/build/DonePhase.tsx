@@ -3,6 +3,7 @@
 import Link from "next/link";
 import styles from "./BuildApp.module.css";
 import ModelViewer from "@/components/player/ModelViewer";
+import ShareButton from "@/components/ShareButton";
 import type { ModelState } from "@/components/player/useModel";
 import { estimateMinutes, type ModelEntry, type SetEntry } from "@/lib/catalog";
 import { formatDuration, type Progress } from "@/lib/progress";
@@ -19,10 +20,12 @@ type Props = {
   onBack: () => void;
   onRestart: () => void;
   onMatched: (matched: boolean) => void;
+  /** La couverture dessinée du set existe (modèle principal) : elle illustre la carte de partage. */
+  hasCover: boolean;
 };
 
 /** Fin du montage : le modèle fini, le temps passé, « ça correspondait ? », et des sets à monter ensuite. */
-export default function DonePhase({ set, model, state, progress, related, onBack, onRestart, onMatched }: Props) {
+export default function DonePhase({ set, model, state, progress, related, onBack, onRestart, onMatched, hasCover }: Props) {
   const steps = state.status === "ready" ? state.loaded.plan.steps.length : model.steps;
   const parts = state.status === "ready" ? state.loaded.plan.totalParts : model.parts;
 
@@ -43,6 +46,13 @@ export default function DonePhase({ set, model, state, progress, related, onBack
             <dd>{fr.build.cover.minutes(estimateMinutes({ parts, steps }))}</dd>
           </div>
         </dl>
+
+        <div className={styles.share}>
+          <ShareButton
+            info={{ number: set.number, name: model.main ? set.name : `${set.name} · ${model.name}`, hasCover, finishedMs: progress?.finishedMs ?? null, formattedTime: progress?.finishedMs ? formatDuration(progress.finishedMs) : null }}
+            className="btn btn-primary"
+          />
+        </div>
 
         <div className={styles.matched}>
           <p>{fr.build.done.matched}</p>

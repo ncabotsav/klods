@@ -27,6 +27,7 @@ test("monter un set de bout en bout", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: "Montage terminé" })).toBeVisible();
   await expect(page.getByText("Ton temps")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Partager mon montage" })).toBeEnabled();
   expect(errors).toEqual([]);
 });
 

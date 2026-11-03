@@ -18,7 +18,7 @@ import { feedbackHref } from "@/lib/feedback";
 
 export type Phase = "cover" | "parts" | "build" | "done";
 
-type Props = { set: SetEntry; related: SetEntry[] };
+type Props = { set: SetEntry; related: SetEntry[]; hasCover?: boolean };
 
 /** Lit l'adresse : « ?etape=12 » ouvre le montage à l'étape 12, « ?vue=pieces » ou « ?vue=fin » les autres phases. */
 function phaseFromUrl(params: URLSearchParams): { phase: Phase; index: number } {
@@ -30,7 +30,7 @@ function phaseFromUrl(params: URLSearchParams): { phase: Phase; index: number } 
   return { phase: "cover", index: 0 };
 }
 
-export default function BuildApp({ set, related }: Props) {
+export default function BuildApp({ set, related, hasCover = false }: Props) {
   const params = useSearchParams();
   const models = playableModels(set);
   const model = models.find((m) => m.slug === params.get("modele")) ?? defaultModel(set);
@@ -272,6 +272,7 @@ export default function BuildApp({ set, related }: Props) {
           state={state}
           progress={progress}
           related={related}
+          hasCover={hasCover && model.main}
           onBack={() => startBuilding(steps - 1)}
           onRestart={restart}
           onMatched={(matched) => updateProgress(baseRef.current, () => ({ matched }))}

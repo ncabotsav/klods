@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ChangeEvent } f
 import styles from "./Workshop.module.css";
 import ResumeBuilds from "@/components/ResumeBuilds";
 import SetCover from "@/components/catalog/SetCover";
+import ShareButton from "@/components/ShareButton";
 import { exportProgress, finishedBuilds, formatDuration, getServerSnapshot, getSnapshot, importProgress, inProgress, subscribe, workshopTotals } from "@/lib/progress";
 import { loadSearchIndex } from "@/lib/search-index";
 import type { SearchEntry } from "@/lib/search";
@@ -125,9 +126,17 @@ export default function WorkshopApp() {
                     </p>
                     {p.finishedMs !== null && <p className={styles.meta}>{t.builtIn(formatDuration(p.finishedMs))}</p>}
                     {p.finishedAt && <p className={styles.meta}>{t.finishedOn(p.finishedAt)}</p>}
-                    <a className={styles.rebuild} href={buildPageHref(`/set/${p.number}/monter/${p.model === "principal" ? "" : `?modele=${encodeURIComponent(p.model)}`}`)} aria-label={t.rebuildLabel(p.name)}>
-                      {t.rebuild}
-                    </a>
+                    <div className={styles.cardActions}>
+                      <a className={styles.rebuild} href={buildPageHref(`/set/${p.number}/monter/${p.model === "principal" ? "" : `?modele=${encodeURIComponent(p.model)}`}`)} aria-label={t.rebuildLabel(p.name)}>
+                        {t.rebuild}
+                      </a>
+                      <ShareButton
+                        className={styles.rebuild}
+                        label={fr.share.short}
+                        ariaLabel={fr.share.buttonFor(p.name)}
+                        info={{ number: p.number, name: p.model === "principal" ? p.name : `${p.name} · ${p.modelName}`, hasCover: !!entry?.c && p.model === "principal", finishedMs: p.finishedMs, formattedTime: p.finishedMs ? formatDuration(p.finishedMs) : null }}
+                      />
+                    </div>
                   </div>
                 </li>
               );

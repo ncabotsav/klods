@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import BuildApp from "@/components/build/BuildApp";
-import { findSet, relatedSets, setParams } from "@/lib/catalog-server";
+import { findSet, hasCover, relatedSets, setParams } from "@/lib/catalog-server";
 import { fr } from "@/i18n/fr";
 
 /** Une page par set du catalogue, construite au build ; aucune autre adresse n'existe. */
@@ -21,7 +21,7 @@ export default async function MonterPage({ params }: Props) {
   if (!set) notFound();
   return (
     <Suspense fallback={null}>
-      <BuildApp set={set} related={relatedSets(set)} />
+      <BuildApp set={set} related={relatedSets(set)} hasCover={hasCover(set.number)} />
     </Suspense>
   );
 }

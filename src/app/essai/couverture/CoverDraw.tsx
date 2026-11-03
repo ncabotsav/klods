@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { asset } from "@/lib/site";
+import { wrapText } from "@/lib/wrap-text";
+import { CARD_COLORS } from "@/lib/share-card";
 import { fr } from "@/i18n/fr";
 import styles from "./CoverDraw.module.css";
 
@@ -23,7 +25,7 @@ const CARD_H = 630;
  * Les images sont des fichiers, pas de l'interface : elles ne lisent pas les jetons CSS.
  * Mêmes valeurs que --stage, --ink, --muted, --accent et --hi du thème clair (globals.css).
  */
-const CARD = { bg: "#d4e0eb", ink: "#14202b", muted: "#566573", accent: "#0055bf", hi: "#f2b705" };
+const CARD = CARD_COLORS;
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
@@ -62,29 +64,6 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, box: R
   const dh = box.h * scale;
   ctx.imageSmoothingQuality = "high";
   ctx.drawImage(img, box.x, box.y, box.w, box.h, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
-}
-
-/** Coupe un titre en lignes qui tiennent dans `width`, au plus `max` lignes (la dernière finit par « … »). */
-function wrap(ctx: CanvasRenderingContext2D, text: string, width: number, max: number): string[] {
-  const lines: string[] = [];
-  let line = "";
-  for (const word of text.split(/\s+/)) {
-    const next = line ? `${line} ${word}` : word;
-    if (ctx.measureText(next).width <= width || !line) line = next;
-    else {
-      lines.push(line);
-      line = word;
-    }
-  }
-  if (line) lines.push(line);
-  if (lines.length > max) {
-    const kept = lines.slice(0, max);
-    let last = kept[max - 1];
-    while (ctx.measureText(`${last}…`).width > width && last.includes(" ")) last = last.slice(0, last.lastIndexOf(" "));
-    kept[max - 1] = `${last}…`;
-    return kept;
-  }
-  return lines;
 }
 
 /**
@@ -160,14 +139,14 @@ export default function CoverDraw() {
       ctx.fillText([req.number, req.theme, req.year].filter(Boolean).join(" · "), x, 196);
       ctx.fillStyle = CARD.ink;
       ctx.font = `800 50px ${display}`;
-      const lines = wrap(ctx, req.name, w, 4);
+      const lines = wrapText((t) => ctx.measureText(t).width, req.name, w, 4);
       lines.forEach((l, i) => ctx.fillText(l, x, 262 + i * 58));
       ctx.fillStyle = CARD.muted;
       ctx.font = `400 28px ${body}`;
       ctx.fillText(fr.covers.card(req.parts, req.steps), x, 262 + lines.length * 58 + 34);
       ctx.fillStyle = CARD.ink;
       ctx.font = `700 26px ${body}`;
-      wrap(ctx, fr.covers.tagline, w, 2).forEach((l, i, all) => ctx.fillText(l, x, CARD_H - 58 - (all.length - 1 - i) * 34));
+      wrapText((t) => ctx.measureText(t).width, fr.covers.tagline, w, 2).forEach((l, i, all) => ctx.fillText(l, x, CARD_H - 58 - (all.length - 1 - i) * 34));
 
       return { cover: cover.toDataURL("image/webp", 0.86), card: card.toDataURL("image/jpeg", 0.84), ms: Math.round(performance.now() - t0), loadMs: Math.round(tLoad) };
     };

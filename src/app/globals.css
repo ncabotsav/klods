@@ -211,3 +211,12 @@ p {
     display: none !important;
   }
 }
+
+/* message du bouton Partager, lu par les lecteurs d'écran et visible sous le bouton */
+.share-status {
+  font-size: 14px;
+  color: var(--muted);
+}
+.share-status:empty {
+  display: none;
+}

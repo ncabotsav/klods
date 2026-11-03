@@ -52,6 +52,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - Pages construites au build pour chaque set de `public/data/sets.json` (`src/lib/catalog-server.ts`) ; sans données, une page « exemple » vide fait passer le build.
 - Progression dans le navigateur uniquement (`src/lib/progress.ts`, localStorage) : rien ne part sur un serveur.
 - `/atelier/` (`src/components/workshop/WorkshopApp.tsx`) : chiffres, montages en cours, vitrine des sets terminés, sauvegarde et reprise dans un fichier (`exportProgress`, `importProgress`). Non indexé.
+- Partage d'un set terminé (fin du montage, vitrine de l'atelier) : `ShareButton` dessine une carte 1200 × 630 dans le navigateur (`src/lib/share-card.ts`, couverture du set, nom, temps), puis menu de partage du système ou téléchargement de l'image.
 
 ## Hors-ligne et performances
 

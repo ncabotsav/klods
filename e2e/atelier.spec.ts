@@ -41,6 +41,11 @@ test("l'atelier montre les chiffres, la vitrine et les montages en cours, et se 
   await expect(shelf).toContainText("Monté en 25 min");
   await expect(shelf.getByRole("link", { name: "Remonter Set terminé" })).toHaveAttribute("href", new RegExp(`set/${SET}/monter/$`));
 
+  // partager : sans partage de fichier (navigateur de test), l'image est téléchargée
+  const [card] = await Promise.all([page.waitForEvent("download"), shelf.getByRole("button", { name: "Partager le montage de Set terminé" }).click()]);
+  expect(card.suggestedFilename()).toBe(`klods-${SET}.png`);
+  await expect(shelf.getByRole("status")).toContainText("Image enregistrée");
+
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(", ")}`)).toEqual([]);
 

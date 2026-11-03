@@ -123,10 +123,27 @@
   color: var(--muted);
 }
 
-.rebuild {
-  justify-self: start;
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-4);
   margin-top: var(--space-2);
+}
+
+.cardActions :global(.share-status) {
+  flex-basis: 100%;
+}
+
+/* liens et bouton de la carte : même allure, 44 px de zone de toucher */
+.rebuild {
   min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   font-weight: 700;

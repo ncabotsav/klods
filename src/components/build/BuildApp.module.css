@@ -445,3 +445,10 @@
   display: grid;
   gap: var(--space-1);
 }
+
+/* fin du montage : partager la carte du set */
+.share {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-1);
+}

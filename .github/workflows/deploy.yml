@@ -134,10 +134,10 @@ jobs:
       cancel-in-progress: true
     environment:
       name: cloudflare
-      url: ${{ vars.KLODS_SITE_URL || 'https://klods.app' }}
+      url: ${{ vars.KLODS_SITE_URL || 'https://preview.klods.app' }}
     env:
       NEXT_PUBLIC_BASE_PATH: ""
-      NEXT_PUBLIC_SITE_URL: ${{ vars.KLODS_SITE_URL || 'https://klods.app' }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.KLODS_SITE_URL || 'https://preview.klods.app' }}
       NEXT_PUBLIC_CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
       NEXT_TELEMETRY_DISABLED: 1
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

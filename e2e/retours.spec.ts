@@ -3,6 +3,9 @@ import { logPageErrors } from "./console";
 
 logPageErrors();
 
+// sous WebKit, une requête qui traverse le service worker échappe à page.route() : on le coupe ici
+test.use({ serviceWorkers: "block" });
+
 /** Un set présent dans les fixtures et dans le vrai catalogue. */
 const SET = process.env.E2E_SET ?? "889-1";
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import styles from "./Home.module.css";
 import ResumeBuilds from "@/components/ResumeBuilds";
 import SearchBox from "@/components/catalog/SearchBox";
-import { SetGrid } from "@/components/catalog/SetCard";
+import FeaturedGrid from "@/components/catalog/FeaturedGrid";
 import { allSets, featuredByTheme, searchEntries } from "@/lib/catalog-server";
 import { dictFor, localeHref, type Locale } from "@/i18n";
 import { bilingual } from "@/lib/seo";
@@ -60,7 +60,7 @@ export default function HomeView({ locale }: { locale: Locale }) {
                 <h3 className={styles.themeTitle}>{theme.name}</h3>
                 <Link href={localeHref(locale, `/catalogue/${theme.slug}/`)}>{t.seeTheme(theme.name)}</Link>
               </div>
-              <SetGrid locale={locale} entries={sets.map((s) => entries.get(s.number)!)} label={theme.name} />
+              <FeaturedGrid locale={locale} pool={sets.map((s) => entries.get(s.number)!)} label={theme.name} />
             </div>
           ))}
           <p>

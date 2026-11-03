@@ -109,21 +109,21 @@ export function themeParams(locale: Locale = "fr"): { theme: string }[] {
 }
 
 /**
- * Sets à mettre en avant sur l'accueil, par thème : ceux qui ont des étapes et une couverture, de taille
- * moyenne (150 à 800 pièces : assez pour donner envie, assez léger pour s'ouvrir vite sur un téléphone),
- * les plus gros d'abord. Pas de données de popularité : la taille fait la vitrine.
+ * Sets à proposer sur l'accueil, par thème : une réserve de sets faciles à monter (30 à 400 pièces,
+ * avec étapes et couverture), dans laquelle la page en tire quatre au hasard à chaque visite. Les plus
+ * petits d'abord ; si un thème en a trop peu, la réserve se complète avec ses autres sets complets.
  */
-export function featuredByTheme(locale: Locale = "fr", themeCount = 4, perTheme = 4): { theme: Theme; sets: SetEntry[] }[] {
+export function featuredByTheme(locale: Locale = "fr", themeCount = 4, poolSize = 16): { theme: Theme; sets: SetEntry[] }[] {
   const size = (s: SetEntry) => defaultModel(s).parts;
-  const showcase = (s: SetEntry) => size(s) >= 150 && size(s) <= 800;
+  const easy = (s: SetEntry) => size(s) >= 30 && size(s) <= 400;
   return allThemes(locale)
     .slice(0, themeCount)
     .map((theme) => ({
       theme,
       sets: allSets()
         .filter((s) => setTheme(s, locale) === theme.name && defaultModel(s).status === "ok")
-        .sort((a, b) => Number(showcase(b)) - Number(showcase(a)) || Number(hasCover(b.number)) - Number(hasCover(a.number)) || size(b) - size(a))
-        .slice(0, perTheme),
+        .sort((a, b) => Number(easy(b)) - Number(easy(a)) || Number(hasCover(b.number)) - Number(hasCover(a.number)) || size(a) - size(b))
+        .slice(0, poolSize),
     }))
     .filter((g) => g.sets.length > 0);
 }

@@ -52,7 +52,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - `src/app/manifest.ts` et `public/icons/` : installation sur l'écran d'accueil.
 - Polices par `next/font/local` (`src/app/fonts.ts`, fichiers des paquets @fontsource) : préchargées ; les jetons `--font-*` de `globals.css` reprennent leurs variables.
 - Le moteur baisse seul la résolution du rendu si les images ralentissent (`stage.ts`).
-- Les tests de bout en bout comptent un audit axe (`e2e/accessibilite.spec.ts`, thème sombre compris) et le mode avion (`e2e/hors-ligne.spec.ts`). En CI, ils tournent aussi sur Safari (WebKit) et Firefox, et Lighthouse note l'accueil, une fiche et le catalogue dans le résumé du déploiement.
+- Les tests de bout en bout comptent un audit axe (`e2e/accessibilite.spec.ts`, thème sombre compris) et le mode avion (`e2e/hors-ligne.spec.ts`). En CI, sur une PR : Chrome toujours ; Safari (WebKit), Firefox et Lighthouse en plus quand la PR touche au moteur 3D, au parcours de montage, au service worker, aux tests ou aux dépendances. Après un merge sur `main`, on construit et on publie sans rejouer les tests de bout en bout (déjà joués sur la PR).
 
 ## Catalogue et référencement
 

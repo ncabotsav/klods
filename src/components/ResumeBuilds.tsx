@@ -13,9 +13,9 @@ const UNDO_MS = 8000;
  * Encart « Reprendre » de l'accueil : les montages commencés dans ce navigateur.
  * Une croix retire un montage (et sa progression) ; un bandeau permet d'annuler pendant quelques secondes.
  */
-export default function ResumeBuilds() {
+export default function ResumeBuilds({ limit = 3, title = fr.resume.title }: { limit?: number; title?: string }) {
   const store = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  const builds = inProgress(store).slice(0, 3);
+  const builds = inProgress(store).slice(0, limit);
   const [undo, setUndo] = useState<Progress | null>(null);
   const undoRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -51,7 +51,7 @@ export default function ResumeBuilds() {
   return (
     <section className={styles.resume} aria-labelledby="resume-title">
       <h2 id="resume-title" className={styles.title}>
-        {fr.resume.title}
+        {title}
       </h2>
       {builds.length > 0 && (
         <ul className={styles.list} ref={listRef}>

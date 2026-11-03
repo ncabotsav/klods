@@ -47,3 +47,29 @@ test("retirer un montage puis l'annuler", async () => {
   assert.equal(inProgress(getSnapshot())[0]?.step, 5);
   delete (globalThis as { window?: unknown }).window;
 });
+
+test("atelier : terminés, chiffres, sauvegarde et reprise sur un autre appareil", async () => {
+  const data = new Map<string, string>();
+  (globalThis as { window?: unknown }).window = {
+    localStorage: { getItem: (k: string) => data.get(k) ?? null, setItem: (k: string, v: string) => data.set(k, v) },
+    addEventListener() {},
+    removeEventListener() {},
+  };
+  const { getSnapshot, finishedBuilds, workshopTotals, exportProgress, importProgress, updateProgress } = await import("./progress.ts");
+  const a = { number: "4915-1", model: "principal", name: "Mini Construction", modelName: "Modèle principal", steps: 10 };
+  const b = { number: "6080-1", model: "principal", name: "King's Castle", modelName: "Modèle principal", steps: 80 };
+  updateProgress(a, () => ({ step: 9, seen: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], activeMs: 600_000, finishedAt: 2000, finishedMs: 600_000 }), 2000);
+  updateProgress(b, () => ({ step: 4, seen: [0, 1, 2, 3, 4], activeMs: 300_000 }), 3000);
+  assert.deepEqual(finishedBuilds(getSnapshot()).map((p) => p.number), ["4915-1"]);
+  assert.deepEqual(workshopTotals(getSnapshot()), { finished: 1, steps: 15, activeMs: 900_000 });
+
+  const saved = exportProgress(getSnapshot());
+  data.clear();
+  updateProgress(b, () => ({ step: 20, seen: [20] }), 9000); // plus récent sur ce nouvel appareil
+  assert.equal(importProgress(saved), 1);
+  assert.equal(getSnapshot()["6080-1/principal"].step, 20);
+  assert.equal(getSnapshot()["4915-1/principal"].finishedMs, 600_000);
+  assert.equal(importProgress("pas un fichier"), null);
+  assert.equal(importProgress('{"format":"autre","builds":[]}'), null);
+  delete (globalThis as { window?: unknown }).window;
+});

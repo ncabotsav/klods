@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import styles from "./SearchBox.module.css";
 import SetCover from "./SetCover";
+import SearchIcon from "./SearchIcon";
 import { createSearch, normalize, type SearchEntry } from "@/lib/search";
 import { officialManualUrl } from "@/lib/catalog";
 import { loadSearchIndex as loadIndex } from "@/lib/search-index";
@@ -57,7 +58,9 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
           {fr.search.label}
         </label>
         <div className={styles.row}>
-          <input
+          <span className={styles.field}>
+            <SearchIcon className={styles.icon} />
+            <input
             ref={input}
             id={`${id}-q`}
             className={styles.input}
@@ -80,6 +83,7 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
               }
             }}
           />
+          </span>
           <button type="submit" className="btn btn-primary">
             {fr.search.submit}
           </button>

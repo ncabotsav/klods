@@ -19,6 +19,28 @@
   gap: var(--space-2);
 }
 
+/* le champ et sa loupe : la loupe est posée dans le champ, à gauche */
+.field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.icon {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
 .input {
   flex: 1;
   min-width: 0;
@@ -29,6 +51,8 @@
   border: 2px solid var(--line);
   border-radius: var(--radius);
   padding: var(--space-3) var(--space-4);
+  /* place pour la loupe */
+  padding-left: calc(var(--space-4) + 20px + var(--space-3));
 }
 
 .input:focus-visible {

@@ -9,11 +9,11 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/site/finalize.ts",
     "start": "npx serve out",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test \"scripts/**/*.test.ts\" \"src/**/*.test.ts\"",
+    "test": "node --test \"scripts/**/*.test.ts\" \"src/**/*.test.ts\" \"worker/**/*.test.ts\"",
     "data": "npm run data:omr && npm run data:ldraw && npm run data:rebrickable && npm run data:pack && npm run check && npm run data:index",
     "data:omr": "node scripts/data/omr-fetch.ts",
     "data:ldraw": "node scripts/data/ldraw-fetch.ts",

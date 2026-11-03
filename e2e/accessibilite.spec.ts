@@ -20,6 +20,10 @@ for (const [name, path] of [
   ["fiche", `set/${SET}/`],
   ["à propos", "a-propos/"],
   ["confidentialité", "confidentialite/"],
+  ["mentions légales", "mentions-legales/"],
+  ["conditions", "conditions/"],
+  ["crédits", "credits/"],
+  ["retours", "retours/?type=etape&set=889-1&etape=2"],
   ["hors connexion", "hors-connexion/"],
   ["set absent", "set/99999-1/"],
 ] as const) {

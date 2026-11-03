@@ -13,3 +13,16 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://ncabotsav.
  * `next/link` ajoute le préfixe tout seul, mais pas `fetch()` ni les balises `<img>` brutes.
  */
 export const asset = (path: string) => `${BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
+
+/**
+ * Lien simple (sans `next/link`) vers une page de montage ou d'impression : ces pages n'ont que leur
+ * index.html (scripts/site/finalize.ts retire leurs fichiers de navigation interne), on y arrive
+ * donc par un chargement de page normal, sans préchargement.
+ */
+export const buildPageHref = (path: string) => asset(path);
+
+/** Adresse de contact publique (Email Routing de Cloudflare, vers la boîte du responsable). */
+export const CONTACT_EMAIL = "contact@klods.app";
+
+/** Jeton public de Cloudflare Web Analytics (vide : pas de mesure, en local et sur GitHub Pages). */
+export const ANALYTICS_TOKEN = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN ?? "";

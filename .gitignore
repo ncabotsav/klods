@@ -27,3 +27,6 @@ npm-debug.log*
 # tests de bout en bout
 /test-results/
 /playwright-report/
+
+# Cloudflare (wrangler)
+.wrangler/

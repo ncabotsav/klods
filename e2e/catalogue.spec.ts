@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { logPageErrors } from "./console";
+
+logPageErrors();
 
 /** Un set présent dans les fixtures et dans le vrai catalogue. */
 const SET = process.env.E2E_SET ?? "889-1";

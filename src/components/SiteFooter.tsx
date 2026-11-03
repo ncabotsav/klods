@@ -13,9 +13,13 @@ export default function SiteFooter() {
           <span aria-hidden="true">·</span>
           <Link href="/confidentialite/">{fr.footer.privacy}</Link>
           <span aria-hidden="true">·</span>
-          <a href={`${GITHUB_URL}/issues/new`} target="_blank" rel="noopener">
-            {fr.footer.report}
-          </a>
+          <Link href="/conditions/">{fr.footer.terms}</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/mentions-legales/">{fr.footer.legal}</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/credits/">{fr.footer.credits}</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/retours/">{fr.footer.report}</Link>
           <span aria-hidden="true">·</span>
           <a href={GITHUB_URL} target="_blank" rel="noopener">
             {fr.footer.source}

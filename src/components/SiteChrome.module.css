@@ -70,8 +70,11 @@
 }
 
 .github svg {
+  /* taille fixe : Safari réduisait l'icône à un point (max-width: 100 % dans une boîte flex) */
+  flex: none;
   width: 18px;
   height: 18px;
+  max-width: none;
   fill: currentColor;
 }
 

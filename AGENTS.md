@@ -14,6 +14,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - `npm run build` lance ensuite `scripts/site/finalize.ts` : retire les fichiers de navigation interne des pages `/monter/` et `/imprimer/` (on y va par des liens simples, `buildPageHref()`, jamais `next/link`), pose une CSP stricte dans chaque page (empreintes des scripts en ligne) et échoue au-delà de 19 000 fichiers (limite Cloudflare gratuite : 20 000) ou d'un fichier de plus de 25 Mio.
 - En-têtes de sécurité et cache : `public/_headers`. Les tests de bout en bout échouent si la CSP bloque quelque chose.
 - Retours : formulaire `/retours/` (`src/components/FeedbackForm.tsx`), validation partagée dans `src/lib/feedback.ts`, gardés un an dans Workers KV, e-mail vers le secret `FEEDBACK_TO`. Jamais l'adresse IP.
+- Supervision : workflow « Supervision » toutes les 30 minutes (pages clés, un modèle, la 404, le Worker) ; un échec part par e-mail via les notifications GitHub Actions.
 - Mesure d'audience : Cloudflare Web Analytics, sans cookie, posée seulement si la variable `CF_ANALYTICS_TOKEN` du dépôt existe.
 
 ## Règles de la maison

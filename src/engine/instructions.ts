@@ -1,12 +1,16 @@
 /**
- * Consignes en français pour une étape : « Ajoute 2 plaques 2 × 4 jaunes et 1 brique 1 × 2 rouge. »
- * Les noms viennent de la description LDraw de chaque pièce ; le premier mot est traduit quand on le
- * connaît (src/i18n/ldraw-fr.ts), le reste garde ses dimensions. Couleurs accordées en genre et en nombre.
+ * Consignes pour une étape, en français : « Ajoute 2 plaques 2 × 4 jaunes et 1 brique 1 × 2 rouge. »,
+ * ou en anglais : « Add 2 yellow Plate 2 × 4 and 1 red Brick 1 × 2. »
+ * Les noms viennent de la description LDraw de chaque pièce (en anglais) ; en français, le premier mot
+ * est traduit quand on le connaît (src/i18n/ldraw-fr.ts) et les couleurs s'accordent en genre et en nombre.
  */
 import type { Object3D } from "three";
 import { COLOURS_FR, MINIFIG_WORDS_FR, PART_WORDS_FR } from "../i18n/ldraw-fr.ts";
 import { loaderName, type ModelText } from "./ldraw-text.ts";
 import type { Step } from "./steps.ts";
+
+/** Langue des consignes (mêmes codes que le site). */
+export type Lang = "fr" | "en";
 
 export type PartGroup = {
   key: string;
@@ -102,8 +106,19 @@ export function frenchColour(colourName: string, gender: "m" | "f", plural: bool
     .join(" ");
 }
 
+/** Nom anglais : la description LDraw nettoyée, invariable. */
+const englishPartName = (description: string): FrenchName => {
+  const clean = cleanDescription(description);
+  return { one: clean, many: clean, full: clean, gender: "m" };
+};
+
+/** Couleur dans la langue des consignes : accordée en français, nom LDraw en minuscules en anglais. */
+export function colourLabel(colourName: string, gender: "m" | "f", plural: boolean, lang: Lang = "fr"): string {
+  return lang === "fr" ? frenchColour(colourName, gender, plural) : colourName.replace(/_/g, " ").toLowerCase();
+}
+
 /** Regroupe les pièces d'une étape par numéro et couleur, dans l'ordre où elles apparaissent. */
-export function groupParts(parts: Object3D[], info: ModelText): PartGroup[] {
+export function groupParts(parts: Object3D[], info: ModelText, lang: Lang = "fr"): PartGroup[] {
   const groups = new Map<string, PartGroup>();
   for (const p of parts) {
     const file = loaderName(String(p.userData.fileName ?? ""));
@@ -115,7 +130,7 @@ export function groupParts(parts: Object3D[], info: ModelText): PartGroup[] {
       continue;
     }
     const description = info.descriptions.get(file) ?? file.replace(/^parts\//, "").replace(/\.dat$/, "");
-    const { one, many, full, gender } = frenchPartName(description);
+    const { one, many, full, gender } = lang === "fr" ? frenchPartName(description) : englishPartName(description);
     const colour = info.colours.get(colourCode);
     groups.set(key, {
       key,
@@ -133,28 +148,29 @@ export function groupParts(parts: Object3D[], info: ModelText): PartGroup[] {
   return [...groups.values()];
 }
 
-const join = (items: string[]) => (items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} et ${items.at(-1)}`);
+const join = (items: string[], lang: Lang) => (items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} ${lang === "fr" ? "et" : "and"} ${items.at(-1)}`);
 
-export function describeGroup(g: PartGroup): string {
+export function describeGroup(g: PartGroup, lang: Lang = "fr"): string {
   const plural = g.count > 1;
   const name = plural ? g.name.many : g.name.one;
+  if (lang === "en") return `${g.count} ${g.colourName ? `${colourLabel(g.colourName, g.gender, plural, "en")} ` : ""}${name}`;
   const colour = g.colourName ? ` ${frenchColour(g.colourName, g.gender, plural)}` : "";
   return `${g.count} ${name}${colour}`;
 }
 
 /** Consigne complète d'une étape. `letterOf` donne la lettre d'un sous-ensemble posé. */
-export function stepInstruction(step: Step, info: ModelText, letterOf: (assembly: Object3D) => string | undefined): string {
+export function stepInstruction(step: Step, info: ModelText, letterOf: (assembly: Object3D) => string | undefined, lang: Lang = "fr"): string {
   // deux pièces différentes au même nom français (bras gauche et bras droit) se disent ensemble : « 2 bras »
   const merged = new Map<string, PartGroup>();
-  for (const g of groupParts(step.parts, info)) {
+  for (const g of groupParts(step.parts, info, lang)) {
     const key = `${g.name.one}#${g.colourName}`;
     const m = merged.get(key);
     if (m) merged.set(key, { ...m, count: m.count + g.count });
     else merged.set(key, g);
   }
-  const bits = [...merged.values()].map(describeGroup);
+  const bits = [...merged.values()].map((g) => describeGroup(g, lang));
   const sentences: string[] = [];
-  if (bits.length) sentences.push(`Ajoute ${join(bits)}.`);
+  if (bits.length) sentences.push(lang === "fr" ? `Ajoute ${join(bits, lang)}.` : `Add ${join(bits, lang)}.`);
 
   const counts = new Map<string, number>();
   for (const a of step.assemblies) {
@@ -162,7 +178,8 @@ export function stepInstruction(step: Step, info: ModelText, letterOf: (assembly
     counts.set(l, (counts.get(l) ?? 0) + 1);
   }
   for (const [l, n] of counts) {
-    sentences.push(n > 1 ? `Pose les ${n} sous-ensembles ${l}.` : `Pose le sous-ensemble ${l}.`);
+    if (lang === "fr") sentences.push(n > 1 ? `Pose les ${n} sous-ensembles ${l}.` : `Pose le sous-ensemble ${l}.`);
+    else sentences.push(n > 1 ? `Place the ${n} sub-assemblies ${l}.` : `Place sub-assembly ${l}.`);
   }
   return sentences.join(" ");
 }

@@ -9,16 +9,18 @@ import ShareButton from "@/components/ShareButton";
 import { exportProgress, finishedBuilds, formatDuration, getServerSnapshot, getSnapshot, importProgress, inProgress, subscribe, workshopTotals } from "@/lib/progress";
 import { loadSearchIndex } from "@/lib/search-index";
 import type { SearchEntry } from "@/lib/search";
-import { buildPageHref } from "@/lib/site";
-import { fr } from "@/i18n/fr";
+import { buildPageHref, setPageHref } from "@/lib/site";
+import { useLocale } from "@/i18n/LocaleProvider";
+import { localeHref } from "@/i18n";
 
-const t = fr.workshop;
 
 /**
  * Mon atelier : tout ce qui vient de la progression gardée dans ce navigateur (src/lib/progress.ts).
  * Chiffres, montages en cours, vitrine des sets terminés, et sauvegarde dans un fichier.
  */
 export default function WorkshopApp() {
+  const { t: fr, locale } = useLocale();
+  const t = fr.workshop;
   const store = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [ready, setReady] = useState(false);
   const [entries, setEntries] = useState<Map<string, SearchEntry>>(new Map());
@@ -29,10 +31,10 @@ export default function WorkshopApp() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- l'atelier n'existe qu'au navigateur
     setReady(true);
     // couvertures et nombre de pièces, lus dans l'index de recherche
-    loadSearchIndex()
+    loadSearchIndex(locale)
       .then((list) => setEntries(new Map(list.map((e) => [e.n, e]))))
       .catch(() => {});
-  }, []);
+  }, [locale]);
 
   const done = finishedBuilds(store);
   const started = inProgress(store);
@@ -68,7 +70,7 @@ export default function WorkshopApp() {
           <h2 id="atelier-vide">{t.emptyTitle}</h2>
           <p>{t.emptyBody}</p>
           <p>
-            <Link className="btn btn-primary" href="/catalogue/">
+            <Link className="btn btn-primary" href={localeHref(locale, "/catalogue/")}>
               {t.emptyCta}
             </Link>
           </p>
@@ -113,12 +115,12 @@ export default function WorkshopApp() {
               const entry = entries.get(p.number);
               return (
                 <li key={`${p.number}/${p.model}`} className={styles.item}>
-                  <SetCover number={p.number} hasCover={!!entry?.c} />
+                  <SetCover locale={locale} number={p.number} hasCover={!!entry?.c} />
                   <div className={styles.itemText}>
                     <h3 className={styles.name}>
-                      <Link href={`/set/${p.number}/`} aria-label={t.setPage(p.name)}>
+                      <a href={setPageHref(locale, p.number)} aria-label={t.setPage(p.name)}>
                         {p.name}
-                      </Link>
+                      </a>
                     </h3>
                     <p className={styles.meta}>
                       {p.number}

@@ -9,7 +9,7 @@ import { estimateMinutes, type ModelEntry, type SetEntry } from "@/lib/catalog";
 import { formatDuration, type Progress } from "@/lib/progress";
 import { buildPageHref } from "@/lib/site";
 import { feedbackHref } from "@/lib/feedback";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 
 type Props = {
   set: SetEntry;
@@ -26,6 +26,7 @@ type Props = {
 
 /** Fin du montage : le modèle fini, le temps passé, « ça correspondait ? », et des sets à monter ensuite. */
 export default function DonePhase({ set, model, state, progress, related, onBack, onRestart, onMatched, hasCover }: Props) {
+  const fr = useT();
   const steps = state.status === "ready" ? state.loaded.plan.steps.length : model.steps;
   const parts = state.status === "ready" ? state.loaded.plan.totalParts : model.parts;
 

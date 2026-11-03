@@ -59,3 +59,14 @@ test("4915-1 : consignes lisibles pour chaque étape", async () => {
     assert.equal(new Set(groups.map((g) => g.key)).size, groups.length);
   }
 });
+
+test("4915-1 : consignes en anglais, avec le nom LDraw et la couleur devant", async () => {
+  const raw = gunzipSync(readFileSync("fixtures/ldraw/4915-1.mpd.gz")).toString("utf8");
+  const { model, info } = await loadModelText(raw, { smoothNormals: false });
+  const plan = buildSteps(model, info);
+  const letterOf = (a: { userData: { fileName?: string } }) => plan.assemblyLetters.get(String(a.userData.fileName).toLowerCase());
+  const texts = plan.steps.map((s) => stepInstruction(s, info, letterOf, "en"));
+  for (const t of texts) assert.match(t, /^(Add \d|Place (sub-assembly|the \d+ sub-assemblies))/, t);
+  assert.ok(texts.some((t) => /\d yellow Plate 2 × 4/.test(t)), texts.slice(0, 5).join(" | "));
+  assert.ok(texts.every((t) => !/Ajoute|Pose/.test(t)));
+});

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./BuildApp.module.css";
 import type { LoadedModel } from "@/components/player/useModel";
 import type { PartGroup } from "@/engine/instructions";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 
 /** Une carte bancaire mesure 85,6 mm de large (norme ISO/IEC 7810 ID-1). */
 const CARD_MM = 85.6;
@@ -24,6 +24,7 @@ function readScale(): number {
 
 /** Fenêtre « taille réelle » : la pièce vue de dessus à l'échelle 1, et le réglage avec une carte bancaire. */
 export default function RealSize({ group, loaded, onClose }: { group: PartGroup; loaded: LoadedModel; onClose: () => void }) {
+  const fr = useT();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [pxPerMm, setPxPerMm] = useState(readScale);
   const [calibrating, setCalibrating] = useState(false);

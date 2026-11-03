@@ -1,11 +1,12 @@
 import Link from "next/link";
-import styles from "@/app/catalogue/Catalogue.module.css";
+import styles from "@/views/Catalogue.module.css";
 import { allThemes } from "@/lib/catalog-server";
-import { fr } from "@/i18n/fr";
+import { dictFor, localeHref, type Locale } from "@/i18n";
 
 /** Liens vers les pages de thème (indexables), sous le catalogue. */
-export default function ThemeLinks() {
-  const themes = allThemes();
+export default function ThemeLinks({ locale }: { locale: Locale }) {
+  const fr = dictFor(locale);
+  const themes = allThemes(locale);
   if (!themes.length) return null;
   return (
     <nav className={styles.themes} aria-labelledby="themes-title">
@@ -15,7 +16,7 @@ export default function ThemeLinks() {
       <ul className={styles.themeList}>
         {themes.map((th) => (
           <li key={th.slug}>
-            <Link href={`/catalogue/${th.slug}/`}>
+            <Link href={localeHref(locale, `/catalogue/${th.slug}/`)}>
               {th.name} <span className={styles.count}>{th.count}</span>
             </Link>
           </li>

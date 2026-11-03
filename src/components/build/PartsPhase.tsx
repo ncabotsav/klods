@@ -6,8 +6,8 @@ import styles from "./BuildApp.module.css";
 import RealSize from "./RealSize";
 import type { LoadedModel } from "@/components/player/useModel";
 import type { PartGroup } from "@/engine/instructions";
-import { MISSING_PARTS_URL } from "@/lib/catalog";
-import { fr } from "@/i18n/fr";
+import { missingPartsUrl } from "@/lib/catalog";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 type Props = {
   loaded: LoadedModel;
@@ -28,10 +28,11 @@ function allParts(loaded: LoadedModel): Object3D[] {
 
 /** Inventaire : chaque pièce dessinée avec son nombre, rangée par couleur ; on peut marquer une pièce manquante. */
 export default function PartsPhase({ loaded, missing, onToggleMissing, onDone }: Props) {
+  const { t: fr, locale } = useLocale();
   const groups = useMemo(() => {
-    const list = loaded.engine.instructions.groupParts(allParts(loaded), loaded.info);
+    const list = loaded.engine.instructions.groupParts(allParts(loaded), loaded.info, locale);
     return list.sort((a, b) => a.colourName.localeCompare(b.colourName) || a.name.full.localeCompare(b.name.full));
-  }, [loaded]);
+  }, [loaded, locale]);
   const total = groups.reduce((n, g) => n + g.count, 0);
 
   // miniatures dessinées par paquets, pour ne pas figer la page sur les gros sets
@@ -80,7 +81,7 @@ export default function PartsPhase({ loaded, missing, onToggleMissing, onDone }:
                 <span>{g.name.full}</span>
                 <span className={styles.partMeta}>
                   <span className={styles.swatch} style={{ background: g.hex ?? "transparent" }} aria-hidden="true" />
-                  {loaded.engine.instructions.frenchColour(g.colourName, g.gender, false)} · {fr.build.parts.number} {g.number}
+                  {loaded.engine.instructions.colourLabel(g.colourName, g.gender, false, locale)} · {fr.build.parts.number} {g.number}
                 </span>
               </span>
               <span className={styles.partActions}>
@@ -104,12 +105,12 @@ export default function PartsPhase({ loaded, missing, onToggleMissing, onDone }:
             <ul>
               {missingGroups.map((g) => (
                 <li key={g.key}>
-                  {g.count}× {g.name.full} ({loaded.engine.instructions.frenchColour(g.colourName, g.gender, false)}), {fr.build.parts.number} {g.number}
+                  {g.count}× {g.name.full} ({loaded.engine.instructions.colourLabel(g.colourName, g.gender, false, locale)}), {fr.build.parts.number} {g.number}
                 </li>
               ))}
             </ul>
             <div className={styles.actions}>
-              <a className="btn" href={MISSING_PARTS_URL} target="_blank" rel="noopener">
+              <a className="btn" href={missingPartsUrl(locale)} target="_blank" rel="noopener">
                 {fr.build.parts.missingLink}
               </a>
               <button type="button" className="btn btn-primary" onClick={onDone}>

@@ -4,10 +4,11 @@ import { useEffect, useRef } from "react";
 import styles from "./BuildApp.module.css";
 import { stepText } from "@/components/player/callouts";
 import type { LoadedModel } from "@/components/player/useModel";
-import { fr } from "@/i18n/fr";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 /** Planche de toutes les étapes : numéro, sous-ensemble et consigne ; on choisit une étape pour y aller. */
 export default function StepsSheet({ loaded, current, onPick, onClose }: { loaded: LoadedModel; current: number; onPick: (i: number) => void; onClose: () => void }) {
+  const { t: fr, locale } = useLocale();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const currentRef = useRef<HTMLButtonElement>(null);
 
@@ -47,7 +48,7 @@ export default function StepsSheet({ loaded, current, onPick, onClose }: { loade
                     {fr.player.assembly} {s.assembly}
                   </span>
                 )}
-                {stepText(loaded, i)}
+                {stepText(loaded, i, locale)}
               </span>
             </button>
           </li>

@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { getServerSnapshot, getSnapshot, subscribe } from "@/lib/progress";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 import { buildPageHref } from "@/lib/site";
 
 /**
@@ -10,6 +10,7 @@ import { buildPageHref } from "@/lib/site";
  * si un montage de ce modèle est en cours dans ce navigateur.
  */
 export default function StartButton({ number, model, label }: { number: string; model: string; label?: string }) {
+  const fr = useT();
   const store = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const p = store[`${number}/${model}`];
   const resumable = !!p && !p.finishedAt && p.step > 0;

@@ -1,28 +1,21 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import styles from "@/components/ComingSoon.module.css";
-import MissingSet from "@/components/catalog/MissingSet";
-import SearchBox from "@/components/catalog/SearchBox";
+import SiteChrome from "@/components/SiteChrome";
+import NotFoundContent from "@/components/NotFoundContent";
+import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { fr } from "@/i18n/fr";
 
 export const metadata: Metadata = { title: fr.notFound.title, robots: { index: false, follow: true } };
 
+/**
+ * Page 404 (un seul fichier pour tout le site) : dans la langue choisie dans le navigateur, ou celle
+ * de l'adresse demandée (/en/…). Reconnaît un numéro de set absent et renvoie vers sa notice officielle.
+ */
 export default function NotFound() {
   return (
-    <div className={`wrap ${styles.box}`}>
-      <p className="eyebrow">404</p>
-      <h1 className={styles.title}>{fr.notFound.title}</h1>
-      <MissingSet />
-      <p className={styles.body}>{fr.notFound.body}</p>
-      <SearchBox />
-      <p className={styles.actions}>
-        <Link href="/catalogue/" className="btn">
-          {fr.notFound.catalogue}
-        </Link>
-        <Link href="/" className="btn">
-          {fr.notFound.back}
-        </Link>
-      </p>
-    </div>
+    <LocaleProvider>
+      <SiteChrome>
+        <NotFoundContent />
+      </SiteChrome>
+    </LocaleProvider>
   );
 }

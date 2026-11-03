@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "@/components/TextPage.module.css";
 import type { SearchEntry } from "@/lib/search";
 import { asset } from "@/lib/site";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 
 type Item = { number: string; model: string; name: string };
 
@@ -27,6 +27,7 @@ async function offlineSets(): Promise<Item[]> {
 }
 
 export default function OfflineSets() {
+  const fr = useT();
   const [items, setItems] = useState<Item[] | null>(null);
   useEffect(() => {
     let alive = true;

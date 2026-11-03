@@ -1,12 +1,13 @@
 import styles from "./Catalog.module.css";
 import { asset } from "@/lib/site";
-import { fr } from "@/i18n/fr";
+import { dictFor, type Locale } from "@/i18n";
 
 /**
  * Couverture d'un set : l'image dessinée par `npm run data:covers`, ou à défaut une brique dessinée.
  * Décorative dans une carte (le nom du set est écrit à côté) : texte alternatif vide.
  */
-export default function SetCover({ number, hasCover, large = false, eager = false }: { number: string; hasCover: boolean; large?: boolean; eager?: boolean }) {
+export default function SetCover({ locale = "fr", number, hasCover, large = false, eager = false }: { locale?: Locale; number: string; hasCover: boolean; large?: boolean; eager?: boolean }) {
+  const fr = dictFor(locale);
   return (
     <div className={`${styles.cover} ${large ? styles.coverLarge : ""}`}>
       {hasCover ? (

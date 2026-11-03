@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./BuildApp.module.css";
 import ModelViewer, { ViewerPlaceholder } from "@/components/player/ModelViewer";
-import type { ModelState } from "@/components/player/useModel";
+import { loadPhaseText, type ModelState } from "@/components/player/useModel";
 import { estimateMinutes, isHeavy, type ModelEntry, type SetEntry } from "@/lib/catalog";
 import type { Progress } from "@/lib/progress";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 import { themePathFr } from "@/i18n/themes-fr";
 
 type Props = {
@@ -22,10 +22,11 @@ type Props = {
   onRestart: () => void;
 };
 
-const modelLabel = (m: ModelEntry) => (m.main ? fr.build.cover.mainModel : m.name);
+const modelLabel = (m: ModelEntry, mainLabel: string) => (m.main ? mainLabel : m.name);
 
 /** Couverture : le modèle fini qui tourne, les chiffres du set, et « Commencer » ou « Reprendre ». */
 export default function CoverPhase({ set, model, models, state, progress, officialUrl, onStart, onResume, onRestart }: Props) {
+  const fr = useT();
   const pathname = usePathname();
   const steps = state.status === "ready" ? state.loaded.plan.steps.length : model.steps;
   const parts = state.status === "ready" ? state.loaded.plan.totalParts : model.parts;
@@ -38,7 +39,7 @@ export default function CoverPhase({ set, model, models, state, progress, offici
         <ModelViewer loaded={state.loaded} mode={{ kind: "all", autoRotate: true }} className={styles.coverStage} />
       ) : (
         <ViewerPlaceholder
-          text={state.status === "error" ? fr.player.error : state.phase}
+          text={state.status === "error" ? fr.player.error : state.status === "loading" ? loadPhaseText(state.phase, fr) : ""}
           error={state.status === "error"}
           className={styles.coverStage}
         />
@@ -77,7 +78,7 @@ export default function CoverPhase({ set, model, models, state, progress, offici
               {models.map((m) => (
                 <li key={m.slug}>
                   <Link href={`${pathname}?modele=${encodeURIComponent(m.slug)}`} aria-current={m.slug === model.slug ? "true" : undefined} replace>
-                    {modelLabel(m)}
+                    {modelLabel(m, fr.build.cover.mainModel)}
                   </Link>
                 </li>
               ))}

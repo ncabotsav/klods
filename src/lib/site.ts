@@ -26,3 +26,9 @@ export const CONTACT_EMAIL = "contact@klods.app";
 
 /** Jeton public de Cloudflare Web Analytics (vide : pas de mesure, en local et sur GitHub Pages). */
 export const ANALYTICS_TOKEN = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN ?? "";
+
+/**
+ * Lien simple vers la fiche d'un set, dans une langue. Comme les pages de montage, les fiches n'ont
+ * que leur index.html (scripts/site/finalize.ts) : on n'y va jamais par `next/link`.
+ */
+export const setPageHref = (locale: "fr" | "en", number: string) => asset(`${locale === "fr" ? "" : "/en"}/set/${number}/`);

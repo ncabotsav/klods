@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import styles from "@/components/ComingSoon.module.css";
 import { officialManualUrl } from "@/lib/catalog";
-import { fr } from "@/i18n/fr";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 const noop = () => () => {};
 
@@ -12,6 +12,7 @@ const noop = () => () => {};
  * on le dit et on renvoie vers sa notice officielle et vers LDraw.org pour contribuer un modèle.
  */
 export default function MissingSet() {
+  const { t: fr, locale } = useLocale();
   const path = useSyncExternalStore(noop, () => window.location.pathname, () => "");
   const number = /\/set\/([0-9][0-9a-z]*(?:-\d+)?)\/?/i.exec(decodeURIComponent(path))?.[1];
   if (!number) return null;
@@ -21,7 +22,7 @@ export default function MissingSet() {
       <h2 className={styles.missingTitle}>{fr.missingSet.title(number)}</h2>
       <p>{fr.missingSet.body}</p>
       <p className={styles.actions}>
-        <a className="btn btn-primary" href={officialManualUrl(number)} target="_blank" rel="noopener">
+        <a className="btn btn-primary" href={officialManualUrl(number, locale)} target="_blank" rel="noopener">
           {fr.missingSet.official}
         </a>
         <a className="btn" href="https://library.ldraw.org/omr" target="_blank" rel="noopener">

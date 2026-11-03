@@ -1,9 +1,9 @@
 /**
  * Lancé après `next build` (npm run build) : prépare out/ pour l'hébergement.
  *
- * 1. Retire les fichiers de navigation interne (RSC, .txt) des pages /monter/ et /imprimer/ :
- *    on y arrive par des liens simples, seul index.html sert. Cloudflare limite le nombre de
- *    fichiers par version (20 000 sur l'offre gratuite) et chaque set en produisait 15.
+ * 1. Retire les fichiers de navigation interne (RSC, .txt) des pages de sets (fiche, montage,
+ *    impression, en français et en anglais) : on y arrive par des liens simples, seul index.html
+ *    sert. Cloudflare limite le nombre de fichiers par version (20 000 sur l'offre gratuite).
  * 2. Pose dans chaque page une CSP stricte : les scripts en ligne sont permis par leur empreinte.
  * 3. Vérifie le nombre de fichiers et leur taille, et échoue avant d'atteindre les limites.
  */
@@ -38,7 +38,7 @@ async function main() {
   const big: string[] = [];
   for await (const file of walk(OUT)) {
     const rel = path.relative(OUT, file).split(path.sep).join("/");
-    if (/^set\/[^/]+\/(monter|imprimer)\/.*\.txt$/.test(rel)) {
+    if (/^(en\/)?set\/[^/]+\/(.*\/)?[^/]*\.txt$/.test(rel)) {
       await fsp.rm(file);
       removed++;
       continue;

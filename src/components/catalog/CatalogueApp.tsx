@@ -8,14 +8,15 @@ import SearchIcon from "./SearchIcon";
 import { createSearch, type SearchEntry } from "@/lib/search";
 import { loadSearchIndex } from "@/lib/search-index";
 import { filterEntries, PAGE_SIZE, type CatalogueFilters, type PartsBucket, type SortKey } from "@/lib/catalogue-filters";
-import { fr } from "@/i18n/fr";
+import { useLocale } from "@/i18n/LocaleProvider";
+import { fr as FR } from "@/i18n/fr";
 
 type Theme = { name: string; slug: string; count: number };
 /** `first` : la première page, rendue au build ; le catalogue complet arrive ensuite par /recherche.json. */
 type Props = { first: SearchEntry[]; total: number; themes: Theme[]; decades: number[] };
 
-const SORTS = Object.keys(fr.catalogue.sorts) as SortKey[];
-const BUCKETS = Object.keys(fr.catalogue.partsBuckets) as PartsBucket[];
+const SORTS = Object.keys(FR.catalogue.sorts) as SortKey[];
+const BUCKETS = Object.keys(FR.catalogue.partsBuckets) as PartsBucket[];
 
 /** Lit les filtres dans l'adresse (« ?theme=technic&annees=1990&tri=recent »). */
 function readFilters(p: URLSearchParams, themes: Theme[]): CatalogueFilters {
@@ -41,14 +42,15 @@ function writeFilters(f: CatalogueFilters, themes: Theme[]) {
 
 /** Catalogue filtrable : recherche, thème, années, taille, avec étapes, tri, et « Afficher plus ». */
 export default function CatalogueApp({ first, total, themes, decades }: Props) {
+  const { t: fr, locale } = useLocale();
   const [all, setAll] = useState<SearchEntry[] | null>(null);
   useEffect(() => {
     let alive = true;
-    loadSearchIndex().then((list) => alive && setAll(list), () => {});
+    loadSearchIndex(locale).then((list) => alive && setAll(list), () => {});
     return () => {
       alive = false;
     };
-  }, []);
+  }, [locale]);
   const entries = all ?? first;
   const id = useId();
   const params = useSearchParams();
@@ -135,7 +137,7 @@ export default function CatalogueApp({ first, total, themes, decades }: Props) {
         ) : null}
       </div>
 
-      {shown.length ? <SetGrid entries={shown.slice(0, limit)} headingLevel={2} eager={4} /> : <p className={styles.empty}>{fr.catalogue.empty}</p>}
+      {shown.length ? <SetGrid locale={locale} entries={shown.slice(0, limit)} headingLevel={2} eager={4} /> : <p className={styles.empty}>{fr.catalogue.empty}</p>}
 
       {shown.length > limit && (
         <p className={styles.more}>

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import styles from "./ResumeBuilds.module.css";
 import { getServerSnapshot, getSnapshot, inProgress, removeProgress, restoreProgress, subscribe, type Progress } from "@/lib/progress";
-import { fr } from "@/i18n/fr";
+import { useT } from "@/i18n/LocaleProvider";
 import { buildPageHref } from "@/lib/site";
 
 /** Le bandeau « Annuler » reste ce temps-là, et tant que le focus est dessus. */
@@ -13,7 +13,8 @@ const UNDO_MS = 8000;
  * Encart « Reprendre » de l'accueil : les montages commencés dans ce navigateur.
  * Une croix retire un montage (et sa progression) ; un bandeau permet d'annuler pendant quelques secondes.
  */
-export default function ResumeBuilds({ limit = 3, title = fr.resume.title }: { limit?: number; title?: string }) {
+export default function ResumeBuilds({ limit = 3, title }: { limit?: number; title?: string }) {
+  const fr = useT();
   const store = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const builds = inProgress(store).slice(0, limit);
   const [undo, setUndo] = useState<Progress | null>(null);
@@ -51,7 +52,7 @@ export default function ResumeBuilds({ limit = 3, title = fr.resume.title }: { l
   return (
     <section className={styles.resume} aria-labelledby="resume-title">
       <h2 id="resume-title" className={styles.title}>
-        {title}
+        {title ?? fr.resume.title}
       </h2>
       {builds.length > 0 && (
         <ul className={styles.list} ref={listRef}>

@@ -1,6 +1,6 @@
 /**
- * Tous les textes de l'interface. Le français est la langue de référence ;
- * l'anglais (sprint 9) reprendra la même structure dans en.ts.
+ * Tous les textes de l'interface. Le français est la langue de référence : en.ts reprend la même
+ * structure, vérifiée par TypeScript (type Dict de types.ts).
  */
 export const fr = {
   site: {
@@ -18,6 +18,10 @@ export const fr = {
     main: "Navigation principale",
     home: "Klods, accueil",
     skip: "Aller au contenu",
+    /** Lien vers l'autre langue : code court affiché, phrase lue, dans cette autre langue. */
+    otherLocale: "en",
+    otherCode: "EN",
+    otherLabel: "Read in English",
   },
   home: {
     eyebrow: "Notices de montage en 3D",
@@ -59,6 +63,7 @@ export const fr = {
     models: "Modèles de ce set",
     modelSteps: (steps: number, parts: number) => (steps > 1 ? `${steps} étapes · ${parts} pièces` : `${parts} pièces, sans étapes`),
     build: "Monter",
+    buildModel: (model: string) => `Monter : ${model}`,
     noStepsTitle: "Sans étapes de montage",
     noStepsBody: "Ce modèle 3D n'est pas découpé en étapes. Tu peux voir le modèle fini et la liste des pièces. Pour le monter pas à pas, suis la notice officielle.",
     officialManual: "Ouvrir la notice officielle",
@@ -75,6 +80,8 @@ export const fr = {
     howToStep: (n: number) => `Étape ${n}`,
     howToName: (number: string, name: string) => `Notice de montage en 3D du set ${number} ${name}`,
     breadcrumb: "Fil d'Ariane",
+    /** Titre de la fiche, pensé pour la recherche « notice 4915 ». */
+    pageTitle: (number: string, name: string) => `${name} (${number}), notice de montage en 3D`,
     heavy: "Très gros set : son ouverture peut prendre jusqu'à une minute sur un téléphone. Il reste ensuite disponible sans réseau.",
     sourceModel: (number: string, name: string) => `${number} ${name}, modèle LDraw`,
   },
@@ -534,4 +541,3 @@ export const fr = {
   },
 } as const;
 
-export type Dict = typeof fr;

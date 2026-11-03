@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fr } from "@/i18n/fr";
 import { asset } from "@/lib/site";
 
 /** Tout ce qu'il faut pour afficher un modèle : le modèle chargé, ses étapes, et les modules du moteur. */
@@ -20,7 +19,9 @@ export type LoadedModel = {
   loadMs: number;
 };
 
-export type ModelState = { status: "loading"; phase: string } | { status: "error" } | { status: "ready"; loaded: LoadedModel };
+/** Phase du chargement : « model » (fichier), « steps » (préparation des étapes) ; le texte vient de la langue de la page. */
+export type LoadPhase = "model" | "steps";
+export type ModelState = { status: "loading"; phase: LoadPhase } | { status: "error" } | { status: "ready"; loaded: LoadedModel };
 
 /** Au-delà de 2 Mo de texte, pas de normales lissées : le chargement va bien plus vite. */
 const SMOOTH_LIMIT = 2_000_000;
@@ -53,7 +54,7 @@ function insertionsInWorker(text: string): Promise<InsertionData> | null {
 
 /** Charge un modèle packé (« data/models/4915-1/principal.mpd.gz ») et prépare ses étapes, dans le navigateur. */
 export function useModel(src: string, bytes = 0): ModelState {
-  const [state, setState] = useState<ModelState>({ status: "loading", phase: fr.player.loading });
+  const [state, setState] = useState<ModelState>({ status: "loading", phase: "model" });
 
   useEffect(() => {
     let cancelled = false;
@@ -71,7 +72,7 @@ export function useModel(src: string, bytes = 0): ModelState {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const raw = await bytesToText(await res.arrayBuffer());
       if (cancelled) return;
-      setState({ status: "loading", phase: fr.player.loadingSteps });
+      setState({ status: "loading", phase: "steps" });
       // laisse le navigateur afficher le message avant le calcul, qui bloque la page un moment
       await new Promise((r) => setTimeout(r, 30));
       // gros modèle : les directions d'arrivée se calculent à côté, la page ne bloque que pour le chargement
@@ -106,3 +107,6 @@ export function useModel(src: string, bytes = 0): ModelState {
 
   return state;
 }
+
+/** Texte d'une phase de chargement, dans la langue de la page. */
+export const loadPhaseText = (phase: LoadPhase, t: import("@/i18n").Dict) => (phase === "model" ? t.player.loading : t.player.loadingSteps);

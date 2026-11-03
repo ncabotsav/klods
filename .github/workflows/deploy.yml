@@ -1,4 +1,5 @@
-# Vérifie et publie le site sur GitHub Pages à chaque push sur main.
+# Vérifie le site, le publie sur Cloudflare (klods.app) et garde sur GitHub Pages une redirection
+# vers klods.app, à chaque push sur main.
 # Sur les pull requests, vérifie seulement (tests, lint, types, build).
 # Les modèles 3D et l'index viennent du workflow « Données », par le cache.
 name: Déploiement
@@ -104,10 +105,19 @@ jobs:
           name: traces-e2e
           path: test-results
           retention-days: 7
+      # GitHub Pages ne sert plus le site : chaque ancienne adresse renvoie vers la même page sur klods.app,
+      # et l'ancien service worker s'efface sur les appareils qui l'avaient
+      - name: Redirection vers klods.app
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p redirect
+          cp scripts/site/github-pages/redirect.html redirect/index.html
+          cp scripts/site/github-pages/redirect.html redirect/404.html
+          cp scripts/site/github-pages/sw.js redirect/sw.js
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
-          path: out
+          path: redirect
 
   deploy:
     if: github.event_name != 'pull_request'
@@ -134,10 +144,10 @@ jobs:
       cancel-in-progress: true
     environment:
       name: cloudflare
-      url: ${{ vars.KLODS_SITE_URL || 'https://preview.klods.app' }}
+      url: ${{ vars.KLODS_SITE_URL || 'https://klods.app' }}
     env:
       NEXT_PUBLIC_BASE_PATH: ""
-      NEXT_PUBLIC_SITE_URL: ${{ vars.KLODS_SITE_URL || 'https://preview.klods.app' }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.KLODS_SITE_URL || 'https://klods.app' }}
       NEXT_PUBLIC_CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
       NEXT_TELEMETRY_DISABLED: 1
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

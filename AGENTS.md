@@ -10,7 +10,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 
 - Klods est exporté en site statique (`output: "export"`) : pas de routes API Next, pas de rendu à la demande, pas d'optimisation d'images, pas de middleware.
 - Hébergé sur Cloudflare Workers (`wrangler.jsonc`) : les fichiers de `out/` sont servis tels quels, le Worker `worker/index.ts` ne reçoit que `/api/*` (aujourd'hui `/api/retours`). Job `cloudflare` du workflow « Déploiement », actif si les secrets `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ACCOUNT_ID` existent ; build à la racine (`NEXT_PUBLIC_BASE_PATH` vide). Le code reste sur GitHub.
-- Tant que la bascule n'est pas faite, GitHub Pages sert aussi le site sous `/klods` (`NEXT_PUBLIC_BASE_PATH`). `next/link` ajoute ce préfixe tout seul ; pour `fetch()` et les `<img>` vers `/public`, passe par `asset()` de `src/lib/site.ts`.
+- GitHub Pages ne sert plus qu'une redirection (`scripts/site/github-pages/`) : chaque adresse sous ncabotsav.github.io/klods part vers la même page de klods.app, et l'ancien service worker s'efface. Les tests de bout en bout gardent le préfixe `/klods` (`NEXT_PUBLIC_BASE_PATH`) pour vérifier qu'aucun lien ne l'oublie : `next/link` l'ajoute seul ; pour `fetch()`, les `<img>` et les liens simples, passe par `asset()` ou `buildPageHref()` de `src/lib/site.ts`.
 - `npm run build` lance ensuite `scripts/site/finalize.ts` : retire les fichiers de navigation interne des pages `/monter/` et `/imprimer/` (on y va par des liens simples, `buildPageHref()`, jamais `next/link`), pose une CSP stricte dans chaque page (empreintes des scripts en ligne) et échoue au-delà de 19 000 fichiers (limite Cloudflare gratuite : 20 000) ou d'un fichier de plus de 25 Mio.
 - En-têtes de sécurité et cache : `public/_headers`. Les tests de bout en bout échouent si la CSP bloque quelque chose.
 - Retours : formulaire `/retours/` (`src/components/FeedbackForm.tsx`), validation partagée dans `src/lib/feedback.ts`, gardés un an dans Workers KV, e-mail vers le secret `FEEDBACK_TO`. Jamais l'adresse IP.
@@ -63,7 +63,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 
 - Fiche statique par set : `/set/<numéro>/` (indexée) ; `/monter/` et `/imprimer/` sont en `noindex` avec la fiche en canonique. Un set absent tombe sur la 404, qui reconnaît l'adresse et renvoie vers la notice officielle.
 - `/catalogue/` (filtres dans l'adresse : `?theme=`, `?annees=`, `?pieces=`, `?etapes=1`, `?tri=`) et `/catalogue/<thème>/`. La logique des filtres est dans `src/lib/catalogue-filters.ts`, la recherche floue dans `src/lib/search.ts` (testées).
-- `/recherche.json`, `/sitemap.xml` et `/robots.txt` sont des routes statiques (`dynamic = "force-static"`). Sur GitHub Pages, le robots.txt n'est pas à la racine du domaine : le sitemap se déclare dans la Search Console.
+- `/recherche.json`, `/sitemap.xml` et `/robots.txt` sont des routes statiques (`dynamic = "force-static"`), servies à la racine de klods.app.
 - Couvertures et cartes de partage : `npm run data:covers` (après un build), dans le workflow « Données ». Fichiers dans `public/data/covers/`, cache dans `data/raw/covers/`. Changer le dessin : incrémenter `COVER_VERSION`. Sans couverture, la carte affiche une brique dessinée.
 
 ## Avant de lancer un nouveau sprint
@@ -73,7 +73,7 @@ On ne commence jamais un sprint sans avoir repassé le précédent. La repasse s
 1. Relire la liste de tâches du sprint précédent dans le plan : chaque tâche est faite, ou reportée explicitement avec la raison et le sprint où elle part.
 2. Vérifier chaque critère « Fini quand » du sprint, avec une preuve (commande lancée, page ouverte, mesure).
 3. Lancer `npm run lint && npm run typecheck && npm run build` sur `main`, et `npm run check` dès qu'il existe.
-4. Vérifier que le dernier déploiement GitHub Pages a réussi et que le site en ligne s'affiche correctement (accueil, pages ajoutées par le sprint, 404).
+4. Vérifier que le dernier déploiement (Cloudflare, et la redirection GitHub Pages) a réussi et que le site en ligne s'affiche correctement (accueil, pages ajoutées par le sprint, 404).
 5. Relire les changements du sprint pour les règles de ce fichier : aucun contenu LEGO copié, textes dans `src/i18n/fr.ts`, couleurs par les jetons, accessibilité.
 6. Corriger ce qui ne va pas dans une pull request à part, avant le nouveau sprint.
 7. Résumer la repasse à l'utilisateur (ce qui est OK, ce qui a été corrigé, ce qui est reporté) et attendre son accord avant de lancer le sprint suivant.
@@ -84,4 +84,4 @@ On ne commence jamais un sprint sans avoir repassé le précédent. La repasse s
 npm test && npm run lint && npm run typecheck && npm run build
 ```
 
-Une pull request par lot de travail ; `main` se déploie automatiquement sur GitHub Pages.
+Une pull request par lot de travail ; `main` se déploie automatiquement sur klods.app (Cloudflare).

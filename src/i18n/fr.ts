@@ -109,7 +109,7 @@ export const fr = {
   },
   catalogue: {
     title: "Catalogue",
-    lead: (n: number, from: number | null) => (from ? `${n} sets à monter en 3D, de ${from} à aujourd'hui.` : `${n} sets à monter en 3D.`),
+    lead: (n: number, from: number | null) => (from ? `${n} sets à monter en 3D, de ${from} à aujourd'hui, modélisés par la communauté LDraw.` : `${n} sets à monter en 3D, modélisés par la communauté LDraw.`),
     filters: "Filtres",
     theme: "Thème",
     allThemes: "Tous les thèmes",

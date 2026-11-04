@@ -13,7 +13,7 @@ export const en: Dict = {
   },
   nav: {
     catalogue: "Catalogue",
-    workshop: "My workshop",
+    workshop: "Workshop",
     github: "Source code on GitHub",
     githubStars: (n: number) => `Source code on GitHub, ${n} star${n > 1 ? "s" : ""}`,
     main: "Main navigation",
@@ -286,7 +286,7 @@ export const en: Dict = {
     updated: "Updated on 3 November 2026.",
   },
   workshop: {
-    title: "My workshop",
+    title: "Workshop",
     lead: "The sets you built or started on this device. Nothing is sent to a server.",
     stats: "Your numbers",
     finished: (n: number) => (n > 1 ? "sets built" : "set built"),

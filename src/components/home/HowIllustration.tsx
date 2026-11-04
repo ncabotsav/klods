@@ -82,17 +82,15 @@ function TypeNumber() {
   );
 }
 
-/** 2. Vérifie tes pièces : trois pièces, leur nombre, une coche. */
+/** 2. Vérifie tes pièces : deux pièces, leur nombre, une coche. */
 function CheckParts() {
   return (
     <svg viewBox="0 0 240 150" className={styles.svg} aria-hidden="true">
-      <Brick ox={50} oy={56} w={2} d={4} h={3} tone="hi" />
-      <Brick ox={128} oy={70} w={2} d={1} h={3} />
-      <Brick ox={168} oy={44} w={2} d={2} h={1} tone="stage" />
+      <Brick ox={62} oy={50} w={2} d={4} h={3} tone="hi" />
+      <Brick ox={164} oy={66} w={2} d={1} h={3} />
       {[
-        [40, 128, "4×"],
-        [126, 122, "2×"],
-        [196, 96, "6×"],
+        [54, 130, "4×"],
+        [168, 122, "2×"],
       ].map(([x, y, n]) => (
         <g key={String(n)}>
           <rect x={Number(x) - 16} y={Number(y) - 11} width="32" height="22" rx="11" className={styles.chip} />
@@ -101,8 +99,8 @@ function CheckParts() {
           </text>
         </g>
       ))}
-      <circle cx="206" cy="128" r="12" className={styles.hi} />
-      <path d="M200 128l4.5 4.5 7.5-8.5" className={styles.check} />
+      <circle cx="212" cy="122" r="12" className={styles.hi} />
+      <path d="M206 122l4.5 4.5 7.5-8.5" className={styles.check} />
     </svg>
   );
 }

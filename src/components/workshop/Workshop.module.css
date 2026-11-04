@@ -1,4 +1,4 @@
-/* Mon atelier : une colonne large, des cartes en grille */
+/* Atelier : une colonne large, des cartes en grille */
 .page {
   display: grid;
   gap: var(--space-6);

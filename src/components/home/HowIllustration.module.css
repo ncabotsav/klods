@@ -80,3 +80,27 @@
 .arrowHead {
   fill: var(--ink);
 }
+
+/* barre de recherche du dessin 1 : mêmes couleurs que la vraie */
+.barText {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  fill: var(--ink);
+}
+
+.caret {
+  stroke: var(--accent) !important;
+  stroke-width: 2 !important;
+}
+
+.accent {
+  fill: var(--accent);
+  stroke: var(--accent) !important;
+}
+
+.accentInk {
+  fill: none;
+  stroke: var(--accent-ink) !important;
+  stroke-width: 2.4 !important;
+}

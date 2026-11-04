@@ -46,10 +46,11 @@ function Brick({ ox, oy, w, d, h, tone = "card" }: { ox: number; oy: number; w: 
   );
 }
 
-/** 1. Tape le numéro : la boîte et son numéro, un téléphone où on le tape. */
+/** 1. Tape le numéro : le numéro de la boîte, tapé tel quel dans la barre de recherche. */
 function TypeNumber() {
-  const p = iso(70, 58);
-  const box = { w: 9, d: 6, h: 6 };
+  const p = iso(54, 40);
+  const box = { w: 8, d: 4, h: 4 };
+  const [lx, ly] = p(4, box.d, 2.1);
   return (
     <svg viewBox="0 0 240 150" className={styles.svg} aria-hidden="true">
       <g className={styles.card}>
@@ -59,25 +60,23 @@ function TypeNumber() {
       </g>
       {/* étiquette du numéro, sur la face avant */}
       <g className={styles.hi}>
-        <polygon points={pts([p(2, box.d, 4.4), p(7, box.d, 4.4), p(7, box.d, 2.2), p(2, box.d, 2.2)])} />
+        <polygon points={pts([p(1.4, box.d, 3.1), p(6.6, box.d, 3.1), p(6.6, box.d, 1.1), p(1.4, box.d, 1.1)])} />
       </g>
-      <text className={styles.label} transform={`translate(${p(4.5, box.d, 3.3).join(",")}) skewY(30)`} textAnchor="middle" dominantBaseline="middle">
+      <text className={styles.label} transform={`translate(${lx},${ly}) skewY(30)`} textAnchor="middle" dominantBaseline="middle">
         4915
       </text>
-      {/* téléphone : le numéro tapé dans la recherche */}
-      <g className={styles.card}>
-        <rect x="168" y="30" width="50" height="92" rx="8" />
-        <rect x="174" y="44" width="38" height="13" rx="3" className={styles.stageFill} />
-      </g>
-      <text x="200" y="51" className={styles.small} textAnchor="middle" dominantBaseline="middle">
+      {/* du numéro de la boîte au même numéro dans la barre */}
+      <path d="M72 86v17" className={styles.arrow} />
+      <path d="M65.5 97l6.5 7 6.5-7" className={styles.arrow} />
+      <rect x="14" y="110" width="212" height="30" rx="10" className={styles.card} />
+      <circle cx="32" cy="124" r="5.5" className={styles.line} />
+      <path d="M36 128l4 4" className={styles.line} />
+      <text x="50" y="125.5" className={styles.barText} dominantBaseline="middle">
         4915
       </text>
-      <circle cx="180" cy="50.5" r="3" className={styles.line} />
-      <path d="M182.2 52.7l2.3 2.3" className={styles.line} />
-      <rect x="174" y="64" width="38" height="22" rx="3" className={`${styles.line} ${styles.stageFill}`} />
-      <rect x="174" y="91" width="38" height="22" rx="3" className={`${styles.line} ${styles.stageFill}`} />
-      <path d="M150 92c6-6 10-8 16-8" className={styles.arrow} />
-      <path d="M161 80l5 4-5 4" className={styles.arrow} />
+      <path d="M94 117v16" className={styles.caret} />
+      <rect x="178" y="114" width="44" height="22" rx="7" className={styles.accent} />
+      <path d="M192 125h16M202 119l6 6-6 6" className={styles.accentInk} />
     </svg>
   );
 }

@@ -64,8 +64,9 @@ function wordScore(q: string, words: string[]): number {
     if (w === q) s = 10;
     else if (w.startsWith(q)) s = q.length >= 2 ? 7 : 3;
     else if (q.length >= 3 && w.includes(q)) s = 4;
-    else if (q.length >= 4) {
-      // une faute pour un mot court, deux à partir de 7 lettres
+    else if (q.length >= 4 && !/^\d+$/.test(q)) {
+      // une faute pour un mot court, deux à partir de 7 lettres ; jamais sur un nombre :
+      // « 40926 » absent ne doit pas tomber sur le set 4096
       const max = q.length >= 7 ? 2 : 1;
       const d = editDistance(q, w, max);
       if (d <= 1) s = 5;

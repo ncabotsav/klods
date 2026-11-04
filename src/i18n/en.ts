@@ -106,7 +106,7 @@ export const en: Dict = {
   },
   catalogue: {
     title: "Catalogue",
-    lead: (n: number, from: number | null) => (from ? `${n} sets to build in 3D, from ${from} to today.` : `${n} sets to build in 3D.`),
+    lead: (n: number, from: number | null) => (from ? `${n} sets to build in 3D, from ${from} to today, modelled by the LDraw community.` : `${n} sets to build in 3D, modelled by the LDraw community.`),
     filters: "Filters",
     theme: "Theme",
     allThemes: "All themes",

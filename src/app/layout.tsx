@@ -4,6 +4,7 @@ import { archivo, atkinson, plexMono } from "./fonts";
 import ServiceWorker from "@/components/ServiceWorker";
 import Analytics from "@/components/Analytics";
 import { siteMetadata } from "@/lib/site-metadata";
+import { THEME_SCRIPT } from "@/lib/theme";
 
 /*
  * Mise en page racine, commune aux deux langues. L'habillage (en-tête, pied de page) et la langue
@@ -30,7 +31,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${archivo.variable} ${atkinson.variable} ${plexMono.variable}`}>
+    // data-theme peut être posé par THEME_SCRIPT avant React : pas d'alerte d'hydratation pour lui
+    <html lang="fr" className={`${archivo.variable} ${atkinson.variable} ${plexMono.variable}`} suppressHydrationWarning>
+      <head>
+        {/* thème choisi, posé avant le premier affichage (pas d'éclair de l'autre thème) */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body>
         {children}
         <ServiceWorker />

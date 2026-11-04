@@ -18,6 +18,8 @@
   --hi-ink: #14202b;
   /* erreurs de formulaire */
   --danger: #b3261e;
+  /* ombre des panneaux posés au-dessus de la page */
+  --shadow: 0 8px 24px rgb(20 32 43 / 0.16);
 
   /* familles chargées par next/font (src/app/fonts.ts) */
   --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
@@ -52,6 +54,7 @@
     --accent-ink: #08121c;
     --hi: #ffcd03;
     --danger: #ff8a80;
+    --shadow: 0 8px 24px rgb(0 0 0 / 0.5);
     color-scheme: dark;
   }
 }
@@ -67,6 +70,7 @@
   --accent-ink: #08121c;
   --hi: #ffcd03;
   --danger: #ff8a80;
+  --shadow: 0 8px 24px rgb(0 0 0 / 0.5);
   color-scheme: dark;
 }
 

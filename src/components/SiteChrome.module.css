@@ -101,8 +101,8 @@
   }
 }
 
-/* petits téléphones : le lien GitHub reste dans le pied de page (« Code source ») */
-@media (max-width: 400px) {
+/* téléphones : le lien GitHub reste dans le pied de page (« Code source ») */
+@media (max-width: 480px) {
   .github {
     display: none;
   }
@@ -180,4 +180,88 @@
 .nav a.langOther:hover {
   color: var(--ink);
   background: var(--stage);
+}
+
+/* choix du thème : même pastille que GitHub, et un petit panneau de trois choix */
+.themeBox {
+  position: relative;
+}
+
+.themeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.themeButton svg,
+.themeOption svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  max-width: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.themeFill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.themePanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-2));
+  z-index: 20;
+  display: grid;
+  gap: 2px;
+  min-width: 180px;
+  padding: var(--space-1);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.themeOption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: calc(var(--radius) - 4px);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.themeOption:hover {
+  background: var(--stage);
+}
+
+.themeOption[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+@media (max-width: 480px) {
+  .themeButton {
+    width: 32px;
+    height: 32px;
+  }
 }

@@ -4,6 +4,7 @@ import styles from "./Home.module.css";
 import ResumeBuilds from "@/components/ResumeBuilds";
 import SearchBox from "@/components/catalog/SearchBox";
 import FeaturedGrid from "@/components/catalog/FeaturedGrid";
+import HowIllustration from "@/components/home/HowIllustration";
 import { allSets, featuredByTheme, searchEntries } from "@/lib/catalog-server";
 import { dictFor, localeHref, type Locale } from "@/i18n";
 import { bilingual } from "@/lib/seo";
@@ -42,6 +43,7 @@ export default function HomeView({ locale }: { locale: Locale }) {
           {t.steps.map((step, i) => (
             <li key={step.title} className={styles.step}>
               <span className={styles.stepNum}>{i + 1}</span>
+              <HowIllustration index={i} />
               <h3 className={styles.stepTitle}>{step.title}</h3>
               <p>{step.body}</p>
             </li>

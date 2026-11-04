@@ -21,6 +21,13 @@ export const en: Dict = {
     skip: "Skip to content",
     language: "Language",
   },
+  theme: {
+    button: (name: string) => `Theme: ${name}`,
+    label: "Theme",
+    auto: "Automatic",
+    light: "Light",
+    dark: "Dark",
+  },
   home: {
     eyebrow: "3D building instructions",
     title: "Build your LEGO® sets in 3D, step by step.",
@@ -35,6 +42,12 @@ export const en: Dict = {
     featuredTitle: "Sets to build, by theme",
     seeTheme: (theme: string) => `All ${theme} sets`,
     catalogueCta: (n: number) => `See all ${n} sets in the catalogue`,
+    preview: {
+      label: (name: string) => `3D preview: ${name} building itself step by step`,
+      caption: (number: string, name: string) => `${number} · ${name}`,
+      cta: "See the example",
+      ctaLabel: (name: string) => `See the example: build ${name}`,
+    },
   },
   search: {
     label: "Set number or name",

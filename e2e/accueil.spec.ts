@@ -10,8 +10,14 @@ test("l'accueil montre un vrai set qui se monte, avec un lien vers son montage",
   await expect(preview).toBeVisible();
   await expect(preview.getByRole("img", { name: /^Aperçu 3D : / })).toBeVisible();
   await expect(preview.getByRole("link", { name: /^Voir l'exemple/ })).toHaveAttribute("href", /\/set\/[^/]+\/monter\/$/);
-  // la vue 3D arrive après le chargement de la page, par-dessus la couverture
-  await expect(preview.locator("canvas")).toBeAttached({ timeout: 30_000 });
+  // la vue 3D arrive après le chargement de la page, par-dessus la couverture ; sans WebGL (Firefox en CI),
+  // la couverture reste seule
+  const webgl = await page.evaluate(() => {
+    const c = document.createElement("canvas");
+    return !!(c.getContext("webgl2") ?? c.getContext("webgl"));
+  });
+  if (webgl) await expect(preview.locator("canvas")).toBeAttached({ timeout: 30_000 });
+  else await expect(preview.locator("canvas")).toHaveCount(0);
 });
 
 test("« Comment ça marche » a un dessin par étape", async ({ page }) => {

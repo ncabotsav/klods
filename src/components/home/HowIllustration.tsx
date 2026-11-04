@@ -66,8 +66,8 @@ function TypeNumber() {
         4915
       </text>
       {/* du numéro de la boîte au même numéro dans la barre */}
-      <path d="M72 86v17" className={styles.arrow} />
-      <path d="M65.5 97l6.5 7 6.5-7" className={styles.arrow} />
+      <path d="M61.5 86v17" className={styles.arrow} />
+      <path d="M55 97l6.5 7 6.5-7" className={styles.arrow} />
       <rect x="14" y="110" width="212" height="30" rx="10" className={styles.card} />
       <circle cx="32" cy="124" r="5.5" className={styles.line} />
       <path d="M36 128l4 4" className={styles.line} />
@@ -85,21 +85,21 @@ function TypeNumber() {
 function CheckParts() {
   return (
     <svg viewBox="0 0 240 150" className={styles.svg} aria-hidden="true">
-      <Brick ox={62} oy={50} w={2} d={4} h={3} tone="hi" />
-      <Brick ox={164} oy={66} w={2} d={1} h={3} />
+      <Brick ox={74.8} oy={50} w={2} d={4} h={3} tone="hi" />
+      <Brick ox={166.5} oy={66} w={2} d={1} h={3} />
       {[
-        [54, 130, "4×"],
-        [168, 122, "2×"],
+        [66.8, 128.5, "4×"],
+        [170.6, 128.5, "2×"],
       ].map(([x, y, n]) => (
         <g key={String(n)}>
-          <rect x={Number(x) - 16} y={Number(y) - 11} width="32" height="22" rx="11" className={styles.chip} />
+          <rect x={Number(x) - 16} y={Number(y) - 9.5} width="32" height="19" rx="11" ry="9.5" className={styles.chip} />
           <text x={Number(x)} y={Number(y) + 1} className={styles.small} textAnchor="middle" dominantBaseline="middle">
             {n}
           </text>
         </g>
       ))}
-      <circle cx="212" cy="122" r="12" className={styles.hi} />
-      <path d="M206 122l4.5 4.5 7.5-8.5" className={styles.check} />
+      <circle cx="211.1" cy="128.75" r="9.75" className={styles.hi} />
+      <path d="M207.1 128.9l3.5 3.5 5.8-6.6" className={styles.check} />
     </svg>
   );
 }
@@ -110,8 +110,8 @@ function FollowSteps() {
     <svg viewBox="0 0 240 150" className={styles.svg} aria-hidden="true">
       <Brick ox={120} oy={76} w={4} d={4} h={1} tone="stage" />
       <Brick ox={128} oy={30} w={2} d={2} h={3} tone="hi" />
-      <path d="M62 34v42" className={styles.arrow} />
-      <path d="M55 68l7 9 7-9" className={styles.arrowHead} />
+      <path d="M172.1 34v42" className={styles.arrow} />
+      <path d="M165.1 68.5l7 9 7-9" className={styles.arrowHead} />
     </svg>
   );
 }

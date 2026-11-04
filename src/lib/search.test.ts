@@ -62,3 +62,11 @@ test("le nom anglais d'un thème traduit reste cherchable", () => {
   assert.equal(search("ville")[0]?.entry.n, "6390-1");
   assert.equal(search("town")[0]?.entry.n, "6390-1");
 });
+
+test("un numéro absent ne tombe pas sur un numéro voisin", () => {
+  // 4918 est à une faute de 49180 : pas de faute de frappe tolérée sur un nombre
+  assert.deepEqual(search("49180"), []);
+  assert.deepEqual(search("4916"), []);
+  // l'année reste cherchable
+  assert.equal(first("1990"), "8094-1");
+});

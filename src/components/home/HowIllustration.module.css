@@ -1,0 +1,82 @@
+/* Dessins au trait de « Comment ça marche » : couleurs par les jetons, traits de la couleur du texte */
+.frame {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 8 / 5;
+  margin-bottom: var(--space-2);
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.svg polygon,
+.svg path,
+.svg ellipse,
+.svg rect,
+.svg circle {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.card {
+  fill: var(--card);
+}
+
+.stage {
+  fill: var(--stage);
+}
+
+.hi {
+  fill: var(--hi);
+}
+
+/* face à l'ombre : la même couleur, un peu assombrie */
+.shade {
+  filter: brightness(0.86);
+}
+
+.stageFill {
+  fill: var(--stage);
+}
+
+.line {
+  fill: none;
+}
+
+.chip {
+  fill: var(--card);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  fill: var(--hi-ink);
+}
+
+.small {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  fill: var(--ink);
+}
+
+.check {
+  fill: none;
+  stroke: var(--hi-ink) !important;
+  stroke-width: 2.6 !important;
+}
+
+.arrow {
+  fill: none;
+  stroke-width: 3 !important;
+}
+
+.arrowHead {
+  fill: var(--ink);
+}

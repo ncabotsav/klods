@@ -67,6 +67,8 @@
 }
 
 .coverStage {
+  /* largeur imposée : avec une hauteur fixée, le rapport 4/4,6 du téléphone élargissait la vue au-delà de l'écran */
+  width: 100%;
   height: clamp(320px, 60vh, 640px);
 }
 

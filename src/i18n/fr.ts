@@ -21,6 +21,13 @@ export const fr = {
     /** Sélecteur de langue de l'en-tête (les noms des langues sont dans src/i18n/index.ts). */
     language: "Langue",
   },
+  theme: {
+    button: (name: string) => `Thème : ${name}`,
+    label: "Thème",
+    auto: "Automatique",
+    light: "Clair",
+    dark: "Sombre",
+  },
   home: {
     eyebrow: "Notices de montage en 3D",
     title: "Monte tes sets LEGO® en 3D, étape par étape.",
@@ -35,6 +42,13 @@ export const fr = {
     featuredTitle: "À monter, par thème",
     seeTheme: (theme: string) => `Tous les sets ${theme}`,
     catalogueCta: (n: number) => `Voir les ${n} sets du catalogue`,
+    /** Aperçu 3D à côté de la recherche : un vrai set qui se monte tout seul. */
+    preview: {
+      label: (name: string) => `Aperçu 3D : ${name} se monte étape par étape`,
+      caption: (number: string, name: string) => `${number} · ${name}`,
+      cta: "Voir l'exemple",
+      ctaLabel: (name: string) => `Voir l'exemple : monter ${name}`,
+    },
   },
   search: {
     label: "Numéro ou nom du set",

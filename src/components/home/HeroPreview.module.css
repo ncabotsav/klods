@@ -1,0 +1,63 @@
+/* Aperçu 3D de l'accueil : la couverture, puis la vue 3D par-dessus, en fondu */
+.preview {
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--stage);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: var(--space-5);
+  transition: opacity 0.4s ease;
+}
+
+.live {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+/* la vue 3D prend toute la place du cadre (pas la hauteur du parcours de montage) */
+.viewer {
+  height: 100% !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.name {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--muted);
+}

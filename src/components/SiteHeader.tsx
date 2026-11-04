@@ -8,19 +8,36 @@ import styles from "./SiteChrome.module.css";
 import { useLocale } from "@/i18n/LocaleProvider";
 import { localeHref } from "@/i18n";
 import { GITHUB_URL } from "@/lib/site";
+import { useSyncExternalStore } from "react";
+import { getServerSnapshot, getSnapshot, inProgress, subscribe } from "@/lib/progress";
 
 /** En-tête de toutes les pages, dans la langue de la page. `stars` : étoiles du dépôt, lues au build. */
 export default function SiteHeader({ stars }: { stars: number | null }) {
   const { t: fr, locale } = useLocale();
+  // montages commencés dans ce navigateur : leur nombre s'affiche à côté de « Atelier »
+  const store = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const started = inProgress(store).length;
   return (
     <header className={styles.header}>
       <div className={`wrap ${styles.headerInner}`}>
-        <Link href={localeHref(locale, "/")} className={styles.home} aria-label={fr.nav.home}>
-          <Logo />
-        </Link>
-        <nav className={styles.nav} aria-label={fr.nav.main}>
-          <Link href={localeHref(locale, "/catalogue/")}>{fr.nav.catalogue}</Link>
-          <Link href="/atelier/">{fr.nav.workshop}</Link>
+        <div className={styles.left}>
+          <Link href={localeHref(locale, "/")} className={styles.home} aria-label={fr.nav.home}>
+            <Logo />
+          </Link>
+          <nav className={styles.nav} aria-label={fr.nav.main}>
+            <Link href={localeHref(locale, "/catalogue/")}>{fr.nav.catalogue}</Link>
+            <Link href="/atelier/">
+              {fr.nav.workshop}
+              {started > 0 && (
+                <>
+                  <span className={styles.count}>{started}</span>
+                  <span className={styles.srOnly}> {fr.nav.workshopCount(started)}</span>
+                </>
+              )}
+            </Link>
+          </nav>
+        </div>
+        <div className={styles.tools}>
           <LanguageSwitch />
           <ThemeSwitch />
           <a href={GITHUB_URL} className={styles.github} target="_blank" rel="noopener" aria-label={stars === null ? fr.nav.github : fr.nav.githubStars(stars)}>
@@ -30,7 +47,7 @@ export default function SiteHeader({ stars }: { stars: number | null }) {
             {/* pas de « 0 » : le compteur n'apparaît qu'à la première étoile */}
             {!!stars && <span aria-hidden="true">{stars}</span>}
           </a>
-        </nav>
+        </div>
       </div>
     </header>
   );

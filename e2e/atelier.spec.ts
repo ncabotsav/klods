@@ -32,6 +32,8 @@ test("l'atelier vide propose le catalogue et l'ouverture d'une sauvegarde", asyn
 test("l'atelier montre les chiffres, la vitrine et les montages en cours, et se sauvegarde", async ({ page }, info) => {
   await page.addInitScript((data) => localStorage.setItem("klods:progress:v1", JSON.stringify(data)), seed(Date.now()));
   await page.goto("atelier/");
+  // l'en-tête compte les montages en cours, à côté de « Atelier »
+  await expect(page.getByRole("navigation", { name: "Navigation principale" }).getByRole("link", { name: "Atelier 1 montage en cours" })).toBeVisible();
   const stats = page.getByRole("region", { name: "Tes chiffres" });
   await expect(stats).toContainText("set terminé1");
   await expect(stats).toContainText("étapes suivies15");

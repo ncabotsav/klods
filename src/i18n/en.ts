@@ -14,6 +14,7 @@ export const en: Dict = {
   nav: {
     catalogue: "Catalogue",
     workshop: "Workshop",
+    workshopCount: (n: number) => (n > 1 ? "builds in progress" : "build in progress"),
     github: "Source code on GitHub",
     githubStars: (n: number) => `Source code on GitHub, ${n} star${n > 1 ? "s" : ""}`,
     main: "Main navigation",

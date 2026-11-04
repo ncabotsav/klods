@@ -78,7 +78,7 @@
   fill: currentColor;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .nav {
     gap: 6px;
     font-size: 14px;
@@ -86,9 +86,20 @@
   .logo {
     font-size: 22px;
   }
-  /* téléphone : le nom suffit, la brique laisse la place au sélecteur de langue */
-  .mark {
+  /* téléphone : la brique seule tient lieu de logo (le lien garde son nom « Klods, accueil ») */
+  .logoName {
     display: none;
+  }
+  .mark {
+    width: 34px;
+    height: 24px;
+  }
+  /* zone de toucher du lien d'accueil : 44 px même avec la brique seule */
+  .home {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
   }
   .langs,
   .github {
@@ -101,22 +112,13 @@
   }
 }
 
-/* téléphones : le lien GitHub reste dans le pied de page (« Code source ») */
-@media (max-width: 480px) {
+/* téléphones et petites tablettes : le lien GitHub reste dans le pied de page (« Code source ») */
+@media (max-width: 600px) {
   .github {
     display: none;
   }
 }
 
-/* petits téléphones : la brique seule tient lieu de logo (le lien garde son nom « Klods, accueil ») */
-@media (max-width: 400px) {
-  .mark {
-    display: block;
-  }
-  .logoName {
-    display: none;
-  }
-}
 
 .footer {
   border-top: 1px solid var(--line);
@@ -259,7 +261,7 @@
   color: var(--accent-ink);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .themeButton {
     width: 32px;
     height: 32px;
@@ -267,9 +269,18 @@
 }
 
 /* très petits écrans (320 px) : la navigation se serre encore un peu */
-@media (max-width: 340px) {
+@media (max-width: 360px) {
   .nav {
     gap: 4px;
     font-size: 13px;
+  }
+  .langCurrent,
+  .langOther {
+    min-width: 24px;
+    padding: 0 4px;
+  }
+  .themeButton {
+    width: 30px;
+    height: 30px;
   }
 }

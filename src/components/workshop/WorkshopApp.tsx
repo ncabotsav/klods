@@ -15,7 +15,7 @@ import { localeHref } from "@/i18n";
 
 
 /**
- * Mon atelier : tout ce qui vient de la progression gardée dans ce navigateur (src/lib/progress.ts).
+ * Atelier : tout ce qui vient de la progression gardée dans ce navigateur (src/lib/progress.ts).
  * Chiffres, montages en cours, vitrine des sets terminés, et sauvegarde dans un fichier.
  */
 export default function WorkshopApp() {

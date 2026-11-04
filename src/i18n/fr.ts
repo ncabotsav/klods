@@ -12,7 +12,7 @@ export const fr = {
   },
   nav: {
     catalogue: "Catalogue",
-    workshop: "Mon atelier",
+    workshop: "Atelier",
     github: "Code source sur GitHub",
     githubStars: (n: number) => `Code source sur GitHub, ${n} étoile${n > 1 ? "s" : ""}`,
     main: "Navigation principale",
@@ -303,7 +303,7 @@ export const fr = {
     updated: "Mis à jour le 3 novembre 2026.",
   },
   workshop: {
-    title: "Mon atelier",
+    title: "Atelier",
     lead: "Les sets que tu as montés ou commencés sur cet appareil. Rien ne part sur un serveur.",
     stats: "Tes chiffres",
     finished: (n: number) => (n > 1 ? "sets terminés" : "set terminé"),

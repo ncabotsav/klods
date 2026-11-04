@@ -37,11 +37,52 @@
   fill: var(--hi);
 }
 
+/* à gauche : le logo puis le menu ; à droite : langue, thème, GitHub */
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
 .nav {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-6);
   font-weight: 700;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* nombre de montages en cours, à côté de « Atelier » */
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: var(--stage);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .nav a {
@@ -79,9 +120,15 @@
 }
 
 @media (max-width: 600px) {
+  .left {
+    gap: var(--space-4);
+  }
   .nav {
-    gap: 6px;
+    gap: var(--space-4);
     font-size: 14px;
+  }
+  .tools {
+    gap: 6px;
   }
   .logo {
     font-size: 22px;
@@ -175,11 +222,15 @@
   font-weight: 700;
 }
 
-.nav a.langOther {
+.langOther {
+  text-decoration: none;
+}
+
+.tools a.langOther {
   color: var(--muted);
 }
 
-.nav a.langOther:hover {
+.tools a.langOther:hover {
   color: var(--ink);
   background: var(--stage);
 }
@@ -268,10 +319,13 @@
   }
 }
 
-/* très petits écrans (320 px) : la navigation se serre encore un peu */
-@media (max-width: 360px) {
+/* petits téléphones (jusqu'à 400 px) : la navigation se serre encore un peu */
+@media (max-width: 400px) {
+  .left,
   .nav {
-    gap: 4px;
+    gap: var(--space-3);
+  }
+  .nav {
     font-size: 13px;
   }
   .langCurrent,
@@ -282,5 +336,12 @@
   .themeButton {
     width: 30px;
     height: 30px;
+  }
+}
+
+/* très petits écrans : la place manque, le nombre reste lu (et visible dans l'atelier) */
+@media (max-width: 360px) {
+  .count {
+    display: none;
   }
 }

@@ -13,6 +13,8 @@ export const fr = {
   nav: {
     catalogue: "Catalogue",
     workshop: "Atelier",
+    /** Texte lu après le nombre de montages en cours, à côté de « Atelier ». */
+    workshopCount: (n: number) => (n > 1 ? "montages en cours" : "montage en cours"),
     github: "Code source sur GitHub",
     githubStars: (n: number) => `Code source sur GitHub, ${n} étoile${n > 1 ? "s" : ""}`,
     main: "Navigation principale",

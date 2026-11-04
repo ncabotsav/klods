@@ -20,6 +20,8 @@
   --danger: #b3261e;
   /* ombre des panneaux posés au-dessus de la page */
   --shadow: 0 8px 24px rgb(20 32 43 / 0.16);
+  /* voile derrière une fenêtre (dialog) */
+  --backdrop: rgb(20 32 43 / 0.45);
 
   /* familles chargées par next/font (src/app/fonts.ts) */
   --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
@@ -55,6 +57,7 @@
     --hi: #ffcd03;
     --danger: #ff8a80;
     --shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+    --backdrop: rgb(0 0 0 / 0.6);
     color-scheme: dark;
   }
 }
@@ -71,6 +74,7 @@
   --hi: #ffcd03;
   --danger: #ff8a80;
   --shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+  --backdrop: rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
 

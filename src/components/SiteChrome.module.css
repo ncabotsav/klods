@@ -80,7 +80,7 @@
 
 @media (max-width: 480px) {
   .nav {
-    gap: var(--space-2);
+    gap: 6px;
     font-size: 14px;
   }
   .logo {
@@ -108,8 +108,8 @@
   }
 }
 
-/* très petits écrans : la brique seule tient lieu de logo (le lien garde son nom « Klods, accueil ») */
-@media (max-width: 360px) {
+/* petits téléphones : la brique seule tient lieu de logo (le lien garde son nom « Klods, accueil ») */
+@media (max-width: 400px) {
   .mark {
     display: block;
   }
@@ -263,5 +263,13 @@
   .themeButton {
     width: 32px;
     height: 32px;
+  }
+}
+
+/* très petits écrans (320 px) : la navigation se serre encore un peu */
+@media (max-width: 340px) {
+  .nav {
+    gap: 4px;
+    font-size: 13px;
   }
 }

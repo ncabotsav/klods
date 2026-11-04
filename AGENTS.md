@@ -25,7 +25,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - **Données brutes hors de Git** : les fichiers téléchargés (OMR, bibliothèque LDraw, CSV Rebrickable) vont dans `data/raw/`, ignoré par Git. Seuls les fichiers construits par les scripts sont publiés.
 - **Textes** : tous dans `src/i18n/fr.ts` (référence) et `src/i18n/en.ts` (même structure, vérifiée par TypeScript), jamais en dur dans les composants. Côté serveur, `dictFor(locale)` ; côté client, `useT()` ou `useLocale()` de `src/i18n/LocaleProvider.tsx`. Les traductions anglaises sont écrites à la main.
 - **Ton** : on tutoie, phrases courtes et concrètes, voix active. Un bouton dit ce qui se passe (« Commencer », « Étape suivante »). Pas de tiret cadratin dans les textes de l'interface : virgule, deux-points ou parenthèses.
-- **Couleurs** : uniquement par les jetons de `src/app/globals.css`. Le thème sombre redéfinit les jetons, jamais les composants.
+- **Couleurs** : uniquement par les jetons de `src/app/globals.css`. Le thème sombre redéfinit les jetons, jamais les composants. Choix du thème dans l'en-tête (`ThemeSwitch`, `src/lib/theme.ts`) : automatique, clair ou sombre, posé sur `<html data-theme>` par un script du `<head>` avant le premier affichage.
 - **Style** : CSS Modules et variables CSS, pas de kit UI. Mise en page en flex ou grid avec `gap`.
 - **Accessibilité** : focus visible, `prefers-reduced-motion` respecté, chaque contrôle a un nom accessible.
 
@@ -62,6 +62,7 @@ Cette version a des API et des conventions qui peuvent différer de ce que tu co
 - Progression dans le navigateur uniquement (`src/lib/progress.ts`, localStorage) : rien ne part sur un serveur.
 - `/atelier/` (`src/components/workshop/WorkshopApp.tsx`) : chiffres, montages en cours, vitrine des sets terminés, sauvegarde et reprise dans un fichier (`exportProgress`, `importProgress`). Non indexé.
 - Partage d'un set terminé (fin du montage, vitrine de l'atelier) : `ShareButton` dessine une carte 1200 × 630 dans le navigateur (`src/lib/share-card.ts`, couverture du set, nom, temps), puis menu de partage du système ou téléchargement de l'image.
+- Accueil : aperçu 3D d'un vrai set qui se monte en boucle (`src/components/home/HeroPreview.tsx`, sets choisis par `heroSets()`), chargé après la page et seulement s'il est visible ; dessins au trait de « Comment ça marche » (`HowIllustration.tsx`), couleurs par les jetons.
 
 ## Hors-ligne et performances
 

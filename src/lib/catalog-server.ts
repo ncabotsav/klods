@@ -133,3 +133,27 @@ export function firstYear(): number | null {
   const years = allSets().flatMap((s) => (s.year ? [s.year] : []));
   return years.length ? Math.min(...years) : null;
 }
+
+/** Un set qui se monte tout seul dans l'aperçu 3D de l'accueil. */
+export type HeroSet = { number: string; name: string; file: string; bytes: number; steps: number };
+
+/**
+ * Sets pour l'aperçu 3D de l'accueil : complets, avec étapes et couverture, assez petits pour
+ * s'ouvrir vite sur un téléphone (moins de 400 Ko, 40 à 250 pièces), assez d'étapes pour qu'on voie
+ * le montage (6 à 30). Un par thème, des plus fournis aux moins fournis ; la page en tire un au hasard.
+ */
+export function heroSets(count = 8): HeroSet[] {
+  const seen = new Set<string | null>();
+  const out: HeroSet[] = [];
+  const ok = allSets()
+    .map((s) => ({ s, m: defaultModel(s) }))
+    .filter(({ s, m }) => m.status === "ok" && hasCover(s.number) && m.bytes < 400_000 && m.parts >= 40 && m.parts <= 250 && m.steps >= 6 && m.steps <= 30)
+    .sort((a, b) => b.m.parts - a.m.parts);
+  for (const { s, m } of ok) {
+    if (seen.has(s.theme)) continue;
+    seen.add(s.theme);
+    out.push({ number: s.number, name: s.name, file: m.file, bytes: m.bytes, steps: m.steps });
+    if (out.length >= count) break;
+  }
+  return out;
+}

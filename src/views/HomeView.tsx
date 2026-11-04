@@ -5,7 +5,8 @@ import ResumeBuilds from "@/components/ResumeBuilds";
 import SearchBox from "@/components/catalog/SearchBox";
 import FeaturedGrid from "@/components/catalog/FeaturedGrid";
 import HowIllustration from "@/components/home/HowIllustration";
-import { allSets, featuredByTheme, searchEntries } from "@/lib/catalog-server";
+import HeroPreview from "@/components/home/HeroPreview";
+import { allSets, featuredByTheme, heroSets, searchEntries } from "@/lib/catalog-server";
 import { dictFor, localeHref, type Locale } from "@/i18n";
 import { bilingual } from "@/lib/seo";
 
@@ -15,6 +16,7 @@ export const homeMetadata = (locale: Locale): Metadata => ({ alternates: bilingu
 export default function HomeView({ locale }: { locale: Locale }) {
   const t = dictFor(locale).home;
   const featured = featuredByTheme(locale);
+  const hero = heroSets();
   const entries = new Map(searchEntries(locale).map((e) => [e.n, e]));
   // exemples : le numéro d'un set à la une, le nom d'un autre, et un thème
   const picks = featured.flatMap((g) => g.sets);
@@ -27,10 +29,13 @@ export default function HomeView({ locale }: { locale: Locale }) {
   return (
     <div className={`wrap ${styles.page}`}>
       <section className={styles.hero}>
-        <p className="eyebrow">{t.eyebrow}</p>
-        <h1 className={styles.title}>{t.title}</h1>
-        <p className={styles.lead}>{t.lead}</p>
-        <SearchBox examples={examples} />
+        <div className={styles.heroText}>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h1 className={styles.title}>{t.title}</h1>
+          <p className={styles.lead}>{t.lead}</p>
+          <SearchBox examples={examples} />
+        </div>
+        {hero.length > 0 && <HeroPreview sets={hero} />}
       </section>
 
       <ResumeBuilds />

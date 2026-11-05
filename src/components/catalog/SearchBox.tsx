@@ -53,13 +53,13 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
           if (hits[0]) window.location.assign(setPageHref(locale, hits[0].entry.n));
         }}
       >
-        <label htmlFor={`${id}-q`} className={styles.label}>
+        {/* étiquette lue par les lecteurs d'écran : le sous-titre de la page la dit déjà à l'écran */}
+        <label htmlFor={`${id}-q`} className={styles.srOnly}>
           {fr.search.label}
         </label>
-        <div className={styles.row}>
-          <span className={styles.field}>
-            <SearchIcon className={styles.icon} />
-            <input
+        <span className={styles.field}>
+          <SearchIcon className={styles.icon} />
+          <input
             ref={input}
             id={`${id}-q`}
             className={styles.input}
@@ -82,11 +82,12 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
               }
             }}
           />
-          </span>
-          <button type="submit" className="btn btn-primary">
-            {fr.search.submit}
+          <button type="submit" className={styles.submit} aria-label={fr.search.submit} title={fr.search.submit}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
           </button>
-        </div>
+        </span>
       </form>
 
       {examples.length > 0 && !typed && (

@@ -195,12 +195,12 @@ export const en: Dict = {
       {
         title: "Your rights",
         body: [
-          "The data controller is Nicolas CABOT-SAVIN. You can ask to see, correct or delete feedback you sent: write to contact@klods.app with the date and the email address you used, if any.",
+          "The data controller is the publisher of Klods. You can ask to see, correct or delete feedback you sent: write to contact@klods.app with the date and the email address you used, if any.",
           "If you think your data isn't respected, you can complain to the French data protection authority, the CNIL (cnil.fr).",
         ],
       },
     ],
-    updated: "Updated on 3 November 2026.",
+    updated: "Updated on 5 November 2026.",
   },
   legal: {
     title: "Legal notice",
@@ -208,7 +208,7 @@ export const en: Dict = {
     sections: [
       {
         title: "Publisher",
-        body: ["Klods is a personal, non-commercial website published by Nicolas CABOT-SAVIN, a private individual.", "Publication director: Nicolas CABOT-SAVIN.", "Contact: contact@klods.app"],
+        body: ["Klods is a personal, non-commercial website published by a private individual.", "Contact: contact@klods.app"],
       },
       {
         title: "Host",
@@ -228,7 +228,7 @@ export const en: Dict = {
         ],
       },
     ],
-    updated: "Updated on 3 November 2026.",
+    updated: "Updated on 5 November 2026.",
   },
   terms: {
     title: "Terms of use",

@@ -13,30 +13,36 @@
   gap: var(--space-2);
 }
 
-.label {
-  font-weight: 700;
+/* hors écran mais lu par les lecteurs d'écran */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.row {
-  display: flex;
-  gap: var(--space-2);
-}
-
-/* le champ et sa loupe : la loupe est posée dans le champ, à gauche */
+/* la barre : loupe à gauche, champ, bouton rond à droite, le tout dans une seule pilule */
 .field {
-  position: relative;
-  flex: 1;
-  min-width: 0;
   display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+}
+
+.field:focus-within {
+  border-color: var(--accent);
 }
 
 .icon {
-  position: absolute;
-  left: var(--space-4);
-  top: 50%;
+  flex: none;
   width: 20px;
   height: 20px;
-  transform: translateY(-50%);
   fill: none;
   stroke: var(--muted);
   stroke-width: 2.2;
@@ -50,17 +56,42 @@
   font: inherit;
   font-size: 18px;
   color: var(--ink);
-  background: var(--card);
-  border: 2px solid var(--line);
-  border-radius: var(--radius);
-  padding: var(--space-3) var(--space-4);
-  /* place pour la loupe */
-  padding-left: calc(var(--space-4) + 20px + var(--space-3));
+  background: transparent;
+  border: 0;
+  padding: var(--space-2) 0;
 }
 
 .input:focus-visible {
   outline: none;
-  border-color: var(--accent);
+}
+
+/* « Chercher » : une flèche dans un rond bleu, au bout de la barre */
+.submit {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.submit svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .input::placeholder {

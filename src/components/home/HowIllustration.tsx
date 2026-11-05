@@ -68,15 +68,15 @@ function TypeNumber() {
       {/* du numéro de la boîte au même numéro dans la barre */}
       <path d="M61.5 86v17" className={styles.arrow} />
       <path d="M55 97l6.5 7 6.5-7" className={styles.arrow} />
-      <rect x="14" y="110" width="212" height="30" rx="10" className={styles.card} />
+      <rect x="14" y="110" width="212" height="30" rx="15" className={styles.card} />
       <circle cx="32" cy="124" r="5.5" className={styles.line} />
       <path d="M36 128l4 4" className={styles.line} />
       <text x="50" y="125.5" className={styles.barText} dominantBaseline="middle">
         4915
       </text>
       <path d="M94 117v16" className={styles.caret} />
-      <rect x="178" y="114" width="44" height="22" rx="7" className={styles.accent} />
-      <path d="M192 125h16M202 119l6 6-6 6" className={styles.accentInk} />
+      <circle cx="211" cy="125" r="11" className={styles.accent} />
+      <path d="M205 125h12M212 120l5 5-5 5" className={styles.accentInk} />
     </svg>
   );
 }

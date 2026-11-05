@@ -200,12 +200,12 @@ export const fr = {
       {
         title: "Tes droits",
         body: [
-          "Le responsable du traitement est Nicolas CABOT-SAVIN. Tu peux demander à voir, corriger ou effacer un retour que tu as envoyé : écris à contact@klods.app en donnant la date et l'adresse e-mail utilisée, s'il y en a une.",
+          "Le responsable du traitement est l'éditeur de Klods. Tu peux demander à voir, corriger ou effacer un retour que tu as envoyé : écris à contact@klods.app en donnant la date et l'adresse e-mail utilisée, s'il y en a une.",
           "Si tu estimes que tes données ne sont pas respectées, tu peux saisir la CNIL (cnil.fr).",
         ],
       },
     ],
-    updated: "Mis à jour le 3 novembre 2026.",
+    updated: "Mis à jour le 5 novembre 2026.",
   },
   legal: {
     title: "Mentions légales",
@@ -214,8 +214,7 @@ export const fr = {
       {
         title: "Éditeur",
         body: [
-          "Klods est un site personnel, non commercial, édité par Nicolas CABOT-SAVIN, particulier.",
-          "Directeur de la publication : Nicolas CABOT-SAVIN.",
+          "Klods est un site personnel, non commercial, édité par un particulier.",
           "Contact : contact@klods.app",
         ],
       },
@@ -237,7 +236,7 @@ export const fr = {
         ],
       },
     ],
-    updated: "Mis à jour le 3 novembre 2026.",
+    updated: "Mis à jour le 5 novembre 2026.",
   },
   terms: {
     title: "Conditions d'utilisation",

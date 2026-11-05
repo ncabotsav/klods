@@ -32,7 +32,7 @@ jobs:
           check /sitemap.xml 200 "<urlset"
           check /robots.txt 200 "Sitemap"
           # pages légales et formulaire de retours (critère du sprint 7)
-          check /mentions-legales/ 200 "CABOT-SAVIN"
+          check /mentions-legales/ 200 "particulier"
           check /confidentialite/ 200 "Web Analytics"
           check /conditions/ 200 "Conditions"
           check /credits/ 200 "LDraw"

@@ -92,6 +92,10 @@ export function allThemes(locale: Locale = "fr"): Theme[] {
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, locale));
 }
 
+/** Les mêmes thèmes, par ordre alphabétique de la langue (accents et majuscules ignorés) : pour les listes qu'on parcourt. */
+export const themesByName = (locale: Locale = "fr"): Theme[] =>
+  [...allThemes(locale)].sort((a, b) => a.name.localeCompare(b.name, locale, { sensitivity: "base", numeric: true }));
+
 export function findTheme(slug: string, locale: Locale = "fr"): Theme | undefined {
   return allThemes(locale).find((t) => t.slug === slug);
 }

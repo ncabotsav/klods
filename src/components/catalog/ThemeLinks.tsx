@@ -1,12 +1,12 @@
 import Link from "next/link";
 import styles from "@/views/Catalogue.module.css";
-import { allThemes } from "@/lib/catalog-server";
+import { themesByName } from "@/lib/catalog-server";
 import { dictFor, localeHref, type Locale } from "@/i18n";
 
 /** Liens vers les pages de thème (indexables), sous le catalogue. */
 export default function ThemeLinks({ locale }: { locale: Locale }) {
   const fr = dictFor(locale);
-  const themes = allThemes(locale);
+  const themes = themesByName(locale);
   if (!themes.length) return null;
   return (
     <nav className={styles.themes} aria-labelledby="themes-title">

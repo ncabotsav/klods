@@ -210,9 +210,18 @@
   color: var(--accent);
 }
 
+/* sur téléphone, « Notice officielle » passe sous le nom, aligné sur le texte */
 @media (max-width: 480px) {
   .absent {
     flex-wrap: wrap;
     gap: var(--space-1) var(--space-3);
+  }
+
+  .absent .resultText {
+    flex: 1 1 calc(100% - 72px - var(--space-3));
+  }
+
+  .absentCta {
+    margin-left: calc(72px + var(--space-3));
   }
 }

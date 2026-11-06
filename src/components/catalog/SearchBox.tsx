@@ -141,7 +141,8 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
         </p>
       )}
 
-      <p id={`${id}-status`} className={styles.status} role="status" aria-live="polite">
+      {/* sans résultat en 3D mais avec des sets absents, le titre « Pas encore en 3D » suffit à l'écran ; le message reste lu */}
+      <p id={`${id}-status`} className={!hits.length && absentHits.length ? styles.srOnly : styles.status} role="status" aria-live="polite">
         {status}
       </p>
 
@@ -191,6 +192,10 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
             {absentHits.map(({ entry }) => (
               <li key={entry.n}>
                 <a href={officialManualUrl(entry.n, locale)} target="_blank" rel="noopener" className={`${styles.result} ${styles.absent}`}>
+                  {/* pas de modèle 3D, donc pas de couverture : la brique dessinée, décorative */}
+                  <span className={styles.thumb} aria-hidden="true">
+                    <SetCover locale={locale} number={entry.n} hasCover={false} />
+                  </span>
                   <span className={styles.resultText}>
                     <span className={styles.resultName}>{entry.t}</span>
                     <span className={styles.resultMeta}>{fr.search.absentMeta(entry.n, entry.y, entry.p)}</span>

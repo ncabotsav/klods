@@ -8,7 +8,8 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import { gunzipSync } from "node:zlib";
 import { analyzeModel } from "./lib/ldraw-analyze.ts";
-import { PUBLIC_MODELS, ROOT, SETS_INDEX } from "./lib/paths.ts";
+import { ABSENTS_INDEX, PUBLIC_MODELS, ROOT, SETS_INDEX } from "./lib/paths.ts";
+import { buildAbsents } from "../../src/lib/absents.ts";
 import { slugify } from "../../src/lib/catalog.ts";
 import { SetsIndex, type SetEntry } from "../../src/lib/catalog-schema.ts";
 
@@ -62,6 +63,15 @@ async function main() {
   }
   const index = SetsIndex.parse({ generatedAt: new Date().toISOString(), ldrawLibrary: "fixtures", sets });
   await fsp.writeFile(SETS_INDEX, JSON.stringify(index));
+  // deux sets sans modèle 3D, pour tester la partie « pas encore en 3D » de la recherche
+  const absents = buildAbsents(
+    [
+      { set_num: "42213-1", name: "Ford Bronco SUV", year: "2025", num_parts: "943", theme: "Technic" },
+      { set_num: "10497-1", name: "Galaxy Explorer", year: "2022", num_parts: "1254", theme: "Icons" },
+    ],
+    new Set(sets.map((s) => s.number)),
+  );
+  await fsp.writeFile(ABSENTS_INDEX, JSON.stringify(absents));
   console.log(`Fixtures : ${sets.length} sets écrits dans public/data`);
 }
 

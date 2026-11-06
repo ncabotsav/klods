@@ -7,10 +7,14 @@ import SearchIcon from "./SearchIcon";
 import { createSearch, normalize, type SearchEntry } from "@/lib/search";
 import { officialManualUrl } from "@/lib/catalog";
 import { loadSearchIndex as loadIndex } from "@/lib/search-index";
+import { loadAbsents } from "@/lib/absents-load";
 import { setPageHref } from "@/lib/site";
 import { useLocale } from "@/i18n/LocaleProvider";
 
 const MAX_RESULTS = 8;
+/** Sets sans modèle 3D montrés sous les résultats : plus quand le catalogue ne trouve rien. */
+const MAX_ABSENTS_ALONE = 5;
+const MAX_ABSENTS_WITH_HITS = 3;
 
 type Props = { examples?: { label: string; query: string }[]; autoFocus?: boolean };
 
@@ -31,6 +35,35 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
   const hits = useMemo(() => (engine && query.trim() ? engine.search(query, MAX_RESULTS) : []), [engine, query]);
   const number = /^\d{3,}(-\d+)?$/.test(normalize(query).replace(" ", "-")) ? normalize(query).replace(" ", "-") : null;
 
+  // sets sans modèle 3D (Rebrickable) : chargés seulement quand on tape au moins 3 caractères
+  const [absents, setAbsents] = useState<SearchEntry[] | null>(null);
+  const wantsAbsents = query.trim().length >= 3;
+  useEffect(() => {
+    if (wantsAbsents && !absents) loadAbsents().then(setAbsents);
+  }, [wantsAbsents, absents]);
+  const absentEngine = useMemo(() => (absents?.length ? createSearch(absents) : null), [absents]);
+  const absentHits = useMemo(() => {
+    if (!absentEngine || !wantsAbsents || !entries) return [];
+    const found = absentEngine.search(query, MAX_ABSENTS_ALONE);
+    // avec des résultats du catalogue, on ne garde que les absents qui correspondent aussi bien que le dernier d'entre eux
+    if (!hits.length) return found;
+    const floor = hits[hits.length - 1].score;
+    return found.filter((h) => h.score >= floor).slice(0, MAX_ABSENTS_WITH_HITS);
+  }, [absentEngine, wantsAbsents, entries, query, hits]);
+
+  const typed = query.trim().length > 0;
+  const status = !typed
+    ? ""
+    : failed
+      ? fr.search.error
+      : !entries
+        ? fr.search.loading
+        : hits.length
+          ? fr.search.results(hits.length)
+          : absentHits.length
+            ? fr.search.noneIn3d
+            : fr.search.none;
+
   const prepare = () => {
     if (entries || failed) return;
     loadIndex(locale).then(setEntries, () => setFailed(true));
@@ -40,8 +73,6 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
     if (autoFocus) input.current?.focus({ preventScroll: true });
   }, [autoFocus]);
 
-  const typed = query.trim().length > 0;
-  const status = !typed ? "" : failed ? fr.search.error : !entries ? fr.search.loading : hits.length ? fr.search.results(hits.length) : fr.search.none;
 
   return (
     <div className={styles.box}>
@@ -151,7 +182,31 @@ export default function SearchBox({ examples = [], autoFocus = false }: Props) {
         </ul>
       )}
 
-      {typed && entries && !hits.length && number && (
+      {absentHits.length > 0 && (
+        <section className={styles.absents} aria-labelledby={`${id}-absents`}>
+          <h2 id={`${id}-absents`} className={styles.absentsTitle}>
+            {fr.search.absentTitle}
+          </h2>
+          <ul className={styles.results}>
+            {absentHits.map(({ entry }) => (
+              <li key={entry.n}>
+                <a href={officialManualUrl(entry.n, locale)} target="_blank" rel="noopener" className={`${styles.result} ${styles.absent}`}>
+                  <span className={styles.resultText}>
+                    <span className={styles.resultName}>{entry.t}</span>
+                    <span className={styles.resultMeta}>{fr.search.absentMeta(entry.n, entry.y, entry.p)}</span>
+                  </span>
+                  <span className={styles.absentCta}>
+                    {fr.search.absentCta} <span aria-hidden="true">↗</span>
+                    <span className={styles.srOnly}> {fr.search.newTab}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {typed && entries && !hits.length && !absentHits.length && number && (
         <p className={styles.missing}>
           {fr.search.noneNumber(number)}{" "}
           <a href={officialManualUrl(number, locale)} target="_blank" rel="noopener">

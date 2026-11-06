@@ -12,7 +12,8 @@ import { parseCsv } from "./lib/csv.ts";
 import type { OmrSet } from "./lib/omr-parse.ts";
 import type { PackEntry } from "./pack.ts";
 import type { CheckEntry } from "./check.ts";
-import { CHECK_REPORT, OMR_SETS_JSON, PACK_REPORT, RAW_LDRAW, RAW_REBRICKABLE, SETS_INDEX } from "./lib/paths.ts";
+import { ABSENTS_INDEX, CHECK_REPORT, OMR_SETS_JSON, PACK_REPORT, RAW_LDRAW, RAW_REBRICKABLE, SETS_INDEX } from "./lib/paths.ts";
+import { buildAbsents } from "../../src/lib/absents.ts";
 import { SetsIndex, type ModelEntry, type ModelStatus, type SetEntry } from "../../src/lib/catalog-schema.ts";
 
 async function readCsv(name: string) {
@@ -28,7 +29,8 @@ async function main() {
     ? JSON.parse(await fsp.readFile(path.join(RAW_LDRAW, "version.json"), "utf8")).libraryUpdate ?? "inconnue"
     : "inconnue";
 
-  const rbSets = new Map((await readCsv("sets")).map((r) => [r.set_num, r]));
+  const rbRows = await readCsv("sets");
+  const rbSets = new Map(rbRows.map((r) => [r.set_num, r]));
   const themes = new Map((await readCsv("themes")).map((t) => [t.id, t]));
   const themePath = (id: string | undefined): string[] => {
     const out: string[] = [];
@@ -86,6 +88,14 @@ async function main() {
   const index = SetsIndex.parse({ generatedAt: new Date().toISOString(), ldrawLibrary: version, sets });
   await fsp.mkdir(path.dirname(SETS_INDEX), { recursive: true });
   await fsp.writeFile(SETS_INDEX, JSON.stringify(index));
+
+  // sets connus de Rebrickable mais sans modèle OMR : la recherche les montre avec un lien vers la notice officielle
+  const absents = buildAbsents(
+    rbRows.map((r) => ({ set_num: r.set_num, name: r.name, year: r.year, num_parts: r.num_parts, theme: themePath(r.theme_id)[0] })),
+    new Set(sets.map((s) => s.number)),
+  );
+  await fsp.writeFile(ABSENTS_INDEX, JSON.stringify(absents));
+  console.log(`Absents : ${absents.sets.length} sets Rebrickable sans modèle 3D`);
 
   const models = sets.flatMap((s) => s.models);
   const count = (st: ModelStatus) => models.filter((m) => m.status === st).length;

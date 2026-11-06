@@ -42,6 +42,15 @@ test("un set absent renvoie vers sa notice officielle", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Voir sa notice officielle" })).toHaveAttribute("href", /99999/);
 });
 
+test("la recherche montre aussi les sets pas encore en 3D", async ({ page, request }) => {
+  // fichier construit par le workflow « Données » : sans lui, la recherche fait comme avant
+  test.skip(!(await request.get("data/absents.json")).ok(), "pas de data/absents.json");
+  await page.goto("./");
+  await page.getByRole("searchbox", { name: "Numéro ou nom du set" }).fill("42213");
+  await expect(page.getByRole("heading", { name: "Pas encore en 3D sur Klods" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Ford Bronco SUV/ })).toHaveAttribute("href", /building-instructions\/42213/);
+});
+
 test("le sitemap liste toutes les fiches", async ({ request }) => {
   const index: { n: string }[] = await (await request.get("recherche.json")).json();
   const sitemap = await (await request.get("sitemap.xml")).text();

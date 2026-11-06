@@ -59,6 +59,11 @@ export const en: Dict = {
     none: "No set matches.",
     noneNumber: (n: string) => `Set ${n} isn't available in 3D on Klods yet.`,
     official: "See its official instructions",
+    noneIn3d: "No set in 3D matches.",
+    absentTitle: "Not in 3D on Klods yet",
+    absentMeta: (n: string, year: number | null, parts: number) => [n, year, `${parts} parts`].filter(Boolean).join(" · "),
+    newTab: "(new tab)",
+    absentCta: "Official instructions",
     error: "The catalogue couldn't load. Try again in a moment.",
   },
   set: {

@@ -23,6 +23,8 @@ export const CHECK_SUMMARY = path.join(BUILD, "check-summary.md");
 export const PUBLIC_DATA = path.join(ROOT, "public", "data");
 export const PUBLIC_MODELS = path.join(PUBLIC_DATA, "models");
 export const SETS_INDEX = path.join(PUBLIC_DATA, "sets.json");
+/** Sets Rebrickable sans modèle OMR, pour la recherche (src/lib/absents.ts). */
+export const ABSENTS_INDEX = path.join(PUBLIC_DATA, "absents.json");
 
 /** Fichier LDraw d'un modèle OMR dans le cache ; la version fait partie du nom, un fichier mis à jour est donc retéléchargé. */
 export const omrModelFile = (m: { fileId: number; version: string; fileName: string }) =>

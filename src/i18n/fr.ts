@@ -61,6 +61,11 @@ export const fr = {
     none: "Aucun set ne correspond.",
     noneNumber: (n: string) => `Le set ${n} n'est pas encore en 3D sur Klods.`,
     official: "Voir sa notice officielle",
+    noneIn3d: "Aucun set en 3D ne correspond.",
+    absentTitle: "Pas encore en 3D sur Klods",
+    absentMeta: (n: string, year: number | null, parts: number) => [n, year, `${parts} pièces`].filter(Boolean).join(" · "),
+    newTab: "(nouvel onglet)",
+    absentCta: "Notice officielle",
     error: "Impossible de charger le catalogue. Réessaie dans un moment.",
   },
   set: {

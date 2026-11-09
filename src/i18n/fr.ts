@@ -345,6 +345,8 @@ export const fr = {
     next: "Étape suivante",
     scrub: "Choisir une étape",
     reframe: "Recadrer la vue",
+    expand: "Agrandir la vue",
+    shrink: "Réduire la vue",
     hint: "Glisse pour tourner, pince pour zoomer",
     partsInStep: "Pièces de l'étape",
     assembly: "Sous-ensemble",

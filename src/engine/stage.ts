@@ -38,6 +38,8 @@ export type StageOptions = {
   highlight?: string;
   /** Appelé à chaque image dessinée, avec sa durée, pour mesurer la fluidité. */
   onFrame?: (ms: number) => void;
+  /** La personne a tourné, zoomé ou déplacé la vue (pas les mouvements de caméra du moteur). */
+  onUserMove?: () => void;
   /** Couleurs (CSS) des flèches de direction de la page de travail : guidée par un contact, ou non. */
   arrowColors?: { guided: string; fallback: string };
   /** Garde l'image après le rendu, pour la copier (vue impression). */
@@ -122,6 +124,7 @@ export class Stage {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.12;
     this.controls.addEventListener("change", () => (this.dirty = true));
+    this.controls.addEventListener("start", () => options.onUserMove?.());
 
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.highlightColor = new Color(options.highlight || "#f2b705");

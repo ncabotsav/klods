@@ -47,7 +47,7 @@ function Player({ set, onReady }: { set: HeroSet; onReady: () => void }) {
   if (!ready) return null;
   // mouvement réduit : le modèle fini, immobile
   const mode = still || done ? { kind: "all" as const, autoRotate: !still } : { kind: "step" as const, index, animate: true };
-  return <ModelViewer loaded={state.loaded} mode={mode} className={styles.viewer} />;
+  return <ModelViewer loaded={state.loaded} mode={mode} className={styles.viewer} buttons={false} />;
 }
 
 /**

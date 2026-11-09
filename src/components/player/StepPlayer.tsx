@@ -38,6 +38,24 @@ export function StepView({ loaded, index, animate, onGo, officialUrl, onFrame, f
   const count = loaded.plan.steps.length;
   const step = loaded.plan.steps[index];
   const callouts = useMemo(() => stepCallouts(loaded, index, locale, fr), [loaded, index, locale, fr]);
+
+  // vue agrandie à toute la fenêtre (le plein écran du navigateur n'existe pas sur iPhone) ; Échap la referme
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => {
+    if (!expanded) return;
+    const html = document.documentElement;
+    const before = html.style.overflow;
+    html.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setExpanded(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      html.style.overflow = before;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [expanded]);
+  const expand = { expanded, onToggle: () => setExpanded((v) => !v) };
   const text = useMemo(() => stepText(loaded, index, locale), [loaded, index, locale]);
 
   // flèches du clavier, hors des champs de saisie ; Entrée sur un bouton garde son propre effet
@@ -80,12 +98,13 @@ export function StepView({ loaded, index, animate, onGo, officialUrl, onFrame, f
 
   const last = index >= count - 1;
   return (
-    <div className={styles.player}>
+    <div className={`${styles.player} ${expanded ? styles.expanded : ""}`}>
       <ModelViewer
         loaded={loaded}
         mode={{ kind: "step", index, animate }}
         onFrame={onFrame}
         arrows={arrows}
+        expand={expand}
         overlay={
           <div className={styles.overlay}>
             <p className={styles.stepNumber} aria-live="polite">

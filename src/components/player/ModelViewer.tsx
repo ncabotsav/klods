@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import styles from "./StepPlayer.module.css";
 import type { LoadedModel } from "./useModel";
 import { useT } from "@/i18n/LocaleProvider";
@@ -17,15 +17,21 @@ type Props = {
   className?: string;
   /** Page de travail : flèches de la direction d'arrivée des pièces. */
   arrows?: boolean;
+  /** Boutons posés sur la vue (recadrer, agrandir) ; non sur l'aperçu de l'accueil, qui tourne tout seul. */
+  buttons?: boolean;
+  /** Vue agrandie à toute la fenêtre : état et bascule, tenus par le parent (qui agrandit aussi la navigation). */
+  expand?: { expanded: boolean; onToggle: () => void };
 };
 
 /** Vue 3D d'un modèle chargé : le modèle entier, ou le modèle à une étape donnée. */
-export default function ModelViewer({ loaded, mode, overlay, onFrame, className, arrows = false }: Props) {
+export default function ModelViewer({ loaded, mode, overlay, onFrame, className, arrows = false, buttons = true, expand }: Props) {
   const fr = useT();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<InstanceType<LoadedModel["engine"]["Stage"]> | null>(null);
   const webgl = useWebGL();
   const onFrameRef = useRef(onFrame);
+  // « Recadrer » n'apparaît qu'après un geste sur la vue : avant, il n'aurait rien à faire
+  const [moved, setMoved] = useState(false);
   useEffect(() => {
     onFrameRef.current = onFrame;
   }, [onFrame]);
@@ -38,6 +44,7 @@ export default function ModelViewer({ loaded, mode, overlay, onFrame, className,
       highlight: token("--hi"),
       arrowColors: { guided: token("--accent"), fallback: token("--muted") },
       onFrame: (ms) => onFrameRef.current?.(ms),
+      onUserMove: () => setMoved(true),
     });
     stage.setModel(loaded.model, loaded.plan);
     stageRef.current = stage;
@@ -57,6 +64,8 @@ export default function ModelViewer({ loaded, mode, overlay, onFrame, className,
     if (kind === "all") stage.showAll();
     else stage.showStep(index, animate);
     stage.setAutoRotate(autoRotate);
+    // une nouvelle étape recadre la vue d'elle-même
+    setMoved(false);
   }, [loaded, kind, index, animate, autoRotate]);
 
   useEffect(() => {
@@ -75,17 +84,42 @@ export default function ModelViewer({ loaded, mode, overlay, onFrame, className,
   return (
     <div className={`${styles.stage} ${className ?? ""}`} ref={containerRef}>
       {overlay}
-      <button
-        type="button"
-        className={styles.reframe}
-        onClick={() => stageRef.current?.reframe()}
-        aria-label={fr.player.reframe}
-        title={fr.player.reframe}
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
-        </svg>
-      </button>
+      {buttons && (
+        <div className={styles.viewButtons}>
+          {expand && (
+            <button
+              type="button"
+              className={styles.viewButton}
+              onClick={expand.onToggle}
+              aria-label={expand.expanded ? fr.player.shrink : fr.player.expand}
+              title={expand.expanded ? fr.player.shrink : fr.player.expand}
+              aria-pressed={expand.expanded}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                {expand.expanded ? <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" /> : <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />}
+              </svg>
+            </button>
+          )}
+          {moved && (
+            <button
+              type="button"
+              className={styles.viewButton}
+              onClick={() => {
+                stageRef.current?.reframe();
+                setMoved(false);
+              }}
+              aria-label={fr.player.reframe}
+              title={fr.player.reframe}
+            >
+              {/* flèche qui revient : la vue retrouve sa position de départ */}
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 12a8 8 0 1 0 2.4-5.7" />
+                <path d="M4 4v4.5h4.5" />
+              </svg>
+            </button>
+          )}
+        </div>
+      )}
       <p className={styles.hint}>{fr.player.hint}</p>
     </div>
   );

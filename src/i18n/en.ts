@@ -328,6 +328,8 @@ export const en: Dict = {
     next: "Next step",
     scrub: "Choose a step",
     reframe: "Reset the view",
+    expand: "Enlarge the view",
+    shrink: "Shrink the view",
     hint: "Drag to turn, pinch to zoom",
     partsInStep: "Parts in this step",
     assembly: "Sub-assembly",
